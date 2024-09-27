@@ -1,0 +1,81 @@
+<div *ngIf="showSearch" fxLayout="row wrap">
+    <div class="p-10" fxFlex.gt-sm="40" fxFlex.gt-xs="40" fxFlex="100"></div>
+    <div class="p-10" fxFlex.gt-sm="25" fxFlex.gt-xs="25" fxFlex="100">
+        <mat-form-field class="example-form-field">
+            <mat-label>Global Search</mat-label>
+            <input matInput type="text" [(ngModel)]="globalSearchValue">
+            <button matSuffix mat-icon-button aria-label="Clear" (click)="globalSearchValue=''">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="globalSearch($event)">{{'SEARCH'}}</button>
+    </div>
+</div>
+<div *ngIf="viewRefresh" fxLayout="row wrap" style="padding-bottom: 15px;">
+
+    <div class="p-10" fxFlex.gt-sm="90" fxFlex.gt-xs="90" fxFlex="100"></div>
+    <div class="p-10" fxFlex.gt-sm="10" fxFlex.gt-xs="10" fxFlex="100">
+        <mat-icon (click)="refresh()" style="cursor:pointer; float: right; margin-bottom: 5px;"
+            title="Refresh Table">refresh</mat-icon>
+    </div>
+</div>
+<div class="example-container mat-elevation-z8">
+    <!-- <div class="example-loading-shade" style="text-align: -webkit-center;" *ngIf="isLoadingResults || isRateLimitReached">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+      <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">\
+      </div>
+    </div> -->
+    <!-- <ngx-loading [show]="isLoadingResults || isRateLimitReached" [config]="{primaryColour: '#4169E1', secondaryColour: '#656CCE'}"></ngx-loading> -->
+
+    <div class="example-table-container responsive-table-height">
+        <mat-table matSort (matSortChange)="sortData($event)" [dataSource]="pageData.content" class="example-table">
+
+            <ng-container [matColumnDef]="c.field" *ngFor="let c of columns">
+                <mat-header-cell class="table-header" *matHeaderCellDef>{{c.displayName}} </mat-header-cell>
+                <mat-cell id="{{c.field+'-'+row.id}}" *matCellDef="let row"> {{ c.cell(row) }} </mat-cell>
+            </ng-container>
+
+
+            <!-- Action -->
+            <ng-container matColumnDef="action">
+                <mat-header-cell class="table-header action-header" *matHeaderCellDef> Action </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <ng-container *ngFor="let ca of columnActions">
+
+                        <ng-container *ngIf="ca.nestedMenus && ca.nestedMenus.length > 0; else withoutNestedMenu">
+                            <button [color]="ca.color" mat-icon-button #notificationMenuBtn
+                                [matMenuTriggerFor]="notificationsMenu">
+                                <mat-icon title="{{ca.toolTip}}">{{ca.icon}}</mat-icon>
+                            </button>
+
+                            <mat-menu #notificationsMenu="matMenu" [overlapTrigger]="false">
+
+                                <button *ngFor="let menu of ca.nestedMenus" mat-menu-item
+                                    (click)="menu.onClick && menu.onClick(element,$event)">
+                                    <mat-icon [color]="menu.color" title="{{menu.toolTip}}">{{menu.icon}}</mat-icon>
+                                    {{menu.text}}
+                                </button>
+                            </mat-menu>
+                        </ng-container>
+
+                        <ng-template #withoutNestedMenu>
+                            <button [color]="ca.color" mat-icon-button [disabled]="ca.disabled && ca.disabled(element)"
+                                (click)="ca.onClick && ca.onClick(element,$event)">
+                                <!-- <mat-icon matTooltip="{{ca.toolTip}}">{{ca.icon}}</mat-icon> -->
+                                <app-feather-icons [icon]="ca.icon" [class]="'tbl-fav-'+ca.icon"></app-feather-icons>
+                            </button>
+                        </ng-template>
+
+                    </ng-container>
+
+                </mat-cell>
+            </ng-container>
+
+
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator [hidden]="pageData.totalElements <= 4" showFirstLastButtons [length]="pageData.totalElements"
+        (page)="onPageChange($event)" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+</div>

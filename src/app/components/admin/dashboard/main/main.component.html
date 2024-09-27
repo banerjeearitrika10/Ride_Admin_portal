@@ -1,0 +1,73 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header" *ngFor="let breadscrum of breadscrums">
+      <!-- breadcrumb -->
+      <app-breadcrumb [title]="breadscrum.title" [items]="breadscrum.items" [active_item]="breadscrum.active">
+      </app-breadcrumb>
+    </div>
+    <!-- Widgets -->
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-statistic-2">
+          <div class="clearfix">
+            <div class="img-size-70" class="card-icon-only shadow-primary float-start">
+              <img src="assets/images/banner/learner.png" alt="Total Learner Count">
+            </div>
+            <div class="card-right">
+              <div>
+                <h5 class="float-end">Employee</h5>
+              </div>
+              <div class="col-green">
+                <h3 class="font-weight-bold float-end mb-0">{{stuCnt}}</h3>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="card-content msl-4 mb-3">
+            <p class="m-b-0 d-flex"><i class="material-icons col-green psr-2">trending_up</i> 10% Higher Then Last Month
+            </p>
+          </div> -->
+        </div>
+      </div>
+      <!-- <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-statistic-2">
+          <div class="clearfix">
+            <div class="img-size-70" class="card-icon-only shadow-primary float-start">
+              <img src="assets/images/banner/products.png" alt="Total Product Count">
+            </div>
+            <div class="card-right">
+              <div>
+                <h5 class="float-end">Products</h5>
+              </div>
+              <div class="col-green">
+                <h3 class="font-weight-bold float-end mb-0">{{prodCnt}}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card card-statistic-2">
+          <div class="clearfix">
+            <div class="img-size-70" class="card-icon-only shadow-primary float-start">
+              <img src="assets/images/banner/test.png" alt="Total Assessments Count">
+            </div>
+            <div class="card-right">
+              <div>
+                <h5 class="float-end">Tests</h5>
+              </div>
+              <div class="col-green">
+                <h3 class="font-weight-bold float-end mb-0">{{assessmentCnt}}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      
+    </div>
+    <!-- <div class="row" *ngIf="userName!='super-admin'">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <h2 style="margin-top:80px;" class="text-center">Welcome to admin portal</h2>
+      </div>
+    </div> -->
+
+   

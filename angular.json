@@ -15,45 +15,107 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/booking-admin-portal",
+            "outputPath": "dist/examfactor-admin-portal",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "svg-gauge",
+              "echarts",
+              "chart.js",
+              "zrender/lib/svg/svg",
+              "zrender/lib/vml/vml",
+              "dragula",
+              "contra/emitter",
+              "crossvent",
+              "clone-deep",
+              "xlsx",
+              "sweetalert2",
+              "@ckeditor/ckeditor5-build-classic",
+              "apexcharts",
+              "fast-deep-equal",
+              "rfdc",
+              "bezier-easing"
+            ],
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@kolkov/angular-editor/assets/",
+                "output": "./assets/fonts/"
+              }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/@swimlane/ngx-datatable/index.css",
+              "./node_modules/@swimlane/ngx-datatable/themes/material.css",
+              "./node_modules/@swimlane/ngx-datatable/assets/icons.css",
+              "src/assets/scss/style.scss",
+              "src/assets/scss/theme/all-themes.scss",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/moment/min/moment.min.js",
+              "./node_modules/apexcharts/dist/apexcharts.min.js"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "10kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
               "outputHashing": "all"
             },
             "development": {
+              "buildOptimizer": false,
               "optimization": false,
+              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "staging": {
+              "buildOptimizer": true,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -93,6 +155,15 @@
               "src/styles.scss"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         }
       }

@@ -1,0 +1,35 @@
+import { DefaultEnvironmentConfig } from "./default.env";
+
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+
+
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
+
+
+class ProductionEnvironmentConfig extends DefaultEnvironmentConfig {
+  override production= true;
+  apiUrl= 'https://lms.examfactor.com';
+  apiEndpoint='';
+ // override rootApiUrl = 'https://aff4f3557676042acb0de998f68aec13-f312f19f702f56d0.elb.ap-south-1.amazonaws.com';
+ override rootApiUrl = 'https://api.examfactor.com';
+  override get authConfig() {
+    return {
+      ...super.authConfig, ... {
+        issuer: 'https://identity.examfactor.com',
+        realm: 'exam-factor'
+      }
+    };
+  }
+}
+
+export const environment = new ProductionEnvironmentConfig();

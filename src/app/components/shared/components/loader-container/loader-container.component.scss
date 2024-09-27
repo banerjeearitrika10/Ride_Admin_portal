@@ -1,0 +1,13 @@
+.overlay {
+    background-color: black;
+    height: 100%;
+    width: 100%;
+    z-index: 9999;
+    position: absolute;
+    opacity: 0.3;
+    cursor: not-allowed;
+    display: none;
+    &.is-visible {
+        display: block !important;
+    }
+}

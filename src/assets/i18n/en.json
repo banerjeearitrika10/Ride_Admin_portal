@@ -1,0 +1,21 @@
+{
+  "MENUITEMS": {
+    "MAIN": {
+      "TEXT": "Main"
+    },
+    "DASHBOARD": {
+      "TEXT": "Dashboard",
+      "LIST": {}
+    },
+    
+    "MASTER_DATA_MANAGEMENT": {
+      "TEXT": "Master Data",
+      "LIST": {
+        "CATEGORY": "Categories"
+      }
+    },
+    "CONTACTS": {
+      "TEXT": "Contacts"
+    }
+  }
+}

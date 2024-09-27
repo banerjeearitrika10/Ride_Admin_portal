@@ -1,0 +1,5 @@
+<div>
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+    <div class="overlay" [ngClass]="{'is-visible': isLoading}"></div>
+    <ng-content></ng-content>
+</div>

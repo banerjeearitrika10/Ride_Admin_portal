@@ -1,13 +1,24 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Event, Router, NavigationStart, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'booking-admin-portal';
+  currentUrl!: string;
+  constructor(public _router: Router) {
+    this._router.events.subscribe((routerEvent: Event) => {
+      if (routerEvent instanceof NavigationStart) {
+        this.currentUrl = routerEvent.url.substring(
+          routerEvent.url.lastIndexOf('/') + 1
+        );
+      }
+      if (routerEvent instanceof NavigationEnd) {
+        /* empty */
+      }
+      window.scrollTo(0, 0);
+    });
+  }
 }

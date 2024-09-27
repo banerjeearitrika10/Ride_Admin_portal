@@ -1,0 +1,6 @@
+<app-header *ngIf="isVisible"></app-header>
+<app-sidebar *ngIf="isVisible"></app-sidebar>
+<app-right-sidebar></app-right-sidebar>
+<div *ngIf="isVisible">
+  <router-outlet></router-outlet>
+</div>
