@@ -2,7 +2,7 @@ import { RouteInfo } from './sidebar.metadata';
 export const ROUTES: RouteInfo[] = [
   {
     path: '',
-    title: 'Main',
+    title: '',
     iconType: '',
     icon: '',
     class: '',
@@ -18,8 +18,8 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '/admin/dashboard/main',
     title: 'Dashboard',
-    iconType: 'material-icons-two-tone',
-    icon: 'space_dashboard',
+    iconType: '',
+    icon: '../../../../assets/images/banner/dashboard.png',
     class: '',
     groupTitle: false,
     badge: '',
@@ -32,8 +32,8 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Master Data',
-    iconType: 'material-icons-two-tone',
-    icon: 'dns',
+    iconType: '',
+    icon: '../../../../assets/images/banner/master-data.png',
     class: 'menu-toggle',
     groupTitle: false,
     badge: '',
@@ -43,6 +43,32 @@ export const ROUTES: RouteInfo[] = [
       {
         path: '/master-data-management/categories',
         title: 'Employee',
+        iconType: '',
+        icon: '',
+        class: 'ml-menu',
+        groupTitle: false,
+        badge: '',
+        badgeClass: '',
+        role: [''],
+        submenu: [],
+      }
+      
+    ]
+  },
+  {
+    path: '',
+    title: 'On Behalf Booking',
+    iconType: '',
+    icon: '../../../../assets/images/banner/schedule.png',
+    class: 'menu-toggle',
+    groupTitle: false,
+    badge: '',
+    badgeClass: '',
+    role: ['Admin'],
+    submenu: [
+      {
+        path: '/booking-management/booking-setup',
+        title: 'Booking Setup',
         iconType: 'material-icons-two-tone',
         icon: '',
         class: 'ml-menu',
@@ -57,31 +83,31 @@ export const ROUTES: RouteInfo[] = [
   },
  
   // faq-management
-  {
-    path: '',
-    title: 'FAQ',
-    iconType: 'material-icons-two-tone',
-    icon: 'question_answer',
-    class: 'menu-toggle',
-    groupTitle: false,
-    badge: '',
-    badgeClass: '',
-    role: ['Admin'],
-    submenu: [
-      {
-        path: '/faq-management/faq',
-        title: 'FAQ Creation',
-        iconType: 'material-icons-two-tone',
-        icon: '',
-        class: 'ml-menu',
-        groupTitle: false,
-        badge: '',
-        badgeClass: '',
-        role: [''],
-        submenu: [],
-      }
+  // {
+  //   path: '',
+  //   title: 'FAQ',
+  //   iconType: 'material-icons-two-tone',
+  //   icon: 'question_answer',
+  //   class: 'menu-toggle',
+  //   groupTitle: false,
+  //   badge: '',
+  //   badgeClass: '',
+  //   role: ['Admin'],
+  //   submenu: [
+  //     {
+  //       path: '/faq-management/faq',
+  //       title: 'FAQ Creation',
+  //       iconType: 'material-icons-two-tone',
+  //       icon: '',
+  //       class: 'ml-menu',
+  //       groupTitle: false,
+  //       badge: '',
+  //       badgeClass: '',
+  //       role: [''],
+  //       submenu: [],
+  //     }
       
-    ]
-  }
+  //   ]
+  // }
  
 ];

@@ -24,19 +24,20 @@
 .sidebar {
   @include transition(all 0.5s);
   font-family: $sidebar-font-family;
-  background: #fff;
+  // background: #fff;
+  background: var(--CTA, linear-gradient(65deg, rgb(255 160 160) 0%, rgb(255 50 50) 100%));;
   width: 260px;
   overflow: hidden;
   display: inline-block;
   //height: calc(100vh - 60px);
   height: 100vh;
   position: fixed;
-  //top: 60px;
+  top: 0px;
   left: 0;
   border-right: 1px solid #f2f4f9;
   -webkit-box-shadow: 0 8px 10px 0 rgba(183, 192, 206, 0.2);
   box-shadow: 0 8px 10px 0 rgba(183, 192, 206, 0.2);
-  z-index: 999 !important;
+  z-index: 1050 !important;
 
   .user-info {
     padding: 13px 15px 12px 15px;
@@ -296,7 +297,7 @@
         &:active {
           text-decoration: none !important;
           background-color: #f0f3fb;
-          color: red!important;
+          color: white!important;
           span,i{
             color: red!important;
           }

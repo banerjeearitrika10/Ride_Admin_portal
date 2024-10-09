@@ -17,6 +17,15 @@
               <div class="profile-usertitle-job ">{{userType}} </div>
             </div>
           </li>
+          <!-- <li class="sidebar-user-panel user_panel2">
+            <div class="user-panel">
+              <div class="ef-avatar">
+
+                <app-avatar name="A"></app-avatar>
+              </div>
+            </div>
+            
+          </li> -->
           <!-- Top Most level menu -->
           <li *ngFor="let sidebarItem of sidebarItems"
             [routerLinkActive]="sidebarItem.submenu.length !== 0 ? 'active' : 'active-top'">
@@ -24,7 +33,7 @@
             <a [routerLink]="sidebarItem.class === '' ? [sidebarItem.path] : null" *ngIf="!sidebarItem.groupTitle;"
               [ngClass]="[sidebarItem.class]" (click)="callToggleMenu($event, sidebarItem.submenu.length)"
               class="menu-top">
-              <i [ngClass]="[sidebarItem.iconType]">{{sidebarItem.icon}}</i>
+              <img style="    width: 30px; height: 30px;" src="{{sidebarItem.icon}}" alt="">
               <span class="hide-menu">{{sidebarItem.title | translate}}
               </span>
               <span *ngIf="sidebarItem.badge !== '' " [ngClass]="[sidebarItem.badgeClass]">{{sidebarItem.badge}}</span>
