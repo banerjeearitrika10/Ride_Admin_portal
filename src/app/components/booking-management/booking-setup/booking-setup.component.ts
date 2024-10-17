@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
+import { IFilter } from '../../services/models/booking';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-booking-setup',
@@ -38,11 +42,12 @@ export class BookingSetupComponent {
       },
     ]
   };
+  dataFromFilterDialog!: IFilter;
  private destroyed$ = new Subject<void>();
   defaultView: string = "list"
   hiddenFilterButton=false;
   isOpen: boolean = false;
-  constructor(private activeRoute: ActivatedRoute){}
+  constructor(private activeRoute: ActivatedRoute,public dialog: MatDialog,public bookingService:BookingService){}
   ngOnInit():void{
     this.activeRoute.queryParams.subscribe(p => this.defaultView = p['mode'] || "list");
   }
@@ -51,26 +56,26 @@ export class BookingSetupComponent {
     this.destroyed$.complete();
   }
   openFilterDialog(){
-    // const dialogRef = this.dialog.open(FilterDialogComponent, {
-    //   width: '20%',
-    //   disableClose: true,
-    //   autoFocus: false,
-    //   data: this.dataFromFilterDialog ? this.dataFromFilterDialog : {}
-    // });
-    // dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
-    //   if (response) {
-    //     this.dataFromFilterDialog = response;
-    //     this.hiddenFilterButton=true;
-    //     this.organizationService.emitSearchDataForFilter(response);
-    //   } 
+    const dialogRef = this.dialog.open(FilterDialogComponent, {
+      width: '20%',
+      disableClose: true,
+      autoFocus: false,
+      data: this.dataFromFilterDialog ? this.dataFromFilterDialog : {}
+    });
+    dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
+      if (response) {
+        this.dataFromFilterDialog = response;
+        this.hiddenFilterButton=true;
+        this.bookingService.emitSearchDataForFilter(response);
+      } 
       
-    // });
+    });
 
   }
   refreshTable(){
     this.hiddenFilterButton=false;
-    // this.dataFromFilterDialog = {};
-    // this.organizationService.emitSearchDataForFilter({})
+    this.dataFromFilterDialog = {};
+    this.bookingService.emitSearchDataForFilter({})
   }
   onOpenDrawer() {
     this.isOpen = true;
