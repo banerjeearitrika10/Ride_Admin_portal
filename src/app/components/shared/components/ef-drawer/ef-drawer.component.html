@@ -1,0 +1,21 @@
+<div class="ef-b2b-drawer" [ngClass]="{'is-open': isOpen}">
+    <aside class="ef-drawer-container">
+        <div *ngIf="isOpen">
+            <button class="btn close-btn" (click)="doClose()"><img
+                    src="../../../../../assets/images/banner/close-icon.svg" /></button>
+
+            <!-- <ng-content></ng-content> -->
+            <div class="drawer-content">
+                <div class="ef-b2b-drw-header">
+                    <ng-content select="[header]"></ng-content>
+                </div>
+                <div class="ef-b2b-drw-content">
+                    <ng-content></ng-content>
+                </div>
+                <div class="ef-b2b-drw-footer" #drwrFooter [hidden]="!drwrFooter.innerHTML.trim()">
+                    <ng-content select="[footer]"></ng-content>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>

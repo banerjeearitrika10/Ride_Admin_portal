@@ -13,7 +13,7 @@ export class BookingSetupComponent {
       {
         title: 'Dashboard',
         items: ['booking-setup'],
-        active: '',
+        active: 'Booking Setup',
       },
     ],
     'create': [
@@ -40,6 +40,8 @@ export class BookingSetupComponent {
   };
  private destroyed$ = new Subject<void>();
   defaultView: string = "list"
+  hiddenFilterButton=false;
+  isOpen: boolean = false;
   constructor(private activeRoute: ActivatedRoute){}
   ngOnInit():void{
     this.activeRoute.queryParams.subscribe(p => this.defaultView = p['mode'] || "list");
@@ -48,4 +50,37 @@ export class BookingSetupComponent {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
+  openFilterDialog(){
+    // const dialogRef = this.dialog.open(FilterDialogComponent, {
+    //   width: '20%',
+    //   disableClose: true,
+    //   autoFocus: false,
+    //   data: this.dataFromFilterDialog ? this.dataFromFilterDialog : {}
+    // });
+    // dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
+    //   if (response) {
+    //     this.dataFromFilterDialog = response;
+    //     this.hiddenFilterButton=true;
+    //     this.organizationService.emitSearchDataForFilter(response);
+    //   } 
+      
+    // });
+
+  }
+  refreshTable(){
+    this.hiddenFilterButton=false;
+    // this.dataFromFilterDialog = {};
+    // this.organizationService.emitSearchDataForFilter({})
+  }
+  onOpenDrawer() {
+    this.isOpen = true;
+}
+
+onCloseDrawer(ev: any) {
+    this.isOpen = false;
+
+    // if (ev === 'refresh') {
+    //     this.studentDirectoryService.setData(ev);
+    // }
+}
 }

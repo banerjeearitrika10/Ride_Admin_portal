@@ -1,0 +1,23 @@
+<app-ef-drawer [isOpen]="isOpen" (onClose)="doCloseDrawer()">
+    <div header>Book a Cab</div>
+
+    <div class="form-container" >
+        <div class="upload-section">
+
+        </div>
+        
+
+        <ng-container *ngIf="isOpen">
+           <app-on-behalf-booking-form></app-on-behalf-booking-form>
+        </ng-container>
+    </div>
+
+
+    <div footer class="ef-b2b-student-form-footer">
+        <button class="btn secondary me-3" (click)="doCloseDrawer('refresh')">
+            <span>Close</span></button>
+        <button class="btn primary me-3" (click)="doCloseDrawer('refresh')">
+        <span>Book a Cab</span></button>
+
+    </div>
+</app-ef-drawer>

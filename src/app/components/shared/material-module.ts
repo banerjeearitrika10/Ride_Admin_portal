@@ -50,6 +50,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { PlatformModule } from '@angular/cdk/platform';
 import { ObserversModule } from '@angular/cdk/observers';
 import { PortalModule } from '@angular/cdk/portal';
+import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
 
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
@@ -65,6 +66,7 @@ import { PortalModule } from '@angular/cdk/portal';
         MatChipsModule,
         MatTableModule,
         MatDatepickerModule,
+        MatDatetimepickerModule,
         MatDialogModule,
         MatExpansionModule,
         MatFormFieldModule,

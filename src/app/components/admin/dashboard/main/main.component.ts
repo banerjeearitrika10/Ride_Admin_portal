@@ -33,7 +33,7 @@ export class MainComponent implements OnInit {
   public barChartOptions!: Partial<chartOptions>;
   public performanceRateChartOptions!: Partial<chartOptions>;
   public polarChartOptions!: Partial<chartOptions>;
-  public stuCnt:number = 0;
+  public stuCnt:number = 100;
   public prodCnt:number = 0;
   public questCnt:number = 0;
   public assessmentCnt:number = 0;
@@ -44,7 +44,7 @@ export class MainComponent implements OnInit {
     {
       title: 'Dashboad',
       items: [],
-      active: '',
+      active: 'Dashboad',
     },
   ];
   constructor(

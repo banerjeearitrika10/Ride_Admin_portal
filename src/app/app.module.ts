@@ -30,6 +30,7 @@ import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
 import { GlobalSpinnerInterceptor } from './components/global-spinner/global-spinner.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { MatNativeDatetimeModule } from '@mat-datetimepicker/core';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -64,7 +65,8 @@ export function createTranslateLoader(http: HttpClient) {
     // core & shared
     CoreModule,
     SharedModule,
-    NgxMatTimepickerModule
+    NgxMatTimepickerModule,
+    MatNativeDatetimeModule
   ],
   providers: [
     // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

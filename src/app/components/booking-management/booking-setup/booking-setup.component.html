@@ -6,7 +6,49 @@
             <app-breadcrumb [title]="breadscrum.title" [items]="breadscrum.items" [active_item]="breadscrum.active" [componentLink]="'/booking-management/booking-setup'">
             </app-breadcrumb>
         </div>
-    
+        <div class="row col-md-12 col-sm-12" >
+            <div>
+                <!-- <div class="col-md-12 col-sm-12 d-flex align-items-center justify-content-between py-2 ">
+               
+                <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
+                [queryParams]="{mode: 'create'}">
+                    <mat-icon>add</mat-icon>Book a Cab
+                </button>
+            </div> -->
+
+            <div class="col-md-12 col-sm-12  mb-2">
+                <div class="d-flex  justify-content-end">
+                    <!-- <div>
+                        <mat-form-field appearance="outline">
+                            <input class="search" matInput placeholder="Search org code, name" [formControl]="inputFieldForSearch">
+                            <mat-icon matSuffix>search</mat-icon>
+                        </mat-form-field>
+                    </div> -->
+                   
+                    <div class="d-flex justify-content-end">
+                        <button  mat-stroked-button class="stroke-button me-2" (click)="openFilterDialog()">
+                            <span><img src="../../../assets/images/product-management/filter-icon.svg"
+                                    alt=""></span>&nbsp;Filter
+                        </button>
+                        <button [hidden]="!hiddenFilterButton" mat-stroked-button class="stroke-button" (click)="refreshTable()">
+                            <mat-icon>restore</mat-icon>Refresh
+                        </button>&nbsp;&nbsp;
+                        <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
+                        (click)="onOpenDrawer()">
+                            <mat-icon>add</mat-icon>Book a Cab
+                        </button>
+                       
+                       
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="pt-4"> 
+            <app-booking-list></app-booking-list>
+        </div>
     </div>
     </div>
 </section>
+<app-book-cab [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)"></app-book-cab>

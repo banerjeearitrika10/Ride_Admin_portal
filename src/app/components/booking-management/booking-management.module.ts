@@ -10,20 +10,26 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ComponentsModule } from '../shared/components/components.module';
 import { SharedModule } from '../shared/shared.module';
+import { BookingListComponent } from './booking-list/booking-list.component';
+import { BookCabComponent } from './book-cab/book-cab.component';
+import { OnBehalfBookingFormComponent } from './on-behalf-booking-form/on-behalf-booking-form.component';
+import { MaterialModule } from '../shared/material-module';
 
 
 @NgModule({
-  declarations: [BookingSetupComponent],
+  declarations: [BookingSetupComponent,BookingListComponent,OnBehalfBookingFormComponent,BookCabComponent],
   imports: [
     CommonModule,
     BookingManagementRoutingModule,
     NgScrollbarModule,
     MatIconModule,
+    MaterialModule,
     NgApexchartsModule,
     MatButtonModule,
     MatMenuModule,
     ComponentsModule,
-    SharedModule,
+    SharedModule
+    
   ]
 })
 export class BookingManagementModule { }

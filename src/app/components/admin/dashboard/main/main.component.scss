@@ -3,3 +3,11 @@
     width: 70%;
     height: 70%;
 }
+.card-icon-only{
+    position: absolute;
+    z-index: 1000;
+    bottom: 10px;
+    .img_emp{
+        background: #c40000ba;
+    }
+}

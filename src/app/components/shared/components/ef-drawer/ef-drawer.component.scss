@@ -1,0 +1,84 @@
+.ef-b2b-drawer {
+    width: 0;
+    height: 100vh;
+    background: rgba($color: #fdfdfd, $alpha: 0.7);
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: flex-end;
+    transition: 0.5s;
+
+    .ef-drawer-container {
+        width: 0;
+        height: 100vh;
+        position: relative;
+        background: #fff0f0;
+        transition: 0.5s;
+
+        .drawer-content {
+            position: relative;
+            height: 100vh;
+
+            .ef-b2b-drw-header {
+                background: #ff9999;
+                color: #000000;
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 36px;
+                padding: 15px 24px;
+
+                position: absolute;
+                width: 100%;
+                top: 0;
+                left: 0;
+            }
+
+            .ef-b2b-drw-content {
+                height: calc(100vh - 110px - 30px); //height: calc(100vh - 234px);
+                overflow-y: auto;
+                position: relative;
+                top: 70px;   //top: 100px;  
+                padding: 0px 24px;
+            }
+
+            .ef-b2b-drw-footer {
+                background: #ffe4e4;
+
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                padding: 16px 24px;
+            }
+        }
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 60vw;
+        top: 10px;
+    }
+
+    &.is-open {
+        width: 100vw;
+
+        .ef-drawer-container {
+            width: 60vw;
+            transition: 0.5s;
+        }
+    }
+   @media screen and (max-width: 760px)  {
+    .close-btn {
+        right: 90vw;
+    }
+    &.is-open {
+
+        .ef-drawer-container {
+            width: 90vw;
+            transition: 0.5s;
+        }
+    }
+   }
+}

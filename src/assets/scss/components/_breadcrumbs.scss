@@ -6,11 +6,11 @@
  @import '../../../assets/scss/common/variables';
 
 .breadcrumb {
-  background-color: red;
-  font-size: 15px;
+  background-color: rgba(255, 244, 244, 0.4901960784);
+  font-size: 13px;
   align-items: center;
-  padding: 1rem 1rem 1rem;
-  color: #fff;
+  padding: 0rem 0rem 0rem;
+  color: #000000;
 
   // &:before {
   //   content: "";
@@ -24,7 +24,7 @@
       text-decoration: none;
 
       .fa-home {
-        font-size: 17px;
+        font-size: 14px;
         position: relative;
         top: 0;
         float: left;
@@ -34,7 +34,7 @@
     }
 
     .material-icons {
-      font-size: 18px;
+      font-size: 14px;
       position: relative;
       top: 4px;
       float: none;
@@ -52,14 +52,14 @@
   .page-title {
     // border-right: 1px solid #c5c5c5;
     // padding-right: 10px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
-    color: #fff;
+    color: #000000;
     margin-bottom: 0px;
     &:after {
       content: '\f105';
       font-family: 'Font Awesome 5 Free';
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 900;
       padding: 0px 5px;
     }
@@ -67,7 +67,7 @@
       padding: 0px 5px;
       &:before {
         color: #717883;
-        font-size: 20px;
+        font-size: 18px;
       }
     }
   }
@@ -76,11 +76,11 @@
     &:before {
       content: '\f105';
       font-family: 'Font Awesome 5 Free';
-      font-size: 14px;
+      font-size: 12px;
       display: block;
       font-weight: 900;
       padding-right: 0.5rem;
-      color: #fff;
+      color: #000000;
     }
   }
 }
@@ -100,7 +100,7 @@
 
     li {
       a {
-        color: #fff;
+        color: #000000;
         font-weight: bold;
 
         .material-icons {
@@ -108,11 +108,11 @@
         }
       }
 
-      color: #fff !important;
+      color: #000000 !important;
     }
 
     li + li:before {
-      color: #fff;
+      color: #000000;
     }
   }
 }
@@ -124,18 +124,18 @@
 .breadcrumb-chart {
   display: inline-block;
   .chart-info p {
-    font-size: 13px;
+    font-size: 11px;
   }
 }
 .breadcrumb-icon {
   vertical-align: top;
-  height: 18px !important;
-  width: 18px !important;
-  margin: 0px 3px;
+  height: 14px !important;
+  width: 14px !important;
+  margin: 2px 3px;
   .feather {
-    width: 18px;
-    height: 18px;
-    color: #fff;
+    width: 16px;
+    height: 16px;
+    color: #000000;
     position: relative;
     float: left;
   }

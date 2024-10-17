@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDatetimepickerModule } from '@mat-datetimepicker/core';
 
 const materialModules = [
   MatButtonModule,
@@ -18,6 +19,7 @@ const materialModules = [
   MatIconModule,
   MatTooltipModule,
   MatDatepickerModule,
+  MatDatetimepickerModule,
   MatNativeDateModule,
   MatButtonToggleModule,
   MatFormFieldModule,
