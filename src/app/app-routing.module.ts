@@ -17,6 +17,11 @@ const routes: Routes = [
         path: 'booking-management',
         loadChildren: () =>
           import('./components/booking-management/booking-management.module').then((m) => m.BookingManagementModule),
+      },
+      {
+        path: 'employee-management',
+        loadChildren: () =>
+          import('./components/employee-management/employee-management.module').then((m) => m.EmployeeManagementModule),
       }
     ]
   }

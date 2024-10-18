@@ -8,6 +8,7 @@ import { DndFileUploadComponent } from './dnd-file-upload/dnd-file-upload.compon
 import { FileUploadProgressComponent } from './file-upload-progress/file-upload-progress.component';
 import { ContentPanelComponent } from './content-panel/content-panel.component';
 import { EfDrawerComponent } from './ef-drawer/ef-drawer.component';
+import { ToastsContainerComponent } from './toasts-container/toasts-container.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { EfDrawerComponent } from './ef-drawer/ef-drawer.component';
     DndFileUploadComponent,
     FileUploadProgressComponent,
     ContentPanelComponent,
-    EfDrawerComponent
+    EfDrawerComponent,
+    ToastsContainerComponent
   ],
   imports: [SharedModule],
   exports: [
@@ -30,7 +32,8 @@ import { EfDrawerComponent } from './ef-drawer/ef-drawer.component';
     DndFileUploadComponent,
     FileUploadProgressComponent,
     ContentPanelComponent,
-    EfDrawerComponent
+    EfDrawerComponent,
+    ToastsContainerComponent
   ],
 })
 export class ComponentsModule { }

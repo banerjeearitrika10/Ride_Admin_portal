@@ -1,0 +1,13 @@
+@import '../../../../assets/scss/common/variables';
+
+.raised-button {
+    background-color: #dd0000;
+}
+.stroke-button {
+    border: 1px solid #dd0000;
+    color: #dd0000;
+}
+::ng-deep .mat-mdc-text-field-wrapper {
+    height: 40px !important;
+    align-items: center !important;
+}

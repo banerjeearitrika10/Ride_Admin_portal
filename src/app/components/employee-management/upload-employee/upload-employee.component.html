@@ -1,0 +1,34 @@
+<app-ef-drawer [isOpen]="isOpen" (onClose)="doCloseDrawer()">
+    <div header>Upload Employee</div>
+
+    <div class="form-container" >
+     
+        
+
+        <ng-container *ngIf="isOpen">
+            <div class="upload-section">
+                <div class="d-flex justify-content-between align-items-center w-100 mb-4">
+                    <div class="upload-lbl">Bulk Update</div>
+                    
+                </div>
+                <button class="btn secondary me-3" (click)="downloadSampleList()">
+                    Download Sample List 
+                    &nbsp;<img height="20" width="20" src="../../../../assets/images/banner/download.png" style="color: red;"/>
+                </button>
+                <!-- <div class="upload-conatiner">
+                    <img src="../../../../../../assets/icons/student/upload-icon-lg.svg" />
+                </div> -->
+                <app-dnd-file-upload [fileInput]="fileInput" (onchange)="onChangeFileContent($event)"></app-dnd-file-upload>
+            </div>
+        </ng-container>
+    </div>
+
+
+    <div footer class="ef-b2b-student-form-footer">
+        <button class="btn secondary me-3" (click)="doCloseDrawer('refresh')">
+            <span>Close</span></button>
+        <!-- <button class="btn primary me-3" (click)="doCloseDrawer('refresh')">
+        <span>Upload</span></button> -->
+
+    </div>
+</app-ef-drawer>

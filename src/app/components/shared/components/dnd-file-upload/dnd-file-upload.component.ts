@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class DndFileUploadComponent implements OnChanges {
 
     @Input() error: any;
-    @Input() fileInput;
+    @Input() fileInput: any;
     @Input() data: any;
     @Output() onchange = new EventEmitter<any>();
 
@@ -31,15 +31,16 @@ export class DndFileUploadComponent implements OnChanges {
     /**
      * on file drop handler
      */
-    onFileDropped($event) {
+    onFileDropped($event: any) {
         this.prepareFilesList($event);
     }
 
     /**
      * handle file from browsing
      */
-    fileBrowseHandler(target:any) {
-        this.prepareFilesList(target.files);
+    fileBrowseHandler(ev: any) {
+        const files = ev.target.files;
+        this.prepareFilesList(files);
     }
 
     /**
@@ -107,7 +108,7 @@ export class DndFileUploadComponent implements OnChanges {
      * @param bytes (File size in bytes)
      * @param decimals (Decimals point)
      */
-    formatBytes(bytes, decimals) {
+    formatBytes(bytes: number, decimals: number = 0) {
         if (bytes === 0) {
             return '0 Bytes';
         }
@@ -118,7 +119,7 @@ export class DndFileUploadComponent implements OnChanges {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
     }
 
-    _handleReaderLoaded(readerEvt) {
+    _handleReaderLoaded(readerEvt: any) {
         const binaryString = readerEvt.target.result;
         console.log(btoa(binaryString));
         return btoa(binaryString);

@@ -19,27 +19,6 @@ export class BookingSetupComponent {
         items: ['booking-setup'],
         active: 'Booking Setup',
       },
-    ],
-    'create': [
-      {
-        title: 'Dashboard',
-        items: ['booking-setup'],
-        active: 'Create',
-      },
-    ],
-    'view': [
-      {
-        title: 'Dashboard',
-        items: ['booking-setup'],
-        active: 'View',
-      },
-    ],
-    'edit': [
-      {
-        title: 'Dashboard',
-        items: ['booking-setup'],
-        active: 'Edit',
-      },
     ]
   };
   dataFromFilterDialog!: IFilter;

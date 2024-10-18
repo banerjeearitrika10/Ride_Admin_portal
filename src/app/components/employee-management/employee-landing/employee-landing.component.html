@@ -3,19 +3,19 @@
         <div class="ef-product col-md-12 col-sm-12">
         <div class="block-header" *ngFor="let breadscrum of breadscrums[defaultView]">
             <!-- breadcrumb -->
-            <app-breadcrumb [title]="breadscrum.title" [items]="breadscrum.items" [active_item]="breadscrum.active" [componentLink]="'/booking-management/booking-setup'">
+            <app-breadcrumb [title]="breadscrum.title" [items]="breadscrum.items" [active_item]="breadscrum.active" [componentLink]="'/employee-management'">
             </app-breadcrumb>
         </div>
         <div class="row col-md-12 col-sm-12" >
             <div>
             <div class="col-md-12 col-sm-12  mb-2">
-                <div class="d-flex  justify-content-end">
-                    <!-- <div>
-                        <mat-form-field appearance="outline">
-                            <input class="search" matInput placeholder="Search org code, name" [formControl]="inputFieldForSearch">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex  justify-content-start">
+                        <mat-form-field appearance="outline" style="height: 40px!important;">
+                            <input class="search" matInput placeholder="Search emp code, name" [formControl]="inputFieldForSearch">
                             <mat-icon matSuffix>search</mat-icon>
                         </mat-form-field>
-                    </div> -->
+                    </div>
                    
                     <div class="d-flex justify-content-end">
                         <button  mat-stroked-button class="stroke-button me-2" (click)="openFilterDialog()">
@@ -27,7 +27,7 @@
                         </button>&nbsp;&nbsp;
                         <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
                         (click)="onOpenDrawer()">
-                            <mat-icon>add</mat-icon>Book a Cab
+                            <mat-icon>add</mat-icon>Upload
                         </button>
                        
                        
@@ -38,9 +38,9 @@
         </div>
         </div>
         <div class="pt-4"> 
-            <app-booking-list></app-booking-list>
+            <app-employee-list></app-employee-list>
         </div>
     </div>
     </div>
 </section>
-<app-book-cab [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)"></app-book-cab>
+<app-upload-employee [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)"></app-upload-employee>

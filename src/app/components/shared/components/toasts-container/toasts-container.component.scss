@@ -1,0 +1,35 @@
+.toast-success{
+    border-left: 6px solid #3DD598;
+    border-color: #3DD598;
+    background: linear-gradient(180deg, #222230 0%, #22222D 100%);
+    color: #3DD598;
+    // display: flex;
+    // justify-content: space-between;
+    .span{
+        color: #3DD598;
+    }
+}
+
+.toast-error{
+    border-left: 6px solid #FF3A44;
+    border-color: #FF3A44;
+    background: linear-gradient(180deg, #222230 0%, #22222D 100%);
+    color: #FF3A44;
+    // display: flex;
+    // justify-content: space-between;
+    .span{
+        color: #FF3A44;
+    }
+}
+
+.toast-info{
+    border-left: 6px solid #FFAB48;
+    border-color: #FFAB48;
+    background: linear-gradient(180deg, #222230 0%, #22222D 100%);
+    color: #FFAB48;
+    // display: flex;
+    // justify-content: space-between;
+    .span{
+        color: #FFAB48;
+    }
+}

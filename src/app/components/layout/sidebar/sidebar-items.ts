@@ -41,7 +41,7 @@ export const ROUTES: RouteInfo[] = [
     role: ['Admin'],
     submenu: [
       {
-        path: '/master-data-management/categories',
+        path: 'employee-management',
         title: 'Employee',
         iconType: '',
         icon: '',

@@ -1,0 +1,41 @@
+.ef-b2b-student-form-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.secondary{
+    border: 1px solid #dd0000;
+    color: #dd0000;
+}
+.primary{
+    background-color: #d00000;
+    color: white;
+    padding: 10px;
+}
+.upload-section {
+    /* display: flex;   
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px; */
+    border-radius: 12px;
+    background: transparent;
+    padding: 16px;
+
+    .upload-lbl {
+        color: #000000;
+        font-size: 24px;
+        font-weight: 500;
+        border-bottom: 0.5px solid;
+    }
+
+    .upload-conatiner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        border-radius: 10px;
+        border: 1px dashed rgba(255, 255, 255, 0.40);
+        width: 100%;
+        padding: 50px;
+    }
+}
