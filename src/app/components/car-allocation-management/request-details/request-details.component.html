@@ -1,0 +1,204 @@
+<section class="content">
+    <div class="content-block">
+        <div class="row pt-3">
+            <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
+              <h3>User Details</h3>
+              <div class="card card-statistic-2">
+                <div class="clearfix">
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Name:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{details.userName?details.userName:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Contact Number:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{details.userNumber?details.userNumber:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">Department:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.department?details.department:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">Employee Code:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.empCode?details.empCode:'--'}}</b></span>
+                  </div>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 pb-3" *ngIf="details.isOnBehalf">
+              <h3>Traveler Details</h3>
+              <div class="card card-statistic-2">
+                <div class="clearfix">
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Name:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{details.riderName?details.riderName:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Contact Number:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{details.riderNumber?details.riderNumber:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">Department:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.riderDepaetment?details.riderDepaetment:'--'}}</b></span>
+                  </div>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
+              <h3>Travel Details</h3>
+              <div class="card card-statistic-2">
+                <div class="clearfix">
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Location Typ:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{details.locationType?details.locationType:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Destination</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{details.destination?details.destination:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">Persons Travelling:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.noOfPerson?details.noOfPerson:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">No. of Car:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.noOfCar?details.noOfCar:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <label class="card_label">Reporting Location:</label>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                    <span class="card_span"><b>{{details.reportingLocation?details.reportingLocation:'--'}}</b></span>
+                </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                     <label class="card_label">Car Type:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.carType?details.carType:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <label class="card_label">Cost of the car:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.costOfCar?details.costOfCar:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <label class="card_label">Booking Preference:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{details.bookingPreference?details.bookingPreference:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <label class="card_label">Reporting Date:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{convertToReadableDate(details.reportingDate)}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="details.bookingPreference == 'once'">
+                    <label class="card_label">Required till date:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="details.bookingPreference == 'once'">
+                      <span class="card_span"><b>{{convertToReadableDate(details.reportingDate)}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="details.bookingPreference == 'daily'">
+                    <label class="card_label">Repeat till date:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="details.bookingPreference == 'daily'">
+                      <span class="card_span"><b>{{convertToReadableDate(details.repeatDate)}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <label class="card_label">Cost Center:</label>
+                 </div>
+                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                     <span class="card_span"><b>{{details.costCenter?details.costCenter:'--'}}</b></span>
+                 </div>
+                 <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                   <label class="card_label">Event Code:</label>
+                 </div>
+                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                     <span class="card_span"><b>{{details.eventCode?details.eventCode:'--'}}</b></span>
+                 </div>
+                 <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                   <label class="card_label">Purpose:</label>
+                 </div>
+                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                     <span class="card_span"><b>{{details.purpose?details.purpose:'--'}}</b></span>
+                 </div>
+                  </div>
+                </div>
+               
+              </div>
+            </div>  
+            <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
+              <h3>Car Details</h3>
+              <div class="card card-statistic-2" *ngFor="let cd of details.carDetails">
+                <div class="clearfix">
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Address of Reporting:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{cd.addReporting?cd.addReporting:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Address of Release:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{cd.addRelease?cd.addRelease:'--'}}</b></span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">Contact Name:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{cd.contactName?cd.contactName:'--'}}</b></span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                      <label class="card_label">Contact Number:</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                      <span class="card_span"><b>{{cd.contactNumber?cd.contactNumber:'--'}}</b></span>
+                  </div>
+                  </div>
+                </div>
+               
+              </div>
+            </div>
+             
+          </div> 
+          <div class="d-flex justify-content-end pb-5">
+            <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
+                        (click)="onOpenDrawer()">
+                            <mat-icon>add</mat-icon>Allot Car
+                        </button>
+          </div>
+    </div>
+</section>
+<app-car-allocation [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)" [data]="details"></app-car-allocation>

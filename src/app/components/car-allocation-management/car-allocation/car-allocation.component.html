@@ -1,0 +1,100 @@
+<app-ef-drawer [isOpen]="isOpen" (onClose)="doCloseDrawer()">
+    <div header>Allot Car/Cars</div>
+
+    <div class="form-container" >
+        <div class="upload-section">
+
+        </div>
+        
+
+        <ng-container *ngIf="isOpen">
+          <form class="grid-form" [formGroup]="carAllotmentForm" >
+            <div formArrayName="carAllotmentDetails" class="pb-3 pt-3">
+                <div  style="display: flex;justify-content: flex-end;">
+                    <ion-button type="button" title="Add Another Car" mat-mini-fab class=" btn counter-button mb-2"
+                        (click)="addCarDetails()">
+                        + Add Another car Details
+                    </ion-button>
+                  </div>
+                <div
+                  *ngFor="
+                          let cd of carAllotmentDetails.controls;
+                          let carAllotmentDetailsIndex = index
+                        "
+                >
+                  <div
+                    [formGroupName]="carAllotmentDetailsIndex"
+                    class="p-3 mt-2 mb-4 pb-0 pt-2 detailCard"
+                  >
+                  <div class="d-flex justify-content-end pb-3" *ngIf="(carAllotmentDetailsIndex!==0)">
+                    <img height="30" width="30" src="../../../../assets/images/banner/delete.png" alt="" (click)="removeCarDetails(carAllotmentDetailsIndex)">
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12 " >
+                        <mat-form-field class="example-full-width" appearance="outline">
+                            <mat-label>Car Type</mat-label>
+                            <mat-select 
+                            placeholder="Select"
+                            name="cartype"
+                            formControlName="carType"
+                            (selectionChange)="onSelectCar($event,carAllotmentDetailsIndex)">
+                            <mat-option value="" disabled>Select</mat-option>
+                                <mat-option *ngFor="let car of carType" [value]="car.name">
+                                    {{car.name}}
+                                </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 " >
+                        <mat-form-field appearance="outline" class="example-full-width">
+                            <mat-label>Cost of the Car</mat-label>
+                            <input class="form-control" matInput type="text"
+                            placeholder="Enter Cost of Car"
+                            value="{{costOfCar}}"
+                            [readonly]="true">
+                        </mat-form-field>
+                      </div>
+                      <div class="col-lg-4 col-md-6 col-sm-12 " >
+                        <mat-form-field appearance="outline" class="example-full-width">
+                            <mat-label>Car Number</mat-label>
+                            <input class="form-control" matInput type="text"
+                            placeholder="Enter Car Number"
+                            formControlName="carNumber">
+                        </mat-form-field>
+                      </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 " >
+                      <mat-form-field appearance="outline" class="example-full-width">
+                          <mat-label>Driver's Name</mat-label>
+                          <input class="form-control" matInput type="text"
+                          placeholder="Enter Driver's Name"
+                          formControlName="driverName">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 " >
+                      <mat-form-field appearance="outline" class="example-full-width">
+                          <mat-label>Driver's Contact Number</mat-label>
+                          <input class="form-control" matInput 
+                          type="number"
+                          placeholder="Enter Driver's Contact number"
+                          formControlName="driverContactNumber">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                    
+                  </div>
+                </div>
+                
+              </div>
+          </form>
+        </ng-container>
+    </div>
+
+
+    <div footer class="ef-b2b-student-form-footer">
+        <button class="btn secondary me-3" (click)="doCloseDrawer('refresh')">
+            <span>Close</span></button>
+        <button class="btn primary me-3" (click)="doCloseDrawer('refresh')">
+        <span>Allot Car</span></button>
+
+    </div>
+</app-ef-drawer>

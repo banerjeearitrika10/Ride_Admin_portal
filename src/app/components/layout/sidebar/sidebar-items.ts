@@ -81,6 +81,32 @@ export const ROUTES: RouteInfo[] = [
       
     ]
   },
+  {
+    path: '',
+    title: 'Car Allocation Management',
+    iconType: '',
+    icon: '../../../../assets/images/banner/asset-management.png',
+    class: 'menu-toggle',
+    groupTitle: false,
+    badge: '',
+    badgeClass: '',
+    role: ['Admin'],
+    submenu: [
+      {
+        path: '/car-allocation-management',
+        title: 'Car Allocation',
+        iconType: 'material-icons-two-tone',
+        icon: '',
+        class: 'ml-menu',
+        groupTitle: false,
+        badge: '',
+        badgeClass: '',
+        role: [''],
+        submenu: [],
+      }
+      
+    ]
+  },
  
   // faq-management
   // {

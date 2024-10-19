@@ -22,6 +22,11 @@ const routes: Routes = [
         path: 'employee-management',
         loadChildren: () =>
           import('./components/employee-management/employee-management.module').then((m) => m.EmployeeManagementModule),
+      },
+      {
+        path: 'car-allocation-management',
+        loadChildren: () =>
+          import('./components/car-allocation-management/car-allocation-management.module').then((m) => m.CarAllocationManagementModule),
       }
     ]
   }

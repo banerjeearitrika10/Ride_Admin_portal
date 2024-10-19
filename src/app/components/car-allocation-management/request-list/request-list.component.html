@@ -1,0 +1,73 @@
+<section class="example-table-container mat-elevation-z8">
+    <div class="example-container mat-elevation-z8" tabindex="0">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 detailTable">
+
+            <!--  name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name">
+                    Name
+                </th>
+                <td mat-cell *matCellDef="let element" width="20%"> {{element.userName}} </td>
+            </ng-container>
+
+            <!-- reportingDate Column -->
+            <ng-container matColumnDef="reportingDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by reportingDate">
+                    Reporting Date
+                </th>
+                <td mat-cell *matCellDef="let element"> {{convertToReadableDate(element.reportingDate)}} </td>
+            </ng-container>
+
+            <!--  Type Column -->
+            <ng-container matColumnDef="destination">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by destination">
+                    Destination
+                </th>
+                <td mat-cell *matCellDef="let element" width="20%"> {{element.destination}} </td>
+            </ng-container>
+
+            <!--noOfPerson-->
+            <ng-container matColumnDef="noOfPerson">
+                <th mat-header-cell *matHeaderCellDef>
+                    No. of Person
+                </th>
+                <td mat-cell *matCellDef="let element" width="20%">
+                    {{element.noOfPerson?element.noOfPerson:"---"}}
+                </td>
+            </ng-container>
+
+            <!--Actions-->
+            <ng-container matColumnDef="allotCar">
+                <th mat-header-cell *matHeaderCellDef>
+                    Allot Car
+                </th>
+                <td mat-cell *matCellDef="let element" width="20%">
+                    <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element)"
+                        ><app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons></button>
+                    <div class="vr"></div>
+                    <button type="button" mat-icon-button class="table-action-button" (click)="allocateCar(element)">
+                        <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
+                    </button>
+                     <!-- [disabled]="element.state==='PUBLISHED'" -->
+                </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <div *ngIf="isLoading" class="loader p-4 ">
+            <mat-progress-spinner mode="indeterminate" [diameter]="40">
+            </mat-progress-spinner>
+        </div>
+        <div *ngIf="showMessageIfTableIsBlank" class="loader p-4 ">
+            <span class="fw-bold">No data found</span>
+        </div>
+    </div>
+    <mat-card>
+        <mat-paginator [hidden]="totalItems <= 4" [length]="totalItems" [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 20]" [pageIndex]="pageIndex" showFirstLastButtons (page)="onPageChange($event)">
+        </mat-paginator>
+    </mat-card>
+</section>
+<app-car-allocation [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)" [data]="requestData"></app-car-allocation>

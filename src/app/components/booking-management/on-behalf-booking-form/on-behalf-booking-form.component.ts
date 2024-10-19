@@ -87,9 +87,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     items: string[] = ['John', 'Jane', 'Mike', 'Emily', 'Sophia', 'Michael'];
     showDropdown: boolean = false;
   isEmployee: boolean = true;
-    constructor( 
-      
-      public fb: FormBuilder) { }
+    constructor(public fb: FormBuilder) { }
   
     ngOnInit(): void {
       this.initiateForm();
@@ -133,6 +131,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
         carType: [''],
         costOfCar: [null],
         noPerson: [1],
+        noOfCar:[1],
         destination: [null],
         bookingPreference: ['once'],
         locationType: ['LOCAL'],
@@ -291,15 +290,17 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       this.costOfCar = this.carType.filter(
         (value: any) => value.name == event.value
       )[0].cost;
+      this.bookingForm.controls['costOfCar'].patchValue(this.costOfCar);
       //console.log(this.carType.filter((value:any)=>value.name==event.detail.value));
     }
     increment() {
-      if (this.counterValue < 10) {
+      if (this.counterValue < this.bookingForm.controls['noPerson'].value) {
         this.counterValue++;
         if (this.bookingForm.controls['reportingLocation'].value == 'different') {
           this.addCarDetails();
         }
       }
+      this.bookingForm.controls['noOfCar'].patchValue(this.counterValue);
     }
     decrement() {
       if (this.counterValue > 1) {
@@ -312,6 +313,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
           this.removeCarDetails(this.carDetails.length - 1);
         }
       }
+      this.bookingForm.controls['noOfCar'].patchValue(this.counterValue);
     }
     onChangeReporting() {
       console.log(this.bookingForm.controls['reportingLocation'].value);

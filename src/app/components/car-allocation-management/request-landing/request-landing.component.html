@@ -1,0 +1,46 @@
+<section class="content">
+    <div class="content-block col-md-12 col-sm-12">
+        <div class="ef-product col-md-12 col-sm-12">
+        <div class="block-header" *ngFor="let breadscrum of breadscrums[defaultView]">
+            <!-- breadcrumb -->
+            <app-breadcrumb [title]="breadscrum.title" [items]="breadscrum.items" [active_item]="breadscrum.active" [componentLink]="'/car-allocation-management'">
+            </app-breadcrumb>
+        </div>
+        <div class="row col-md-12 col-sm-12" >
+            <div>
+            <div class="col-md-12 col-sm-12  mb-2">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex  justify-content-start">
+                        <mat-form-field appearance="outline" class="search" style="height: 40px!important;">
+                            <input class="search" matInput placeholder="Search emp code, name" [formControl]="inputFieldForSearch">
+                            <mat-icon matSuffix>search</mat-icon>
+                        </mat-form-field>
+                    </div>
+                   
+                    <div class="d-flex justify-content-end">
+                        <button  mat-stroked-button class="stroke-button me-2" (click)="openFilterDialog()">
+                            <span><img src="../../../assets/images/product-management/filter-icon.svg"
+                                    alt=""></span>&nbsp;Filter
+                        </button>
+                        <button [hidden]="!hiddenFilterButton" mat-stroked-button class="stroke-button " (click)="refreshTable()">
+                            <mat-icon>restore</mat-icon>Refresh
+                        </button>&nbsp;&nbsp;
+                        <!-- <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
+                        (click)="onOpenDrawer()">
+                            <mat-icon>add</mat-icon>Allot
+                        </button> -->
+                       
+                       
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="pt-4"> 
+            <app-request-list></app-request-list>
+        </div>
+    </div>
+    </div>
+</section>
+<!-- <app-car-allocation [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)"></app-car-allocation> -->
