@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RequestLandingComponent } from './request-landing/request-landing.component';
 import { RequestDetailsComponent } from './request-details/request-details.component';
+import { MatIconModule } from '@angular/material/icon';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes),MatIconModule],
   exports: [RouterModule]
 })
 export class CarAllocationManagementRoutingModule { }

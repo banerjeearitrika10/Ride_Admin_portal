@@ -34,7 +34,7 @@ body [class^='mdc'] {
 }
 
 body [class*='material-icons'] {
-    font-family: 'Material Icons Two Tone' !important;
+    font-family: 'Material Icons' !important;
 }
 
 mjx-math {
@@ -94,7 +94,7 @@ section {
         @include transition(0.5s);
 
         .content-block {
-            padding: 25px 0px 0px 25px;
+            padding: 25px 25px 0px 25px;
             margin-top: 50px;
         }
 

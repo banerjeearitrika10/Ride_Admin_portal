@@ -155,7 +155,7 @@ convertToReadableDate(isoString: string) {
 }
 viewDetails(element:any){
   this.requestData=element;
-  this.router.navigate(['/car-allocation-management/details'],{ state: { data: this.requestData }})
+  this.router.navigate(['/car-allocation-management/details'],{ state: { data: this.requestData }});
 }
 allocateCar(element:any){
   this.requestData=element

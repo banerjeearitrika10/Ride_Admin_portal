@@ -15,10 +15,11 @@ import { BookCabComponent } from './book-cab/book-cab.component';
 import { OnBehalfBookingFormComponent } from './on-behalf-booking-form/on-behalf-booking-form.component';
 import { MaterialModule } from '../shared/material-module';
 import { FilterDialogComponent } from './booking-setup/filter-dialog/filter-dialog.component';
+import { BookingDetailsComponent } from './booking-details/booking-details.component';
 
 
 @NgModule({
-  declarations: [BookingSetupComponent,BookingListComponent,OnBehalfBookingFormComponent,BookCabComponent,FilterDialogComponent],
+  declarations: [BookingSetupComponent,BookingListComponent,OnBehalfBookingFormComponent,BookCabComponent,FilterDialogComponent, BookingDetailsComponent],
   imports: [
     CommonModule,
     BookingManagementRoutingModule,

@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
 import { BookingService } from '../../services/booking.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-booking-list',
@@ -29,59 +30,83 @@ export class BookingListComponent {
   filterData = {};
   bookingDetails: any = [
     {
-      name: 'Aritrika',
-      onBehalfOf:"Aritra",
-      mobile: 6777666777,
-      pickup: '57. Street, Grand Central Park',
-      destination: '36. Street, Flamingo Mall',
-      status: 'APPROVED',
-      department: 'Marketing',
-      carType: 'Dzire',
-      carCost: '120',
+      onBehalf:true,
+      riderName:"Pranab",
+      riderNumber:"8987676544",
+      status:"Approved",
+      carType: "Ertiga (5 + 1 persons) ",
+      costCenter: "",
+      costOfCar: 900,
+      department: "MARKETING",
+      destination: "Asansol",
+      eventCode: "",
+      locationType: "LOCAL",
       noOfPerson: 2,
-      locationType: 'Local',
-      purpose: 'Document Submission',
-      date: '2024-10-21T11:10',
-      reason: null,
+      noOfCar:2,
+      purpose: "Document submission",
+      bookingPreference:"daily",
+      repeatDate: "2024-10-28T08:52:00.553Z",
+      reportingDate: "2024-10-18T08:52:00.553Z",
+      reportingLocation: "different",
+      requiredDate: "2024-10-31T08:52:00",
+      userName: "Aritrika",
+      userNumber: 9878676788,
+      empCode:"EMP002255",
+      carDetails:[
+        {
+          addRelease: "Kolkata",
+          addReporting: "Durgapur",
+          contactName: "Sruti",
+          contactNumber: 9898876565,
+          releasedatetime: "2024-10-18T09:09:22.291Z"
+        },
+        {
+          addRelease: "Kolkata",
+          addReporting: "Asansol",
+          contactName: "Sumana",
+          contactNumber: 8888877777,
+          releasedatetime: "2024-10-18T09:09:22.291Z"
+        }
+      ]
     },
     {
-      name: 'Aritrika',
-      onBehalfOf:"Richa",
-      mobile: 6777666777,
-      pickup: '57. Street, Grand Central Park',
-      destination: '36. Street, Flamingo Mall',
-      status: 'REJECTED',
-      department: 'Marketing',
-      carType: 'Dzire',
-      carCost: '120',
-      noOfPerson: 2,
-      locationType: 'Local',
-      purpose: 'Document Submission',
-      date: '2024-10-21T11:10',
-      onbehalf: true,
-      reason: null,
-    },
-    {
-      name: 'Aritrika',
-      onBehalfOf:"Pranab",
-      mobile: 6777666777,
-      pickup: '57. Street, Grand Central Park',
-      destination: '36. Street, Flamingo Mall',
-      status: 'PENDING',
-      department: 'Marketing',
-      carType: 'Dzire',
-      carCost: '120',
-      noOfPerson: 2,
-      locationType: 'Local',
-      purpose: 'Document Submission',
-      date: '2024-10-21T11:10',
-      reason: 'Insufficient data',
-    },
+      onBehalf:true,
+      riderName:"Shalini",
+      riderNumber:"8987676544",
+      status:"Rejected",
+      carType: "Ertiga (5 + 1 persons) ",
+      costCenter: "",
+      costOfCar: 900,
+      department: "Sales",
+      destination: "Kolkata",
+      eventCode: "",
+      locationType: "LOCAL",
+      noOfPerson: 1,
+      noOfCar:1,
+      purpose: "Document submission",
+      bookingPreference:"once",
+      repeatDate: "2024-10-28T08:52:00.553Z",
+      reportingDate: "2024-10-18T08:52:00.553Z",
+      reportingLocation: "different",
+      requiredDate: "2024-10-31T08:52:00",
+      userName: "Richa",
+      userNumber: 9878676788,
+      empCode:"EMP002678",
+      carDetails:[
+        {
+          addRelease: "Kolkata",
+          addReporting: "Durgapur",
+          contactName: "Sruti",
+          contactNumber: 9898876565,
+          releasedatetime: "2024-10-18T09:09:22.291Z"
+        }
+      ]
+    }
   ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(public bookingService:BookingService){}
+  constructor(public bookingService:BookingService,public router: Router){}
   ngOnInit(): void {
     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex });
     this.bookingService.bookingSearchDataFromFilter$
@@ -156,5 +181,7 @@ export class BookingListComponent {
     };
     return date.toLocaleDateString('en-US', options);
   }
- 
+  editAndView(element:any,mode:string){
+    this.router.navigate(['/booking-management/details'],{ state: { data: element,mode: mode }});
+  }
 }

@@ -9,6 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class OnBehalfBookingFormComponent  implements OnInit {
     @Input() bookingFormValue!:any;
+    @Input() mode!:any;
     @Input() userDetails!:any;
     @Input() isApprove:boolean = false;
     private destroyed$ = new Subject<void>();
@@ -90,6 +91,8 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     constructor(public fb: FormBuilder) { }
   
     ngOnInit(): void {
+      console.log(this.bookingFormValue);
+      
       this.initiateForm();
       this.bookingForm.controls['repeatDate'].valueChanges.subscribe((selectedDate: Date) => {
         this.onRepeateDateSelected();
@@ -113,7 +116,23 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       //     console.log(this.userDetail);
       //   });
         if(this.bookingFormValue){
+          this.bookingFormValue.carDetails.forEach(element => {
+            if(this.bookingFormValue.carDetails.length>this.carDetails.length){
+              this.counterValue++;
+              this.addCarDetails();
+            }
+          });
           this.bookingForm.patchValue(this.bookingFormValue);
+          this.onChangeBookingPreference();
+          this.minDate = this.bookingForm.controls['reportingDate'].value;
+          this.maxDate = this.addDaysToDate(this.minDate);
+          this.searchTerm=this.bookingFormValue?.riderName;
+          if(this.bookingForm.controls['repeatDate'].value){
+            this.onRepeateDateSelected();
+          }
+        }
+        if(this.mode == 'view'){
+          this.bookingForm.disable();
         }
     }
     ngOnDestroy(): void {
@@ -130,7 +149,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
         riderDepaetment: [''],
         carType: [''],
         costOfCar: [null],
-        noPerson: [1],
+        noOfPerson: [1],
         noOfCar:[1],
         destination: [null],
         bookingPreference: ['once'],
@@ -202,8 +221,6 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       return `${year}-${month}-${day}T${hour}:${minute}`;
     }
     onRepeateDateSelected() {
-      console.log(this.bookingForm.controls['reportingDate'].value,
-      this.bookingForm.controls['repeatDate'].value);
       
       this.ifhasSaturday = this.hasSaturday(
         this.bookingForm.controls['reportingDate'].value,
@@ -221,9 +238,6 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     onReportingDateSelected() {
       this.minDate = this.bookingForm.controls['reportingDate'].value;
       this.maxDate = this.addDaysToDate(this.minDate);
-      console.log(this.minDate);
-      
-      this.bookingForm.controls['repeatDate'].patchValue(this.minDate);
       this.dismiss();
     }
     addDaysToDate(dateString: string) {
@@ -294,7 +308,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       //console.log(this.carType.filter((value:any)=>value.name==event.detail.value));
     }
     increment() {
-      if (this.counterValue < this.bookingForm.controls['noPerson'].value) {
+      if (this.counterValue < this.bookingForm.controls['noOfPerson'].value) {
         this.counterValue++;
         if (this.bookingForm.controls['reportingLocation'].value == 'different') {
           this.addCarDetails();

@@ -7,15 +7,15 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by onBehalfOf">
                     Booking For
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{element.onBehalfOf}} </td>
+                <td mat-cell *matCellDef="let element" width="20%"> {{element.riderName}} </td>
             </ng-container>
 
             <!-- Name Column -->
             <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date">
-                    Date
+                    Reporting Date
                 </th>
-                <td mat-cell *matCellDef="let element"> {{convertToReadableDate(element.date)}} </td>
+                <td mat-cell *matCellDef="let element"> {{convertToReadableDate(element.reportingDate)}} </td>
             </ng-container>
 
             <!--  Type Column -->
@@ -45,11 +45,11 @@
                     <!-- <button type="button" mat-icon-button class="table-action-button"
                         [disabled]="element.status==='Published'">Edit</button>
                     <div class="vr"></div> -->
-                    <button type="button" mat-icon-button class="table-action-button" (click)="editAndViewUser(element, 'view')">
+                    <button type="button" mat-icon-button class="table-action-button" (click)="editAndView(element, 'view')">
                         <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
-                    <button type="button" mat-icon-button class="table-action-button" (click)="editAndViewUser(element, 'edit')">
+                    <button type="button" mat-icon-button class="table-action-button" (click)="editAndView(element, 'edit')">
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
                     </button> <!-- [disabled]="element.state==='PUBLISHED'" -->
                 </td>

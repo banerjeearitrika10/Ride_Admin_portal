@@ -12,19 +12,19 @@
                 <div class="d-flex justify-content-between">
                     <div class="d-flex  justify-content-start">
                         <mat-form-field appearance="outline" style="height: 40px!important;">
-                            <input class="search" matInput placeholder="Search emp code, name" [formControl]="inputFieldForSearch">
+                            <input class="search" matInput placeholder="Search emp id, name" [formControl]="inputFieldForSearch">
                             <mat-icon matSuffix>search</mat-icon>
                         </mat-form-field>
                     </div>
                    
                     <div class="d-flex justify-content-end">
-                        <button  mat-stroked-button class="stroke-button me-2" (click)="openFilterDialog()">
+                        <!-- <button  mat-stroked-button class="stroke-button me-2" (click)="openFilterDialog()">
                             <span><img src="../../../assets/images/product-management/filter-icon.svg"
                                     alt=""></span>&nbsp;Filter
                         </button>
                         <button [hidden]="!hiddenFilterButton" mat-stroked-button class="stroke-button" (click)="refreshTable()">
                             <mat-icon>restore</mat-icon>Refresh
-                        </button>&nbsp;&nbsp;
+                        </button>&nbsp;&nbsp; -->
                         <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
                         (click)="onOpenDrawer()">
                             <mat-icon>add</mat-icon>Upload

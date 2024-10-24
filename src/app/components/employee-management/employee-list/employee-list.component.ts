@@ -4,6 +4,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { EmployeeService } from '../../services/employee.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
@@ -29,23 +30,28 @@ export class EmployeeListComponent {
   filterData = {};
   bookingDetails: any = [
     {
-      name: 'Aritrika',
+      firstName: 'Aritrika',
+      lastName:"Banerjee",
       mobile: 9876545678,
+      emailId:"abc@gmail.com",
       address: '57. Street, Grand Central Park',
       department: 'Sales',
+      empId:"EMP1000"
     },
     {
-      name: 'Indrani',
+      firstName: 'Indrani',
+      lastName:"Roy",
       mobile: 6777666777,
+      emailId:"abc@gmail.com",
       address: '57. Street, Asansol Central Park',
       department: 'Marketing',
-      
+      empId:"EMP1001"
     }
   ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(public empservice:EmployeeService){}
+  constructor(public empservice:EmployeeService,public router:Router){}
   ngOnInit(): void {
     this.getEmpDetails({ size: this.pageSize, page: this.pageIndex });
     this.empservice.empSearchKey$
@@ -142,5 +148,8 @@ export class EmployeeListComponent {
       hour12: true, // Use 12-hour format with AM/PM
     };
     return date.toLocaleDateString('en-US', options);
+  }
+  viewDetails(element:any){
+    this.router.navigate(['/employee-management/details'],{ state: { data: element }});
   }
 }

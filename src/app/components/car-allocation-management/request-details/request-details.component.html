@@ -3,7 +3,7 @@
         <div class="row pt-3">
             <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
               <h3>User Details</h3>
-              <div class="card card-statistic-2">
+              <div class="card card-statistic-2 mt-2">
                 <div class="clearfix">
                   <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
@@ -25,7 +25,7 @@
                       <span class="card_span"><b>{{details.department?details.department:'--'}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
-                      <label class="card_label">Employee Code:</label>
+                      <label class="card_label">Employee ID:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
                       <span class="card_span"><b>{{details.empCode?details.empCode:'--'}}</b></span>
@@ -37,7 +37,7 @@
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 pb-3" *ngIf="details.isOnBehalf">
               <h3>Traveler Details</h3>
-              <div class="card card-statistic-2">
+              <div class="card card-statistic-2 mt-2">
                 <div class="clearfix">
                   <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
@@ -65,7 +65,7 @@
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
               <h3>Travel Details</h3>
-              <div class="card card-statistic-2">
+              <div class="card card-statistic-2 mt-2">
                 <div class="clearfix">
                   <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
@@ -157,9 +157,10 @@
                
               </div>
             </div>  
-            <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
+            <div class="col-lg-12 col-md-12 col-sm-12 pb-3" >
+              <!-- <h3>Car {{i+1}} Details</h3> -->
               <h3>Car Details</h3>
-              <div class="card card-statistic-2" *ngFor="let cd of details.carDetails">
+              <div class="card card-statistic-2 mt-2" *ngFor="let cd of details.carDetails;let i=index">
                 <div class="clearfix">
                   <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
