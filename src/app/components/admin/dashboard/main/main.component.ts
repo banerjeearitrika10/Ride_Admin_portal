@@ -42,9 +42,9 @@ export class MainComponent implements OnInit {
   public userName: string = '';
   breadscrums = [
     {
-      title: 'Dashboad',
+      title: 'Dashboard',
       items: [],
-      active: 'Dashboad',
+      active: 'Dashboard',
     },
   ];
   constructor(

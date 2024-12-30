@@ -32,3 +32,28 @@
     z-index: 100;
     position: relative;
   }
+  .inner-table {
+    width: 100%;
+    border: 1px solid #ccc;
+}
+.expanded-row {
+  background-color: #f9f9f9;
+}
+
+.hidden {
+  display: none;
+}
+
+.inner-table {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+tr.example-detail-row {
+  height: 0;
+}
+
+
+

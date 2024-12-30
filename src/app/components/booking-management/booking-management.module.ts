@@ -16,10 +16,12 @@ import { OnBehalfBookingFormComponent } from './on-behalf-booking-form/on-behalf
 import { MaterialModule } from '../shared/material-module';
 import { FilterDialogComponent } from './booking-setup/filter-dialog/filter-dialog.component';
 import { BookingDetailsComponent } from './booking-details/booking-details.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { CarDetailDialogComponent } from './booking-setup/car-detail-dialog/car-detail-dialog.component';
 
 
 @NgModule({
-  declarations: [BookingSetupComponent,BookingListComponent,OnBehalfBookingFormComponent,BookCabComponent,FilterDialogComponent, BookingDetailsComponent],
+  declarations: [BookingSetupComponent,BookingListComponent,OnBehalfBookingFormComponent,BookCabComponent,FilterDialogComponent, BookingDetailsComponent,ConfirmationDialogComponent,CarDetailDialogComponent],
   imports: [
     CommonModule,
     BookingManagementRoutingModule,

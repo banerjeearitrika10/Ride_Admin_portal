@@ -1,0 +1,22 @@
+<mat-card>
+    <div class="d-flex text-center justify-content-between p-3 mat-dialog-header align-items-center">
+        <div>
+            <h4>Cancel Booking</h4>
+        </div>
+    </div>
+
+</mat-card>
+<div mat-dialog-content>
+    <div class="d-inline-flex">
+        <span>Are you sure you want to cancel this booking?</span>
+    </div>
+</div>
+<!-- <div mat-dialog-actions>
+    <button mat-button mat-dialog-close>No</button>
+    <button mat-button mat-dialog-close="true" cdkFocusInitial>Yes</button>
+</div> -->
+<div mat-dialog-actions class="p-3 d-flex flex-row justify-content-end">
+    <button mat-stroked-button mat-dialog-close class="stroke-button" >Cancel</button>
+    <button mat-raised-button mat-dialog-close="true" cdkFocusInitial class="raised-button ms-2"
+        >Apply</button>
+</div>

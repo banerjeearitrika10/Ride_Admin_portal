@@ -33,10 +33,13 @@
             <a [routerLink]="sidebarItem.class === '' ? [sidebarItem.path] : null" *ngIf="!sidebarItem.groupTitle;"
               [ngClass]="[sidebarItem.class]" (click)="callToggleMenu($event, sidebarItem.submenu.length)"
               class="menu-top">
-              <img style="    width: 30px; height: 30px;" src="{{sidebarItem.icon}}" alt="">
-              <span class="hide-menu">{{sidebarItem.title | translate}}
-              </span>
-              <span *ngIf="sidebarItem.badge !== '' " [ngClass]="[sidebarItem.badgeClass]">{{sidebarItem.badge}}</span>
+              <div class="d-flex">
+                <img style="margin-top:10px;width: 30px; height: 30px;" src="{{sidebarItem.icon}}" alt="">
+                <span class="hide-menu" style="margin-right: 10px;">{{sidebarItem.title | translate}}
+                </span>
+                <span *ngIf="sidebarItem.badge !== '' " [ngClass]="[sidebarItem.badgeClass]">{{sidebarItem.badge}}</span>
+              </div>
+    
             </a>
             <!-- First level menu -->
             <ul class="ml-menu" *ngIf="sidebarItem.submenu.length > 0">

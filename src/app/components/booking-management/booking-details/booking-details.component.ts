@@ -13,8 +13,16 @@ export class BookingDetailsComponent {
   }
   ngOnInit():void{
     this.mode = this.bookingFormValue.mode;
+    console.log(this.mode);
+    
     this.bookingFormValue = this.bookingFormValue.data;
     console.log(this.bookingFormValue);
     
+  }
+  onClose(){
+
+  }
+  onBook(){
+
   }
 }

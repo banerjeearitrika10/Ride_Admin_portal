@@ -36,7 +36,8 @@ export class EmployeeListComponent {
       emailId:"abc@gmail.com",
       address: '57. Street, Grand Central Park',
       department: 'Sales',
-      empId:"EMP1000"
+      empId:"EMP1000",
+      managerEmail:"manager1@company.com"
     },
     {
       firstName: 'Indrani',
@@ -45,7 +46,8 @@ export class EmployeeListComponent {
       emailId:"abc@gmail.com",
       address: '57. Street, Asansol Central Park',
       department: 'Marketing',
-      empId:"EMP1001"
+      empId:"EMP1001",
+      managerEmail:"manager2@company.com"
     }
   ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;

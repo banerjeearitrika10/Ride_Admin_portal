@@ -33,7 +33,7 @@ export class Dashboard2Component implements OnInit {
   public lineChartOptions!: Partial<ChartOptions>;
   breadscrums = [
     {
-      title: 'Dashboad',
+      title: 'Dashboard',
       items: [],
       active: 'Dashboard 2',
     },

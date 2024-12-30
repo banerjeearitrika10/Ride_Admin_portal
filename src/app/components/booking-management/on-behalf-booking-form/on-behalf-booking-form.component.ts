@@ -23,8 +23,10 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     maxDate!: any;
     costOfCar: number = 0;
     counterValue: number = 1;
+    isBookingWeekly: boolean = false;
+    weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     bookingPerson:any=[
-      { label: 'Internal Employee', value: 'INTERNAL' },
+      { label: 'Internal Employee', value: 'INTERNAL_EMPLOYEE' },
       { label: 'External Guests', value: 'EXTERNAL' },
     ];
     department:any=[
@@ -43,38 +45,47 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     ]
     carType: any = [
       {
+        id:"Dz",
         name: 'Dzire (4 + 1 persons)',
         cost: 120,
       },
       {
+        id:"Al",
         name: 'Altis (4 + 1 persons) ',
         cost: 300,
       },
       {
+        id:"In",
         name: 'Innova Crysta (5 +1  persons) ',
         cost: 250,
       },
       {
+        id:"Fo",
         name: 'Fortuner (5 +1  persons) ',
         cost: 600,
       },
       {
+        id:"Ho",
         name: 'Honda City (4 +1  persons)',
         cost: 170,
       },
       {
+        id:"Me",
         name: 'Mercedes (4 +1  persons)',
         cost: 1000,
       },
       {
+        id:"Er",
         name: 'Ertiga (5 + 1 persons) ',
         cost: 900,
       },
       {
+        id:"wi",
         name: 'Winger (13 + 1 seater) ',
         cost: 500,
       },
       {
+        id:"Tr",
         name: 'Traveler (25 + 1 seater) ',
         cost: 2000,
       },
@@ -94,17 +105,18 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       console.log(this.bookingFormValue);
       
       this.initiateForm();
-      this.bookingForm.controls['repeatDate'].valueChanges.subscribe((selectedDate: Date) => {
+      this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.valueChanges.subscribe((selectedDate: Date) => {
         this.onRepeateDateSelected();
       });
-      this.bookingForm.controls['reportingDate'].valueChanges.subscribe((selectedDate: Date) => {
+      this.bookingForm.controls['carReportingDatetime'].valueChanges.subscribe((selectedDate: Date) => {
         this.onReportingDateSelected();
       });
-      if(this.isApprove){
-        this.bookingForm.controls['userName'].disable();
-        this.bookingForm.controls['userNumber'].disable();
-        this.bookingForm.controls['department'].disable();
-      }
+     if(this.mode == 'view'){
+      this.bookingForm.get('raisedBy.employee_name')?.disable();
+      this.bookingForm.get('raisedBy.employee_contactNo')?.disable();
+      this.bookingForm.get('raisedBy.employee_dept')?.disable();
+     }
+
       // this.selectedDate = this.parseDateString(this.selectedDate);
       this.minDate = this.selectedDate;
       this.maxDate = this.addDaysToDate(this.minDate);
@@ -116,21 +128,26 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       //     console.log(this.userDetail);
       //   });
         if(this.bookingFormValue){
-          this.bookingFormValue.carDetails.forEach(element => {
-            if(this.bookingFormValue.carDetails.length>this.carDetails.length){
-              this.counterValue++;
+          console.log(new Date(this.bookingFormValue.repeatDate));//Important
+          
+          this.bookingFormValue.bookingLocationMap.forEach(element => {
+            if(this.bookingFormValue.bookingLocationMap.length>this.bookingLocationMap.length){
+              this.bookingForm.controls['numCarsRequired'].patchValue(this.bookingForm.controls['numCarsRequired'].value + 1)
               this.addCarDetails();
             }
           });
           this.bookingForm.patchValue(this.bookingFormValue);
           this.onChangeBookingPreference();
-          this.minDate = this.bookingForm.controls['reportingDate'].value;
+          this.onSelectCar();
+          this.minDate = this.bookingForm.controls['carReportingDatetime'].value;
           this.maxDate = this.addDaysToDate(this.minDate);
           this.searchTerm=this.bookingFormValue?.riderName;
-          if(this.bookingForm.controls['repeatDate'].value){
+          if(this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value){
             this.onRepeateDateSelected();
           }
         }
+        console.log(this.mode);
+        
         if(this.mode == 'view'){
           this.bookingForm.disable();
         }
@@ -141,53 +158,81 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     }
     initiateForm() {
       this.bookingForm = this.fb.group({
-        userName: [this.userDetails?.name],
-        userNumber: [null],
-        department: [null],
-        riderName: [null],
-        riderNumber: [null],
-        riderDepaetment: [''],
-        carType: [''],
-        costOfCar: [null],
-        noOfPerson: [1],
-        noOfCar:[1],
-        destination: [null],
-        bookingPreference: ['once'],
+        raisedBy: this.fb.group({
+          employee_name:[null],
+          employee_contactNo:[null],
+          employee_emailId:[null],
+          employee_dept:[null]
+        }),
+        raisedFor: this.fb.group({
+          onbehalfType:['INTERNAL_EMPLOYEE'],
+          onbehalfContactNo:[null],
+          onbehalfName:[null],
+          onbehalfDepartment:[null]
+        }),
+        carTypeId: ['',Validators.required],
+        numPersonsTravelling: [1],
+        numCarsRequired:[1],
+        destination: this.fb.array([this.fb.control('', Validators.required)]),
+        // bookingPreference: ['once'],
         locationType: ['LOCAL'],
         reportingLocation: ['same'],
-        bookingFor: ["INTERNAL"],
-        repeatDate: ['',[Validators.required]],
-        reportingDate: ['',[Validators.required]],
-        requiredDate: ['',[Validators.required]],
-        costCenter: [''],
+        carReportingDatetime: [this.selectedDate,[Validators.required]],
+        // carRequiredTillDatetime: [this.selectedDate],
+        costCenterCode: [''],
         eventCode: [''],
-        purpose: [null],
-        carDetails: this.fb.array([this.newCarDetails()]),
+        purpose: [null,Validators.required],
+        bookingType:['SELF'],
+        bookingLocationMap: this.fb.array([this.newCarDetails()]),
+        bookingReportDto: this.fb.group({
+          bookingPreference: ['ONCE'],
+          excludeSunday: [true],
+          excludeSaturday: [true],
+          carRequiredTillDatetime: [this.selectedDate],
+          carRepeatTillDate: [this.selectedDate],
+          selectedDaysInaWeek: [],
+        }),
+        onbehalfEmployeeEmailId:[null],
+        name:[null],
+        contactNo:[null]
       });
     }
   
-    get carDetails() {
-      return this.bookingForm.get('carDetails') as FormArray;
+    get bookingLocationMap() {
+      return this.bookingForm.get('bookingLocationMap') as FormArray;
     }
     addCarDetails() {
-      this.carDetails.push(this.newCarDetails());
+      this.bookingLocationMap.push(this.newCarDetails());
     }
     removeCarDetails(index: number) {
-      this.carDetails.removeAt(index);
+      this.bookingLocationMap.removeAt(index);
+    }
+    get destination() {
+      return (this.bookingForm.get('destination') as FormArray);
+    }
+    addDestination() {
+      const destinationArray = this.bookingForm.get('destination') as FormArray;
+      destinationArray.push(this.fb.control('', Validators.required));
+    }
+    removeDestination(index: number) {
+      const destinationArray = this.bookingForm.get('destination') as FormArray;
+      if (destinationArray.length > 1) {
+        destinationArray.removeAt(index);
+      }
     }
     newCarDetails() {
       return this.fb.group({
         contactName: [''],
         contactNumber: [''],
-        releasedatetime: [''],
-        addReporting: [''],
-        addRelease: [''],
+        carReleaseDatetime: [this.selectedDate],
+        reportingAddress: [''],
+        releaseAddress: [''],
       });
     }
     reinitializeFormArray() {
-      const carDetails = this.bookingForm.get('carDetails') as FormArray;
-      carDetails.clear();
-      carDetails.push(this.newCarDetails());
+      const bookingLocationMap = this.bookingForm.get('bookingLocationMap') as FormArray;
+      bookingLocationMap.clear();
+      bookingLocationMap.push(this.newCarDetails());
     }
   
     parseDateString(dateString: any) {
@@ -221,24 +266,32 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       return `${year}-${month}-${day}T${hour}:${minute}`;
     }
     onRepeateDateSelected() {
+      console.log(this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value);
       
-      this.ifhasSaturday = this.hasSaturday(
-        this.bookingForm.controls['reportingDate'].value,
-        this.bookingForm.controls['repeatDate'].value
-      );
-      this.ifhasSunday = this.hasSunday(
-        this.bookingForm.controls['reportingDate'].value,
-        this.bookingForm.controls['repeatDate'].value
-      );
-      this.dismiss();
+        if(this.bookingForm.get('bookingReportDto.bookingPreference')?.value == 'DAILY'){
+          this.ifhasSaturday = this.hasSaturday(
+            this.bookingForm.controls['carReportingDatetime'].value,
+            this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value
+          );
+          this.ifhasSunday = this.hasSunday(
+            this.bookingForm.controls['carReportingDatetime'].value,
+            this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value
+          );
+        }
+      
+    }
+  
+    onReportingDateSelected() {
+      console.log(this.bookingForm.controls['carReportingDatetime'].value);
+      
+      (this.minDate =  this.bookingForm.controls['carReportingDatetime'].value),
+      this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value;
+    this.maxDate = this.addDaysToDate(this.minDate);
+    this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.patchValue(this.minDate);
+
     }
     async dismiss() {
       // await this.modalCtrl.dismiss();
-    }
-    onReportingDateSelected() {
-      this.minDate = this.bookingForm.controls['reportingDate'].value;
-      this.maxDate = this.addDaysToDate(this.minDate);
-      this.dismiss();
     }
     addDaysToDate(dateString: string) {
       const date = new Date(dateString);
@@ -298,43 +351,43 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       // Convert to a readable format using toLocaleDateString
       return date.toLocaleDateString('en-US', options);
     }
-    onSelectCar(event: any) {
-      console.log("this.costOfCar",event);
+    onSelectCar() {
       
-      this.costOfCar = this.carType.filter(
-        (value: any) => value.name == event.value
-      )[0].cost;
-      this.bookingForm.controls['costOfCar'].patchValue(this.costOfCar);
+      // this.costOfCar = this.carType.filter(
+      //   (value: any) => value.name == event.value
+      // )[0].cost;
+      // this.bookingForm.controls['costOfCar'].patchValue(this.costOfCar);
       //console.log(this.carType.filter((value:any)=>value.name==event.detail.value));
+      this.costOfCar = this.carType.filter(
+        (value: any) => value.id == this.bookingForm.controls['carTypeId'].value
+      )[0].cost;
     }
     increment() {
-      if (this.counterValue < this.bookingForm.controls['noOfPerson'].value) {
-        this.counterValue++;
-        if (this.bookingForm.controls['reportingLocation'].value == 'different') {
-          this.addCarDetails();
+        if (this.bookingForm.controls['numCarsRequired'].value < this.bookingForm.controls['numPersonsTravelling'].value) {
+          this.bookingForm.controls['numCarsRequired'].patchValue(this.bookingForm.controls['numCarsRequired'].value + 1);
+          if (this.bookingForm.controls['reportingLocation'].value == 'different') {
+            this.addCarDetails();
+          }
         }
       }
-      this.bookingForm.controls['noOfCar'].patchValue(this.counterValue);
-    }
-    decrement() {
-      if (this.counterValue > 1) {
-        this.counterValue--;
-  
-        if (
-          this.carDetails.length > 1 &&
-          this.bookingForm.controls['reportingLocation'].value == 'different'
-        ) {
-          this.removeCarDetails(this.carDetails.length - 1);
+      decrement() {
+        if (this.bookingForm.controls['numCarsRequired'].value > 1) {
+          this.bookingForm.controls['numCarsRequired'].patchValue(this.bookingForm.controls['numCarsRequired'].value - 1);;
+    
+          if (
+            this.bookingLocationMap.length > 1 &&
+            this.bookingForm.controls['reportingLocation'].value == 'different'
+          ) {
+            this.removeCarDetails(this.bookingLocationMap.length - 1);
+          }
         }
       }
-      this.bookingForm.controls['noOfCar'].patchValue(this.counterValue);
-    }
     onChangeReporting() {
       console.log(this.bookingForm.controls['reportingLocation'].value);
       if (this.bookingForm.controls['reportingLocation'].value == 'different') {
-        if (this.counterValue != this.carDetails.length) {
-          for (let i = 0; i < this.counterValue; i++) {
-            if (this.counterValue == this.carDetails.length) return;
+        if (this.bookingForm.controls['numCarsRequired'].value != this.bookingLocationMap.length) {
+          for (let i = 0; i < this.bookingForm.controls['numCarsRequired'].value; i++) {
+            if (this.bookingForm.controls['numCarsRequired'].value == this.bookingLocationMap.length) return;
             this.addCarDetails();
           }
         }
@@ -345,10 +398,18 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     onChangeBookingPreference() {
       this.ifhasSaturday = false;
       this.ifhasSunday = false;
-      if (this.bookingForm.controls['bookingPreference'].value == 'once') {
+      console.log(this.bookingForm.get('bookingReportDto.bookingPreference')?.value);
+      
+      if (this.bookingForm.get('bookingReportDto.bookingPreference')?.value == 'ONCE') {
         this.isBookingDaily = false;
-      } else {
+        this.isBookingWeekly = false;
+      } else if(this.bookingForm.get('bookingReportDto.bookingPreference')?.value == 'DAILY'){
         this.isBookingDaily = true;
+        this.isBookingWeekly = false;
+      }
+      else{
+        this.isBookingDaily = false;
+        this.isBookingWeekly = true;
       }
     }
     onDateSelected() {
@@ -362,27 +423,27 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       console.log(event.detail.checked);
     }
     cancelBookingForm() {
-      this.counterValue = 1;
-      this.costOfCar = 0;
-      this.ifhasSaturday = false;
-      this.ifhasSunday = false;
-      this.isBookingDaily = false;
-      this.bookingForm.reset({
-        userName: this.userDetails?.name,
-        locationType: 'LOCAL',
-        bookingPreference: 'once',
-        reportingLocation: 'same',
-        repeatDate: this.selectedDate,
-        reportingDate: this.selectedDate,
-        requiredDate: this.selectedDate,
-      });
+      // this.counterValue = 1;
+      // this.costOfCar = 0;
+      // this.ifhasSaturday = false;
+      // this.ifhasSunday = false;
+      // this.isBookingDaily = false;
+      // this.bookingForm.reset({
+      //   userName: this.userDetails?.name,
+      //   locationType: 'LOCAL',
+      //   bookingPreference: 'once',
+      //   reportingLocation: 'same',
+      //   repeatDate: this.selectedDate,
+      //   reportingDate: this.selectedDate,
+      //   requiredDate: this.selectedDate,
+      // });
       this.reinitializeFormArray();
     }
    
     onSelectBookingPerson(){
-      console.log(this.bookingForm.controls['bookingFor'].value );
+      console.log(this.bookingForm.get('raisedFor.onbehalfType')?.value );
       
-      if(this.bookingForm.controls['bookingFor'].value == "INTERNAL"){
+      if(this.bookingForm.get('raisedFor.onbehalfType')?.value == "INTERNAL"){
 
         this.isEmployee = true;
       }

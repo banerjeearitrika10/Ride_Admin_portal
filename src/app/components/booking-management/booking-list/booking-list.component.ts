@@ -1,35 +1,55 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
 import { BookingService } from '../../services/booking.service';
 import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CarDetailDialogComponent } from '../booking-setup/car-detail-dialog/car-detail-dialog.component';
 
 @Component({
   selector: 'app-booking-list',
   templateUrl: './booking-list.component.html',
-  styleUrl: './booking-list.component.scss'
+  styleUrl: './booking-list.component.scss',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class BookingListComponent {
+  @ViewChild('outerSort', { static: true }) sort!: MatSort;
+  @ViewChildren('innerTables') innerTables!: QueryList<MatTable<any>>;
+  @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
   showMessageIfTableIsBlank = false;
   isLoading = false;
   private destroyed$ = new Subject<void>();
+  usersData:any=[];
   displayedColumns: string[] = [
     'onBehalfOf',
     'date',
     'destination',
+    'bookingPreference',
     'status',
     'action',
+    'details'
   ];
+  innerDisplayedColumns: string[] = ['innerColumn1', 'action'];
   dataSource!: MatTableDataSource<any>;
   totalItems!: number;
   pageSize = 5;
   pageIndex = 0;
   searchKey = '';
   filterData = {};
+  expandedElement: any | null;
   bookingDetails: any = [
     {
+      bookingId:1,
       onBehalf:true,
       riderName:"Pranab",
       riderNumber:"8987676544",
@@ -38,7 +58,7 @@ export class BookingListComponent {
       costCenter: "",
       costOfCar: 900,
       department: "MARKETING",
-      destination: "Asansol",
+      destination: ["Asansol"],
       eventCode: "",
       locationType: "LOCAL",
       noOfPerson: 2,
@@ -52,6 +72,10 @@ export class BookingListComponent {
       userName: "Aritrika",
       userNumber: 9878676788,
       empCode:"EMP002255",
+      innerData: [
+        { date: 'Inner Row A' },
+        { date: 'Inner Row B' }
+      ],
       carDetails:[
         {
           addRelease: "Kolkata",
@@ -70,6 +94,7 @@ export class BookingListComponent {
       ]
     },
     {
+      bookingId:2,
       onBehalf:true,
       riderName:"Shalini",
       riderNumber:"8987676544",
@@ -78,7 +103,7 @@ export class BookingListComponent {
       costCenter: "",
       costOfCar: 900,
       department: "Sales",
-      destination: "Kolkata",
+      destination: ["Kolkata"],
       eventCode: "",
       locationType: "LOCAL",
       noOfPerson: 1,
@@ -104,9 +129,9 @@ export class BookingListComponent {
     }
   ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  dataFromDialog!: any;
 
-  constructor(public bookingService:BookingService,public router: Router){}
+  constructor(public bookingService:BookingService,public router: Router, private dialog: MatDialog,){}
   ngOnInit(): void {
     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex });
     this.bookingService.bookingSearchDataFromFilter$
@@ -139,7 +164,21 @@ export class BookingListComponent {
     console.log(data.content);
     
     this.showMessageIfTableIsBlank = data.content.length ? false : true;
-    this.dataSource = new MatTableDataSource(data.content);
+    data.content.forEach(user => {
+      if (user.innerData && Array.isArray(user.innerData) && user.innerData.length) {
+        this.usersData = [...this.usersData, {...user,innerData: new MatTableDataSource(user.innerData),expanded:false}];
+        console.log(this.usersData);
+        
+      } else {
+        this.usersData = [...this.usersData, user];
+      }
+    });
+    console.log(this.usersData);
+    
+    this.dataSource = new MatTableDataSource(this.usersData);
+    this.dataSource.sort = this.sort;
+    // this.dataSource = new MatTableDataSource(data.content);
+    // this.dataSource.sort = this.sort;
     this.totalItems = data.totalElements;
     this.isLoading = false;
   }
@@ -182,6 +221,47 @@ export class BookingListComponent {
     return date.toLocaleDateString('en-US', options);
   }
   editAndView(element:any,mode:string){
-    this.router.navigate(['/booking-management/details'],{ state: { data: element,mode: mode }});
+    console.log(mode);
+    let data = this.bookingDetails.filter(data=>data.bookingId==element.bookingId)[0];
+    this.router.navigate(['/booking-management/details'],{ state: { data: data,mode: mode }});
   }
+  cancleBooking(index: number) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        maxWidth: '30vw',
+        width: '100%',
+        panelClass: 'qa-confirm-dialog'
+    });
+
+    dialogRef.afterClosed()
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(result => {
+            console.log(result);
+            if (result) {
+               
+            }
+        });
+}
+// isMainRow = (index: number, row: any) => !row.expanded;
+// isExpandedRow = (index: number, row: any) => row.expanded;
+toggleRow(element: any) {
+  if(element.innerData && (element.innerData as MatTableDataSource<any>).data.length ){
+    element.expanded = !element.expanded;
+  }
+  element.innerData && (element.innerData as MatTableDataSource<any>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+  this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<any>).sort = this.innerSort.toArray()[index]);
+}
+onClickCarDetails(element:any){
+  const dialogRef = this.dialog.open(CarDetailDialogComponent, {
+    maxWidth: '30vw',
+    width: '100%',
+    panelClass: 'qa-confirm-dialog',
+    data: this.dataFromDialog ? this.dataFromDialog : {}
+  });
+  dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
+    if (response) {
+      this.dataFromDialog = response;
+    } 
+    
+  });
+}
 }

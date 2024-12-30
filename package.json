@@ -28,6 +28,8 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@swimlane/ngx-datatable": "^20.1.0",
+    "keycloak-angular": "^13.0.0",
+    "keycloak-js": "^21.0.2",
     "angular-feather": "^6.5.1",
     "bootstrap": "^5.3.3",
     "moment": "^2.30.1",

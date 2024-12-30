@@ -36,7 +36,7 @@
               </div>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 pb-3" *ngIf="details.isOnBehalf">
-              <h3>Traveler Details</h3>
+              <h3>Traveller Details</h3>
               <div class="card card-statistic-2 mt-2">
                 <div class="clearfix">
                   <div class="row">
@@ -105,7 +105,7 @@
                       <span class="card_span"><b>{{details.carType?details.carType:'--'}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
-                    <label class="card_label">Cost of the car:</label>
+                    <label class="card_label">Cost of the Car:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
                       <span class="card_span"><b>{{details.costOfCar?details.costOfCar:'--'}}</b></span>
@@ -123,13 +123,13 @@
                       <span class="card_span"><b>{{convertToReadableDate(details.reportingDate)}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="details.bookingPreference == 'once'">
-                    <label class="card_label">Required till date:</label>
+                    <label class="card_label">Required Till Date:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="details.bookingPreference == 'once'">
                       <span class="card_span"><b>{{convertToReadableDate(details.reportingDate)}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="details.bookingPreference == 'daily'">
-                    <label class="card_label">Repeat till date:</label>
+                    <label class="card_label">Repeat Till Date:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="details.bookingPreference == 'daily'">
                       <span class="card_span"><b>{{convertToReadableDate(details.repeatDate)}}</b></span>

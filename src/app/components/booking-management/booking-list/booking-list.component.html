@@ -1,13 +1,13 @@
 <section class="example-table-container mat-elevation-z8">
     <div class="example-container mat-elevation-z8" tabindex="0">
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 detailTable">
+        <table mat-table [dataSource]="dataSource" #outerSort="matSort"  multiTemplateDataRows class="mat-elevation-z8 detailTable" matSort>
 
-            <!--  Code Column -->
+            <!-- Code Column -->
             <ng-container matColumnDef="onBehalfOf">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by onBehalfOf">
                     Booking For
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{element.riderName}} </td>
+                <td mat-cell *matCellDef="let element" width="10%"> {{element.riderName}} </td>
             </ng-container>
 
             <!-- Name Column -->
@@ -15,10 +15,10 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date">
                     Reporting Date
                 </th>
-                <td mat-cell *matCellDef="let element"> {{convertToReadableDate(element.reportingDate)}} </td>
+                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.reportingDate)}} </td>
             </ng-container>
 
-            <!--  Type Column -->
+            <!-- Type Column -->
             <ng-container matColumnDef="destination">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by destination">
                     Destination
@@ -26,44 +26,146 @@
                 <td mat-cell *matCellDef="let element" width="20%"> {{element.destination}} </td>
             </ng-container>
 
-            <!--status-->
+               <!-- Booking Preference -->
+               <ng-container matColumnDef="bookingPreference">
+                <th mat-header-cell *matHeaderCellDef>
+                    Booking Preference
+                </th>
+                <td mat-cell *matCellDef="let element" width="20%">
+                    {{element.bookingPreference ? element.bookingPreference : "---"}}
+                </td>
+            </ng-container>
+
+            <!-- Status -->
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>
                     Status
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%">
-                    {{element.status?element.status:"---"}}
+                <td mat-cell *matCellDef="let element" width="10%">
+                    {{element.status ? element.status : "---"}}
                 </td>
             </ng-container>
 
-            <!--Actions-->
+            <!-- Inner Table -->
+            <ng-container matColumnDef="details">
+                <th mat-header-cell *matHeaderCellDef>Details</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-button (click)="toggleRow(element)">
+                        {{ element.expanded ? 'Hide' : 'View' }}
+                    </button>
+                
+                </td>
+            </ng-container>
+                <!-- <td mat-cell *matCellDef="let element">
+                    <table mat-table [dataSource]="element.innerData" class="inner-table">
+                        <ng-container matColumnDef="innerColumn1">
+                            <th mat-header-cell *matHeaderCellDef>Inner Header 1</th>
+                            <td mat-cell *matCellDef="let innerElement"> {{innerElement.property1}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="innerColumn2">
+                            <th mat-header-cell *matHeaderCellDef>Inner Header 2</th>
+                            <td mat-cell *matCellDef="let innerElement"> {{innerElement.property2}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="innerColumn3">
+                            <th mat-header-cell *matHeaderCellDef>Inner Header 3</th>
+                            <td mat-cell *matCellDef="let innerElement"> {{innerElement.property3}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;"></tr>
+                    </table>
+                </td> -->
+                <!-- <div *ngIf="element.expanded">
+                    <table mat-table [dataSource]="element.innerData" class="inner-table">
+                        <ng-container matColumnDef="innerColumn1">
+                            <th mat-header-cell *matHeaderCellDef>Inner Header 1</th>
+                            <td mat-cell *matCellDef="let innerElement">{{ innerElement.property1 }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="innerColumn2">
+                            <th mat-header-cell *matHeaderCellDef>Inner Header 2</th>
+                            <td mat-cell *matCellDef="let innerElement">{{ innerElement.property2 }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="innerColumn3">
+                            <th mat-header-cell *matHeaderCellDef>Inner Header 3</th>
+                            <td mat-cell *matCellDef="let innerElement">{{ innerElement.property3 }}</td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;"></tr>
+                    </table>
+                </div> -->
+           
+
+            <!-- Actions -->
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef>
                     Actions
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%">
-                    <!-- <button type="button" mat-icon-button class="table-action-button"
-                        [disabled]="element.status==='Published'">Edit</button>
-                    <div class="vr"></div> -->
-                    <button type="button" mat-icon-button class="table-action-button" (click)="editAndView(element, 'view')">
+                <td mat-cell *matCellDef="let element;" width="20%">
+                    <button type="button" mat-icon-button class="table-action-button" matTooltip="View Details" (click)="editAndView(element, 'view')">
                         <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
-                    <button type="button" mat-icon-button class="table-action-button" (click)="editAndView(element, 'edit')">
+                    <button type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
-                    </button> <!-- [disabled]="element.state==='PUBLISHED'" -->
+                    </button>
+                    <div class="vr"></div>
+                    <button type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element)">
+                        <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
+                    </button>
                 </td>
             </ng-container>
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                    <div class="example-element-detail" *ngIf="element.innerData?.data.length"  [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+                  <table #innerTables mat-table #innerSort="matSort" [dataSource]="element.innerData" matSort>
+                    <!-- <ng-container matColumnDef="{{innerColumn}}" *ngFor="let innerColumn of innerDisplayedColumns">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{innerColumn}}</th>
 
+                      <td mat-cell *matCellDef="let element"> {{element.property1}} {{innerColumn}}</td>
+                    </ng-container> -->
+                    <ng-container matColumnDef="innerColumn1">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by onBehalfOf">
+                            Date
+                        </th>
+                        <td mat-cell *matCellDef="let element" width="20%"> {{element.date}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef>
+                            Actions
+                        </th>
+                        <td mat-cell *matCellDef="let element" width="20%">
+                            <button type="button" mat-icon-button class="table-action-button" matTooltip="Car Details" (click)="onClickCarDetails(element)">
+                                <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
+                            </button>
+                            <div class="vr"></div>
+                            <button type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element)">
+                                <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;"></tr>
+                  </table>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr> -->
+            <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+            <!-- <tr mat-row *matRowDef="let element; columns: displayedColumns;" [class.example-element-row]="element.innerData?.data.length"
+            [class.example-expanded-row]="expandedElement === element" (click)="toggleRow(element)">
+           </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr> -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumns;" >
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"  class="example-detail-row"></tr>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <div *ngIf="isLoading" class="loader p-4 ">
-            <mat-progress-spinner mode="indeterminate" [diameter]="40">
-            </mat-progress-spinner>
+        <div *ngIf="isLoading" class="loader p-4">
+            <mat-progress-spinner mode="indeterminate" [diameter]="40"></mat-progress-spinner>
         </div>
-        <div *ngIf="showMessageIfTableIsBlank" class="loader p-4 ">
+        <div *ngIf="showMessageIfTableIsBlank" class="loader p-4">
             <span class="fw-bold">No data found</span>
         </div>
     </div>

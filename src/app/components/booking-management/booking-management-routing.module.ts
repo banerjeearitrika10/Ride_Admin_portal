@@ -9,7 +9,7 @@ const routes: Routes = [
     component:BookingSetupComponent
   },
   {
-    path:'booking-setup',
+    path:'booking',
     component:BookingSetupComponent
   },
   {

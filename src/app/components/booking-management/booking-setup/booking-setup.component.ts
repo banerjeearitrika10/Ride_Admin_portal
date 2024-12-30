@@ -16,8 +16,8 @@ export class BookingSetupComponent {
     'list': [
       {
         title: 'Dashboard',
-        items: ['booking-setup'],
-        active: 'Booking Setup',
+        items: ['booking'],
+        active: 'Booking Details',
       },
     ]
   };

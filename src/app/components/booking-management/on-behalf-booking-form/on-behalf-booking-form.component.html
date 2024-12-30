@@ -9,22 +9,22 @@
         <div>
           <div><label class="label_info"><h4>User Information</h4></label></div>
         <div class="row pt-3 ">
-            <div class="col-lg-4 col-md-6 col-sm-12 " >
+            <div formGroupName="raisedBy" class="col-lg-4 col-md-6 col-sm-12 " >
                 <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>Name of User</mat-label>
-                    <input class="form-control" matInput type="text" placeholder="Enter Name" [formControl]="bookingForm.controls['userName']" [readonly]="true">
+                    <input class="form-control" matInput type="text" placeholder="Enter Name" formControlName="employee_name" [readonly]="true">
                 </mat-form-field>
             </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 " >
+            <div formGroupName="raisedBy" class="col-lg-4 col-md-6 col-sm-12 " >
               <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Contact Number of the User</mat-label>
-                <input matInput type="number" placeholder="Enter Contact number" formControlName="userNumber">
+                <input matInput type="number" placeholder="Enter Contact number" formControlName="employee_contactNo">
             </mat-form-field>
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-12 " >
+          <div formGroupName="raisedBy" class="col-lg-4 col-md-6 col-sm-12 " >
             <mat-form-field class="example-full-width" appearance="outline">
               <mat-label>Select Department</mat-label>
-              <mat-select formControlName="department">
+              <mat-select formControlName="employee_dept">
                   <mat-option *ngFor="let dept of department" [value]="dept.value">
                       {{dept.label}}
                   </mat-option>
@@ -33,12 +33,12 @@
         </div>
         </div>
         </div>
-        <label class="label_info"><h4>Traveler Information</h4></label>
+        <label class="label_info"><h4>Traveller Information</h4></label>
         <div class="row pt-4">
-            <div class="col-lg-4 col-md-6 col-sm-12 " >
+            <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor">
                 <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>Booking For</mat-label>
-                    <mat-select formControlName="bookingFor" (selectionChange)="onSelectBookingPerson()">
+                    <mat-select formControlName="onbehalfType" (selectionChange)="onSelectBookingPerson()">
                       <mat-option *ngFor="let bp of bookingPerson" [value]="bp.value">
                           {{bp.label}}
                       </mat-option>
@@ -46,26 +46,29 @@
                 </mat-form-field>
             </div>
            
-          <div class="col-lg-4 col-md-6 col-sm-12 " *ngIf="isEmployee">
+          <div class="col-lg-4 col-md-6 col-sm-12 "  formGroupName="raisedFor" *ngIf="isEmployee">
             <mat-form-field class="example-full-width" appearance="outline">
               <mat-label>Select Department</mat-label>
-              <mat-select formControlName="riderDepaetment">
+              <mat-select formControlName="onbehalfDepartment">
                   <mat-option *ngFor="let dept of department" [value]="dept.value">
                       {{dept.label}}
                   </mat-option>
               </mat-select>
             </mat-form-field>
         </div>
-        <div class="col-lg-4 col-md-6 col-sm-12 " *ngIf="isEmployee">
+        <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor" *ngIf="isEmployee">
           <mat-form-field appearance="outline" class="example-full-width">
             <mat-label>Name of Employee</mat-label>
-            <input matInput [(ngModel)]="searchTerm" 
+            <!-- <input matInput [(ngModel)]="searchTerm" 
             
              (focus)="filteredItems.length > 0 ? showDropdown = true : showDropdown = false" 
              (input)="filterItems($event)" 
              placeholder="Type to search" 
-             [ngModelOptions]="{standalone: true}">
+             [disabled]="this.mode == 'view'"
+             [ngModelOptions]="{standalone: true}"> -->
+
               <!-- Filtered List -->
+              <input class="form-control" matInput type="text" placeholder="Enter Name" formControlName="onbehalfName">
      
         </mat-form-field>
         <div class="d-flex justify-content-center" *ngIf="filteredItems.length > 0 && showDropdown">
@@ -81,99 +84,113 @@
           <p>No matching items found</p>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6 col-sm-12 " *ngIf="!isEmployee">
+      <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor" *ngIf="!isEmployee">
         <mat-form-field appearance="outline" class="example-full-width">
             <mat-label>Name of Guest</mat-label>
-            <input matInput type="text" placeholder="Enter Name" [formControl]="bookingForm.controls['riderName']">
+            <input matInput type="text" placeholder="Enter Name" formControlName="onbehalfName">
         </mat-form-field>
     </div>
-    <div class="col-lg-4 col-md-6 col-sm-12 " >
+    <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor">
       <mat-form-field appearance="outline" class="example-full-width">
         <mat-label>Contact Number</mat-label>
-        <input matInput type="number" placeholder="Enter Contact number" formControlName="riderNumber">
+        <input matInput type="number" placeholder="Enter Contact number" formControlName="onbehalfContactNo">
     </mat-form-field>
   </div>
         </div>
         <label class="label_info"><h4>Travel Information</h4></label>
-        <div class="row pt-3 pb-3">
-          <div class="col-12 pb-3">
+        <div class="row pt-3 pb-3" >
+          <div class="col-12 pb-3" formGroupName="bookingReportDto">
               <div class="example-full-width" appearance="outline">
                 <span class="lebel-style align-items-center"
                   >Booking Preference* : </span>&nbsp;&nbsp;
                 <mat-radio-group
                   aria-label="Select an option"
                   class="mt-1"
-                  [formControl]="bookingForm.controls['bookingPreference']"
+                  formControlName="bookingPreference"
                   (change)="onChangeBookingPreference()"
                 >
-                  <mat-radio-button value="once">Once</mat-radio-button>
-                  <mat-radio-button value="daily">Daily</mat-radio-button>
+                  <mat-radio-button value="ONCE">Once</mat-radio-button>
+                  <mat-radio-button value="DAILY">Daily</mat-radio-button>
+                  <mat-radio-button value="WEEKLY">Weekly</mat-radio-button>
                 </mat-radio-group>
                 <mat-hint
-                *ngIf=" bookingForm.controls['bookingPreference'].hasError('contractMode') && bookingForm.controls['bookingPreference'].touched "
+                *ngIf=" this.bookingForm.get('bookingReportDto.bookingPreference')?.hasError('contractMode') && this.bookingForm.get('bookingReportDto.bookingPreference')?.touched "
                 class="text-danger font-14">You must include Booking Preference.</mat-hint>
               </div>
           </div>
           <div class="col-lg-4 col-md-6 col-sm-12 " >
             <mat-form-field class="example-full-width" appearance="outline">
-              <mat-label>Car reporting date-time</mat-label>
+              <mat-label>Car Reporting Date-Time</mat-label>
               <input matInput [matDatetimepicker]="reportingDatePicker" placeholder="Reporting Date"
-                  [formControl]="bookingForm.controls['reportingDate']" readonly
+                  [formControl]="bookingForm.controls['carReportingDatetime']" readonly
                   (click)="reportingDatePicker.open()" [min]="selectedDate" />
               
               <mat-datetimepicker-toggle matSuffix [for]="reportingDatePicker"></mat-datetimepicker-toggle>
               <mat-datetimepicker #reportingDatePicker type="datetime"></mat-datetimepicker>
               
-              <mat-hint *ngIf="bookingForm.controls['reportingDate'].hasError('required') && bookingForm.controls['reportingDate'].touched"
+              <mat-hint *ngIf="bookingForm.controls['carReportingDatetime'].hasError('required') && bookingForm.controls['carReportingDatetime'].touched"
                   class="text-danger font-14">You must include Reporting Date.</mat-hint>
             </mat-form-field>
             
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-12 " *ngIf="!isBookingDaily">
+          <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="bookingReportDto" *ngIf="!isBookingDaily && !isBookingWeekly">
             <mat-form-field class="example-full-width" appearance="outline">
-              <mat-label>Car required till date-time</mat-label>
+              <mat-label>Car Required Till Date-Time</mat-label>
               <input matInput [matDatetimepicker]="requireddatetimePicker" placeholder="Required Date"
-                  [formControl]="bookingForm.controls['requiredDate']" readonly
+                  formControlName="carRequiredTillDatetime" readonly
                   (click)="requireddatetimePicker.open()" [min]="minDate" />
               
               <mat-datetimepicker-toggle matSuffix [for]="requireddatetimePicker"></mat-datetimepicker-toggle>
               <mat-datetimepicker #requireddatetimePicker type="datetime"></mat-datetimepicker>
               
-              <mat-hint *ngIf="bookingForm.controls['requiredDate'].hasError('required') && bookingForm.controls['requiredDate'].touched"
+              <mat-hint *ngIf="this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.hasError('required') && this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.touched"
                   class="text-danger font-14">You must include Required Till Date.</mat-hint>
             </mat-form-field>
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-12 " *ngIf="isBookingDaily">
+          <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="bookingReportDto" *ngIf="isBookingDaily || isBookingWeekly ">
             <mat-form-field class="example-full-width" appearance="outline">
-              <mat-label>Repeat booking till date</mat-label>
+              <mat-label>Repeat Booking Till Date</mat-label>
               <input matInput [matDatepicker]="repeatdatetimePicker" placeholder="Repeat Date"
-                  [formControl]="bookingForm.controls['repeatDate']" readonly [min]="minDate"
+              formControlName="carRepeatTillDate" readonly [min]="minDate"
                   [max]="maxDate"
                   (click)="repeatdatetimePicker.open()" />
               
               <mat-datepicker-toggle matSuffix [for]="repeatdatetimePicker"></mat-datepicker-toggle>
               <mat-datepicker #repeatdatetimePicker type="datetime"></mat-datepicker>
               
-              <mat-hint *ngIf="bookingForm.controls['repeatDate'].hasError('required') && bookingForm.controls['repeatDate'].touched"
+              <mat-hint *ngIf="this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.hasError('required') && this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.touched"
                   class="text-danger font-14">You must include Repeat Till Date.</mat-hint>
             </mat-form-field>
            
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-12 " *ngIf="ifhasSaturday">
-            <div [style]="ifhasSunday?'position: relative; top:-13px;':''" >
+          <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="bookingReportDto" *ngIf="ifhasSaturday || ifhasSunday">
+            <div  [style]="ifhasSunday?'position: relative; top:-13px;':''" >
               <mat-checkbox
-                *ngIf="ifhasSaturday"
-                [checked]="ifhasSaturday"
+                *ngIf="ifhasSaturday && !isBookingWeekly"
+                formControlName="excludeSaturday"
+                [disabled]="this.mode == 'view'"
                 (change)="onExcludeSaturday($event)"
                 >Exclude Saturday</mat-checkbox
               >
               <mat-checkbox
-                *ngIf="ifhasSunday"
-                [checked]="ifhasSunday"
+                *ngIf="ifhasSunday && !isBookingWeekly"
+                formControlName="excludeSunday"
+                [disabled]="this.mode == 'view'"
                 (change)="onExcludeSunday($event)"
                 >Exclude Sunday</mat-checkbox>
             </div>
            
+          </div>
+          <div formGroupName="bookingReportDto" class="col-lg-4 col-md-6 col-sm-12 " *ngIf="isBookingWeekly">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Days in a Week</mat-label>
+            <mat-select formControlName="selectedDaysInaWeek"
+            [multiple]="true">
+                <mat-option *ngFor="let day of weekDays" [value]="day">
+                    {{day}}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
           </div>
           <div class="col-lg-4 col-md-6 col-sm-12 ">
             <mat-form-field class="example-full-width" appearance="outline">
@@ -181,10 +198,10 @@
               <mat-select 
               placeholder="Select"
               name="cartype"
-              formControlName="carType"
-              (selectionChange)="onSelectCar($event)">
+              formControlName="carTypeId"
+              (selectionChange)="onSelectCar()">
               <mat-option value="" disabled>Select</mat-option>
-                  <mat-option *ngFor="let car of carType" [value]="car.name">
+                  <mat-option *ngFor="let car of carType" [value]="car.id">
                       {{car.name}}
                   </mat-option>
               </mat-select>
@@ -195,17 +212,17 @@
                 <mat-label>Cost of the Car</mat-label>
                 <input class="form-control" matInput type="text"
                 placeholder="Enter Cost of Car"
-                formControlName="costOfCar"
+                value="{{ costOfCar }}"
                 [readonly]="true">
             </mat-form-field>
           </div>
           <div class="col-lg-4 col-md-6 col-sm-12 ">
             <mat-form-field class="example-full-width" appearance="outline">
-              <mat-label>No. of Persons Traveling</mat-label>
+              <mat-label>No. of Persons Travelling</mat-label>
               <mat-select 
               placeholder="Select"
               name="noperson"
-              formControlName="noOfPerson">
+              formControlName="numPersonsTravelling">
               <mat-option value="" disabled>Select</mat-option>
                   <mat-option *ngFor="let num of [1,2,3,4,5,6,7,8,9,10]"
                   [value]="num"
@@ -229,19 +246,14 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-12 " >
-            <mat-form-field appearance="outline" class="example-full-width">
-                <mat-label>Destination</mat-label>
-                <input class="form-control" matInput type="text" placeholder="Enter Destination" [formControl]="bookingForm.controls['destination']">
-            </mat-form-field>
-          </div>
+         
           <div class="col-lg-4 col-md-6 col-sm-12 ">
             <mat-form-field class="example-full-width" appearance="outline">
               <mat-label>Cost Center</mat-label>
               <mat-select 
               placeholder="Select"
               name="costCenter"
-              formControlName="costCenter">
+              formControlName="costCenterCode">
               <mat-option value="" disabled>Select</mat-option>
                   <mat-option 
                   >
@@ -271,32 +283,61 @@
                 formControlName="purpose"></textarea>
             </mat-form-field>
           </div>
-         
+          <div class="row" formArrayName="destination">
+            <div  style="display: flex;justify-content:flex-start;">
+              <span class="lebel-style align-items-center" style="margin-right: 10px;"
+              >Destination : </span>
+              <button type="button" title="Add" class="counter-button mb-2"
+                  (click)="addDestination()">
+                  + Add Destination
+              </button>
+            </div>
+            <ng-container *ngFor="let destination of destination.controls; let i = index"  class="row destination-item" >
+             <div class="col-lg-4 col-md-6 col-sm-12 ">
+              <div  class="d-flex justify-content-end mb-1">
+                <mat-label> <span *ngIf="i==0">&nbsp;</span></mat-label>
+                <mat-label style="color: crimson;cursor: pointer;"  (click)="removeDestination(i)"> <span *ngIf="i!=0">  - Remove </span></mat-label>
+              </div>
+              <mat-form-field appearance="outline" class="example-full-width">
+                <mat-label>Destination {{i + 1}}</mat-label>
+                <!-- <div  class="d-flex justify-content-between">
+                  <mat-label>Destination {{i + 1}}</mat-label>
+                  <mat-label *ngIf="i!=0" (click)="removeDestination(i)">- Remove </mat-label>
+                </div> -->
+               
+                <input class="form-control" matInput type="text" placeholder="Enter Destination" [formControlName]="i">
+            </mat-form-field>
+             </div>
+            </ng-container>
+            
+          </div>
           <div class="col-12 pb-3">
             <div class="example-full-width" appearance="outline">
               <span class="lebel-style  align-items-center"
-                >No. of Cars required : </span> &nbsp;&nbsp;
+                >No. of Car Required : </span> &nbsp;&nbsp;
                
                   <button
                     (click)="decrement()"
                     class="counter-button"
+                    [disabled]="this.mode == 'view'"
                     >-</button
                   >
                   <input
                     type="number"
-                    formControlName="noOfCar"
+                    formControlName="numCarsRequired"
                     readonly
                     class="counter-input"
                   >
                   <button
                     (click)="increment()"
                     class="counter-button"
+                    [disabled]="this.mode == 'view'"
                     >+</button
                   >
              
             </div>
           </div>
-          <div class="col-12 " *ngIf="(this.bookingForm.controls['noOfCar'].value ) > 1">
+          <div class="col-12 " *ngIf="(this.bookingForm.controls['numCarsRequired'].value ) > 1">
             <div class="example-full-width" appearance="outline">
               <span class="lebel-style align-items-center"
                 >Reporting Location: </span>&nbsp;&nbsp;
@@ -312,10 +353,10 @@
             </div>
         </div>
         </div>
-        <div formArrayName="carDetails" class="pb-3">
+        <div formArrayName="bookingLocationMap" class="pb-3">
           <div
             *ngFor="
-                    let cd of carDetails.controls;
+                    let cd of bookingLocationMap.controls;
                     let carDetailsIndex = index
                   "
           >
@@ -329,7 +370,7 @@
                     <mat-label>Address of Reporting</mat-label>
                     <input class="form-control" matInput type="text"  
                     placeholder="Enter Address of Reporting"
-                    formControlName="addReporting">
+                    formControlName="reportingAddress">
                 </mat-form-field>
               </div>
               <div class="col-lg-4 col-md-6 col-sm-12 " >
@@ -337,14 +378,14 @@
                     <mat-label>Address of Release</mat-label>
                     <input class="form-control" matInput type="text"  
                     placeholder="Enter Address of Release"
-                    formControlName="addRelease">
+                    formControlName="releaseAddress">
                 </mat-form-field>
               </div>
               <div class="col-lg-4 col-md-6 col-sm-12 " >
                 <mat-form-field class="example-full-width" appearance="outline">
-                  <mat-label>Car release date-time</mat-label>
+                  <mat-label>Car Release Date-Time</mat-label>
                   <input matInput [matDatetimepicker]="releasedDatePicker" placeholder="Release Date"
-                      formControlName="releasedatetime" readonly
+                      formControlName="carReleaseDatetime" readonly
                       (click)="releasedDatePicker.open()" [min]="selectedDate" />
                   
                   <mat-datetimepicker-toggle matSuffix [for]="releasedDatePicker"></mat-datetimepicker-toggle>

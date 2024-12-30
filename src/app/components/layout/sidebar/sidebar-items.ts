@@ -57,7 +57,7 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: '',
-    title: 'On Behalf Booking',
+    title: 'Booking Details',
     iconType: '',
     icon: '../../../../assets/images/banner/schedule.png',
     class: 'menu-toggle',
@@ -67,8 +67,8 @@ export const ROUTES: RouteInfo[] = [
     role: ['Admin'],
     submenu: [
       {
-        path: '/booking-management/booking-setup',
-        title: 'Booking Setup',
+        path: '/booking-management/booking',
+        title: 'Booking',
         iconType: 'material-icons-two-tone',
         icon: '',
         class: 'ml-menu',
