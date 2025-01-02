@@ -12,79 +12,88 @@
 
     </mat-card>
     <div mat-dialog-content class="p-3">
-        <div class="card card-statistic-2 mt-2">
-            <div class="clearfix">
-                <div style="border: 1px dotted #BA284C;
-                border-radius: 4px; padding:10px 0px">
-                 <span style="padding-left: 17px;padding-top: 10px;">Booking Id: 23444454565476576</span>
-                 <div
-                   style="
-                     display: flex;
-                     justify-content: left;
-                     align-items: center;
-                     padding-left: 17px;
-                   "
-                 >
-                  <h6 >WBD21A740 - White Dezire Tour</h6>
-                 </div>
-                 <div class="d-flex" style="padding-top: 15px;margin-left: 10px;">
-                     <img src="../../../../../assets/images/banner/User.png" height="40" width="40" alt="" />
-                   <span style="margin-left: 10px;">
-                     <h5>Saptarshi Ray</h5>
-                     <div style="display: flex">
-                       <app-feather-icons icon="phone"></app-feather-icons>&nbsp;
-                       <p><span>9876567876</span> &nbsp;</p>
-                       <!-- <ion-icon name="star"></ion-icon> &nbsp;
-                       <ion-icon name="star"></ion-icon> -->
-                     </div>
-                   </span>
-                 </div>
+    <form [formGroup]="releaseForm">
+        <div formArrayName="bookingLocationMap">
+            <div *ngFor="let location of bookingLocationMap.controls; let i = index" [formGroupName]="i" class="location-group">
+                <div class="card card-statistic-2 mt-2">
+                    <div class="clearfix">
+                        <div style="border: 1px dotted #BA284C;
+                        border-radius: 4px; padding:10px 0px">
+                        <span style="padding-left: 17px;padding-top: 10px;">Booking Id: 23444454565476576</span>
+                        <div
+                        style="
+                            display: flex;
+                            justify-content: left;
+                            align-items: center;
+                            padding-left: 17px;
+                        "
+                        >
+                        <h6 >WBD21A740 - White Dezire Tour</h6>
+                        </div>
+                        <div class="d-flex" style="padding-top: 15px;margin-left: 10px;">
+                            <img src="../../../../../assets/images/banner/User.png" height="40" width="40" alt="" />
+                        <span style="margin-left: 10px;">
+                            <h5>Saptarshi Ray</h5>
+                            <div style="display: flex">
+                            <app-feather-icons icon="phone"></app-feather-icons>&nbsp;
+                            <p><span>9876567876</span> &nbsp;</p>
+                            <!-- <ion-icon name="star"></ion-icon> &nbsp;
+                            <ion-icon name="star"></ion-icon> -->
+                            </div>
+                        </span>
+                        </div>
+                        </div>
+                    </div>
+                
+                </div>
+        
+                <div class="d-flex flex-column">
+                    <span class="fw-normal text-dark"> Car Release Date</span>
+                    <mat-form-field class="w-100 mt-2 " appearance="outline">
+                        <input matInput [matDatetimepicker]="carReleaseDatePicker" placeholder="Car Release Date"
+                            formControlName="carReleaseDatetime" readonly [min]="selectedDate"
+                            (click)="carReleaseDatePicker.open()"  />
+                        
+                        <mat-datetimepicker-toggle matSuffix [for]="carReleaseDatePicker"></mat-datetimepicker-toggle>
+                        <mat-datetimepicker #carReleaseDatePicker type="datetime"></mat-datetimepicker>
+
+                    </mat-form-field>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="fw-normal text-dark">Address of Release</span>
+                    <mat-form-field appearance="outline" class="example-full-width">
+                        <input class="form-control" matInput type="text"  
+                        placeholder="Enter Address of Release"
+                        formControlName="releaseAddress">
+                    </mat-form-field>
+                    
                 </div>
             </div>
-           
-          </div>
-        <form [formGroup]="releaseForm">
-            <!-- <div class="d-flex flex-column">
-                <mat-form-field appearance="outline" class="example-full-width">
-                    <mat-label>Organization Code</mat-label>
-                    <input matInput placeholder="Organization Code" [formControl]="filterForm.controls['orgCode']">
-                    <mat-icon matSuffix>info</mat-icon>
-                </mat-form-field>
-        
-            </div> -->
-            <div class="d-flex flex-column">
-                <span class="fw-normal text-dark"> Car Release Date</span>
-                <mat-form-field class="w-100 mt-2 " appearance="outline">
-                    <input matInput [matDatetimepicker]="carReleaseDatePicker" placeholder="Car Release Date"
-                        [formControl]="releaseForm.controls['carReleaseDatetime']" readonly [min]="selectedDate"
-                        (click)="carReleaseDatePicker.open()"  />
-                    
-                    <mat-datetimepicker-toggle matSuffix [for]="carReleaseDatePicker"></mat-datetimepicker-toggle>
-                    <mat-datetimepicker #carReleaseDatePicker type="datetime"></mat-datetimepicker>
-
-                  </mat-form-field>
-            </div>
-            <div class="d-flex flex-column">
-                <!-- <span class="fw-normal text-dark">Status</span>
-                <mat-form-field class="w-100 mt-2 " appearance="outline">
-                    <mat-label>Select</mat-label>
-                    <mat-select formControlName="status">
-                        <mat-option *ngFor="let status of productStatus" value="{{status.value}}">
-                            {{status.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field> -->
-                <span class="fw-normal text-dark">Address of Release</span>
-                <mat-form-field appearance="outline" class="example-full-width">
-                    <input class="form-control" matInput type="text"  
-                    placeholder="Enter Address of Release"
-                    formControlName="releaseAddress">
-                </mat-form-field>
-                
-            </div>
-        </form>
+        </div>
+    </form>
     </div>
-
+    <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li *ngFor="let image of images; let i = index" 
+                [class.active]="i === 0" 
+                [attr.data-slide-to]="i"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div *ngFor="let image of images; let i = index" 
+                class="carousel-item" 
+                [class.active]="i === 0">
+            <img class="d-block w-100" [src]="image.src" [alt]="image.alt">
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div> -->
     <div class="p-3 d-flex flex-row">
         <button mat-stroked-button mat-dialog-close class="stroke-button w-50" (click)="onCancle()">Cancel</button>
         <button mat-raised-button class="raised-button w-50 ms-2"

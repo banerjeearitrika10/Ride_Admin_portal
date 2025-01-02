@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 
@@ -19,14 +19,35 @@ export class CarDetailDialogComponent implements OnInit{
   ) { }
   ngOnInit() {
     this.initiateForm();
-   
+    if(this.data){
+      this.data.bookingLocationMap.forEach(element => {
+        if(this.data.bookingLocationMap.length>this.bookingLocationMap.length){
+          this.addCarDetails();
+        }
+      });
+      
+    }
     
   }
   initiateForm(){
     this.releaseForm = this.fb.group({
+      bookingLocationMap: this.fb.array([this.newCarDetails()]),
+    })
+  }
+  newCarDetails() {
+    return this.fb.group({
       carReleaseDatetime: [this.selectedDate],
       releaseAddress: [''],
-    })
+    });
+  }
+  get bookingLocationMap() {
+    return this.releaseForm.get('bookingLocationMap') as FormArray;
+  }
+  addCarDetails() {
+    this.bookingLocationMap.push(this.newCarDetails());
+  }
+  removeCarDetails(index: number) {
+    this.bookingLocationMap.removeAt(index);
   }
   ngOnDestroy(): void {
     this.destroyed$.next();

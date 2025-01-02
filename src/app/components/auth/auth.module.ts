@@ -29,10 +29,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AuthService,
   ],
 })
-export class ExamFactorAuthModule {
-  static forRoot(): ModuleWithProviders<ExamFactorAuthModule> {
+export class CarpoolAuthModule {
+  static forRoot(): ModuleWithProviders<CarpoolAuthModule> {
     return {
-      ngModule: ExamFactorAuthModule,
+      ngModule: CarpoolAuthModule,
       providers: [
         // { provide: AuthConfig, useValue: authConfig },
         // { provide: OAuthModuleConfig, useValue: authModuleConfig },
@@ -54,9 +54,9 @@ export class ExamFactorAuthModule {
     };
   }
 
-  constructor(@Optional() @SkipSelf() parentModule: ExamFactorAuthModule) {
+  constructor(@Optional() @SkipSelf() parentModule: CarpoolAuthModule) {
     if (parentModule) {
-      throw new Error('ExamFactorAuthModule is already loaded. Import it in the AppModule only');
+      throw new Error('CarpoolAuthModule is already loaded. Import it in the AppModule only');
     }
   }
 }

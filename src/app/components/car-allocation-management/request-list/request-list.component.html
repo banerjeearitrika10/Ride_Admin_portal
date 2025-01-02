@@ -1,6 +1,6 @@
 <section class="example-table-container mat-elevation-z8">
     <div class="example-container mat-elevation-z8" tabindex="0">
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 detailTable">
+        <table mat-table [dataSource]="dataSource" #outerSort="matSort"  multiTemplateDataRows class="mat-elevation-z8 detailTable" matSort>
 
             <!--  name Column -->
             <ng-container matColumnDef="name">
@@ -25,6 +25,15 @@
                 </th>
                 <td mat-cell *matCellDef="let element" width="20%"> {{element.destination}} </td>
             </ng-container>
+            <!--bookingPreference-->
+            <ng-container matColumnDef="bookingPreference">
+                <th mat-header-cell *matHeaderCellDef>
+                    Booking Preference
+                </th>
+                <td mat-cell *matCellDef="let element" width="20%">
+                    {{element.bookingPreference ? element.bookingPreference : "---"}}
+                </td>
+            </ng-container>
 
             <!--noOfPerson-->
             <ng-container matColumnDef="noOfPerson">
@@ -42,19 +51,71 @@
                     Allot Car
                 </th>
                 <td mat-cell *matCellDef="let element" width="20%">
-                    <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element)"
+                    <!-- <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element)"
                         ><app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons></button>
-                    <div class="vr"></div>
-                    <button type="button" mat-icon-button class="table-action-button" (click)="allocateCar(element)">
+                    <div class="vr"></div> -->
+                    <!-- <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element)">
                         <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
-                    </button>
+                    </button> -->
+                    <ng-container *ngIf="!(element?.innerData?.data?.length); else actionUnavailable">
+                        <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element)">
+                            <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
+                        </button>
+                    </ng-container>
+                    <ng-template #actionUnavailable>
+                        <span>---</span>
+                    </ng-template>
                      <!-- [disabled]="element.state==='PUBLISHED'" -->
                 </td>
             </ng-container>
+            <ng-container matColumnDef="details">
+                <th mat-header-cell *matHeaderCellDef>Details</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-button (click)="toggleRow(element)">
+                        {{ element.expanded ? 'Hide' : 'View' }}
+                    </button>
+                
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                    <div class="example-element-detail" *ngIf="element?.innerData?.data.length"  [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
+                  <table #innerTables mat-table #innerSort="matSort" [dataSource]="element?.innerData" matSort>
+                    <!-- <ng-container matColumnDef="{{innerColumn}}" *ngFor="let innerColumn of innerDisplayedColumns">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{innerColumn}}</th>
 
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                      <td mat-cell *matCellDef="let element"> {{element.property1}} {{innerColumn}}</td>
+                    </ng-container> -->
+                    <ng-container matColumnDef="innerColumn1">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by onBehalfOf">
+                            Date
+                        </th>
+                        <td mat-cell *matCellDef="let innerelement" width="20%"> {{innerelement.date}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="action" >
+                        <th mat-header-cell *matHeaderCellDef>
+                            Actions
+                        </th>
+                        <td mat-cell *matCellDef="let innerelement" width="20%">
+                            <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element)">
+                                <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;"></tr>
+                  </table>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumns;" >
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"  class="example-detail-row"></tr>
         </table>
         <div *ngIf="isLoading" class="loader p-4 ">
             <mat-progress-spinner mode="indeterminate" [diameter]="40">

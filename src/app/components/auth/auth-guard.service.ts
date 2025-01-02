@@ -9,7 +9,7 @@ import { DeactivationGuard } from './deactivation.guard';
 
 
 @Injectable({ providedIn: 'root' })
-export class EaxmFactorAuthGuard extends KeycloakAuthGuard implements CanActivateChild{
+export class CarpoolAuthGuard extends KeycloakAuthGuard implements CanActivateChild{
   constructor(
     private authService: AuthService,
     private authUtil: AuthUtil,

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, NgZone, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -12,6 +12,11 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     @Input() mode!:any;
     @Input() userDetails!:any;
     @Input() isApprove:boolean = false;
+    @ViewChild('autocomplete') autocompleteInput!: ElementRef<HTMLInputElement>;
+    private autocomplete!: google.maps.places.Autocomplete;
+    // @ViewChildren('googleAutocomplete') googleAutocompleteInputs!: QueryList<ElementRef<HTMLInputElement>>;
+    @ViewChildren('googleAutocomplete') autocompleteInputs!: QueryList<ElementRef>;
+    private autocompleteInstances: Map<number, google.maps.places.Autocomplete> = new Map();
     private destroyed$ = new Subject<void>();
     bookingForm!: FormGroup;
     public today = new Date();
@@ -99,7 +104,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     items: string[] = ['John', 'Jane', 'Mike', 'Emily', 'Sophia', 'Michael'];
     showDropdown: boolean = false;
   isEmployee: boolean = true;
-    constructor(public fb: FormBuilder) { }
+    constructor(public fb: FormBuilder,private ngZone: NgZone) { }
   
     ngOnInit(): void {
       console.log(this.bookingFormValue);
@@ -156,6 +161,71 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       this.destroyed$.next();
       this.destroyed$.complete();
     }
+    ngAfterViewInit(): void {
+      const input = this.autocompleteInput.nativeElement;
+  
+      if (!input) {
+        console.error('Autocomplete input element not found');
+        return;
+      }
+  
+      this.autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: {country: "IN"} 
+      });
+      this.autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          const place: google.maps.places.PlaceResult = this.autocomplete.getPlace();
+  
+          if (place.geometry) {
+            console.log('Selected Place Details:', place);
+          } else {
+            console.warn('No details available for input:', place.name);
+          }
+        });
+      });
+      this.initAutocomplete();
+    }
+    initAutocomplete(): void {
+
+        
+      this.autocompleteInputs.forEach((inputRef, index) => {
+        if (this.autocompleteInstances.has(index)) return; // Skip already initialized inputs
+  
+        const input = inputRef.nativeElement;
+        const options = {
+          types: ['geocode'],
+          componentRestrictions: { country: 'IN' }, // Customize as needed
+        };
+  
+        const autocomplete = new google.maps.places.Autocomplete(input, options);
+  
+        // Add event listener for place_changed
+        autocomplete.addListener('place_changed', () => {
+          this.ngZone.run(() => {
+            const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+  
+            if (place.geometry) {
+              console.log(`Destination ${index + 1} Selected:`, place);
+              // Update the FormArray with the selected place's formatted address
+              this.destination.at(index).setValue(place.formatted_address || '');
+            } else {
+              console.warn(`No details available for input: ${input.value}`);
+            }
+          });
+        });
+  
+        // Store the Autocomplete instance
+        this.autocompleteInstances.set(index, autocomplete);
+      });
+      }
+      realignAutocompleteInstances(): void {
+        const updatedInstances = new Map<number, google.maps.places.Autocomplete>();
+        Array.from(this.autocompleteInstances.entries()).forEach(([oldIndex, instance], newIndex) => {
+          updatedInstances.set(newIndex, instance);
+        });
+        this.autocompleteInstances = updatedInstances;
+      }
     initiateForm() {
       this.bookingForm = this.fb.group({
         raisedBy: this.fb.group({
@@ -213,12 +283,19 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     addDestination() {
       const destinationArray = this.bookingForm.get('destination') as FormArray;
       destinationArray.push(this.fb.control('', Validators.required));
+        setTimeout(()=>{
+          this.initAutocomplete();
+        },0)
     }
     removeDestination(index: number) {
       const destinationArray = this.bookingForm.get('destination') as FormArray;
       if (destinationArray.length > 1) {
         destinationArray.removeAt(index);
       }
+      if (this.autocompleteInstances.has(index)) {
+        this.autocompleteInstances.delete(index);
+      }
+      this.realignAutocompleteInstances();
     }
     newCarDetails() {
       return this.fb.group({

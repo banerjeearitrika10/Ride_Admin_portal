@@ -31,6 +31,9 @@ import { GlobalSpinnerInterceptor } from './components/global-spinner/global-spi
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { MatNativeDatetimeModule } from '@mat-datetimepicker/core';
+import { CarpoolAuthModule } from './components/auth/auth.module';
+import { JwtInterceptor } from './components/core/interceptor/jwt.interceptor';
+import { ErrorInterceptor } from './components/core/interceptor/error.interceptor';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -66,11 +69,12 @@ export function createTranslateLoader(http: HttpClient) {
     CoreModule,
     SharedModule,
     NgxMatTimepickerModule,
-    MatNativeDatetimeModule
+    MatNativeDatetimeModule,
+    CarpoolAuthModule.forRoot()
   ],
   providers: [
-    // { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    // { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     // fakeBackendProvider,
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     DatePipe,

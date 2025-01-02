@@ -76,7 +76,7 @@ export class BookingListComponent {
         { date: 'Inner Row A' },
         { date: 'Inner Row B' }
       ],
-      carDetails:[
+      bookingLocationMap:[
         {
           addRelease: "Kolkata",
           addReporting: "Durgapur",
@@ -117,7 +117,7 @@ export class BookingListComponent {
       userName: "Richa",
       userNumber: 9878676788,
       empCode:"EMP002678",
-      carDetails:[
+      bookingLocationMap:[
         {
           addRelease: "Kolkata",
           addReporting: "Durgapur",
@@ -255,7 +255,7 @@ onClickCarDetails(element:any){
     maxWidth: '30vw',
     width: '100%',
     panelClass: 'qa-confirm-dialog',
-    data: this.dataFromDialog ? this.dataFromDialog : {}
+    data: element ? element : {}
   });
   dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
     if (response) {

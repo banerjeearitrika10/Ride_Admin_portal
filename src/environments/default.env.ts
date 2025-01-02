@@ -1,13 +1,13 @@
 export class DefaultEnvironmentConfig {
     production = true;
 
-    rootApiUrl = 'https://api.dev.examfactor.co';
+    // rootApiUrl = 'https://api.dev.examfactor.co';
 
     get authConfig() {
         return {
             //issuer: 'https://demo.identityserver.io',
-            issuer: 'https://identity.dev.examfactor.co',
-            realm: 'exam-factor',
+            issuer: 'https://identity.carpool.letscover360.com',
+            realm: 'carpool',
             clientId: 'web-client', // The "Auth Code + PKCE" client
             responseType: 'code',
             redirectUri: `${window.location.href}?_=123`,
@@ -22,13 +22,13 @@ export class DefaultEnvironmentConfig {
     }
 
 
-    get allowedUrls() {
-        return [this.rootApiUrl];
-    }
+    // get allowedUrls() {
+    //     return [this.rootApiUrl];
+    // }
 
-    get masterDataService() {
-        return `${this.rootApiUrl}/master-data-service`;
-    }
+    // get masterDataService() {
+    //     return `${this.rootApiUrl}/master-data-service`;
+    // }
 
    
 }

@@ -169,12 +169,12 @@
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
                         <span class="card_span"><b>{{cd.addReporting?cd.addReporting:'--'}}</b></span>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <!-- <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                         <label class="card_label">Address of Release:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
                         <span class="card_span"><b>{{cd.addRelease?cd.addRelease:'--'}}</b></span>
-                    </div>
+                    </div> -->
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                       <label class="card_label">Contact Name:</label>
                   </div>
@@ -188,18 +188,19 @@
                       <span class="card_span"><b>{{cd.contactNumber?cd.contactNumber:'--'}}</b></span>
                   </div>
                   </div>
+                  <div class="d-flex justify-content-end ">
+                    <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
+                      (click)="onOpenAllotCar(cd)">
+                          <mat-icon>add</mat-icon>Allot Car
+                    </button>
+                  </div>
                 </div>
                
               </div>
             </div>
              
           </div> 
-          <div class="d-flex justify-content-end pb-5">
-            <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
-                        (click)="onOpenDrawer()">
-                            <mat-icon>add</mat-icon>Allot Car
-                        </button>
-          </div>
+          
     </div>
 </section>
 <app-car-allocation [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)" [data]="details"></app-car-allocation>

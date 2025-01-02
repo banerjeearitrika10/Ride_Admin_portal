@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { MainLayoutComponent } from './components/layout/app-layout/main-layout/main-layout.component';
+import { CarpoolAuthGuard } from './components/auth/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [CarpoolAuthGuard],
     children: [
       { path: '', redirectTo: '/admin/dashboard/main', pathMatch: 'full' },
       {
         path: 'admin',
+        canActivate: [CarpoolAuthGuard],
         loadChildren: () =>
           import('./components/admin/admin.module').then((m) => m.AdminModule),
       },

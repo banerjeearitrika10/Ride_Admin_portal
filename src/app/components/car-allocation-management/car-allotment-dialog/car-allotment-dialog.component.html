@@ -1,0 +1,79 @@
+<mat-card>
+    <div class="d-flex text-center justify-content-between p-3 mat-dialog-header align-items-center">
+        <div>
+            <h4>Allot Car</h4>
+        </div>
+        <!-- <div mat-dialog-close><mat-icon>close</mat-icon></div> -->
+        <button mat-icon-button mat-dialog-close type="button">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+</mat-card>
+<div mat-dialog-content class="p-3">
+    <form [formGroup]="carAllotmentForm">
+        <!-- <div class="d-flex flex-column">
+            <mat-form-field appearance="outline" class="example-full-width">
+                <mat-label>Organization Code</mat-label>
+                <input matInput placeholder="Organization Code" [formControl]="filterForm.controls['orgCode']">
+                <mat-icon matSuffix>info</mat-icon>
+            </mat-form-field>
+    
+        </div> -->
+        <div class="d-flex flex-column">
+            <span class="fw-normal text-dark"> Car Type</span>
+            <mat-form-field class="example-full-width" appearance="outline">
+                <mat-select 
+                placeholder="Select"
+                name="cartype"
+                formControlName="carType"
+                (selectionChange)="onSelectCar($event)">
+                <mat-option value="" disabled>Select</mat-option>
+                    <mat-option *ngFor="let car of carType" [value]="car.name">
+                        {{car.name}}
+                    </mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div>
+        <div class="d-flex flex-column">
+            <span class="fw-normal text-dark">Cost of the Car</span>
+            <mat-form-field appearance="outline" class="example-full-width">
+                <input class="form-control" matInput type="text"
+                placeholder="Enter Cost of Car"
+                formControlName="costOfCar"
+                [readonly]="true">
+            </mat-form-field>  
+        </div>
+        <div class="d-flex flex-column">
+            <span class="fw-normal text-dark">Car Number</span>
+            <mat-form-field appearance="outline" class="example-full-width">
+                <input class="form-control" matInput type="text"
+                placeholder="Enter Car Number"
+                formControlName="carNumber">
+            </mat-form-field>
+        </div>
+        <div class="d-flex flex-column">
+            <span class="fw-normal text-dark">Driver's Name</span>
+            <mat-form-field appearance="outline" class="example-full-width">
+                <input class="form-control" matInput type="text"
+                placeholder="Enter Driver's Name"
+                formControlName="driverName">
+            </mat-form-field>
+        </div>
+        <div class="d-flex flex-column" >
+            <span class="fw-normal text-dark">Driver's Contact Number</span>
+            <mat-form-field appearance="outline" class="example-full-width">
+                <input class="form-control" matInput 
+                type="number"
+                placeholder="Enter Driver's Contact number"
+                formControlName="driverContactNumber">
+            </mat-form-field>
+          </div>
+    </form>
+</div>
+
+<div class="p-3 d-flex flex-row">
+    <button mat-stroked-button mat-dialog-close class="stroke-button w-50" (click)="onCancle()">Cancel</button>
+    <button mat-raised-button class="raised-button w-50 ms-2"
+        (click)="onAllotCar()">Allot Car</button>
+</div>

@@ -108,9 +108,17 @@
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
+                    
+                    <ng-container *ngIf="!(element?.innerData?.data?.length);">
+                        <button type="button" mat-icon-button class="table-action-button" matTooltip="Car Details" (click)="onClickCarDetails(element)">
+                            <i class="fas fa-car" style="font-size: 22px; color: #b50064;"></i>
+                        </button>
+                    </ng-container>
+                    <div class="vr"></div>
                     <button type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element)">
                         <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
                     </button>
+                    
                 </td>
             </ng-container>
             <ng-container matColumnDef="expandedDetail">
@@ -135,7 +143,7 @@
                         </th>
                         <td mat-cell *matCellDef="let element" width="20%">
                             <button type="button" mat-icon-button class="table-action-button" matTooltip="Car Details" (click)="onClickCarDetails(element)">
-                                <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
+                                <i class="fas fa-car" style="font-size: 22px; color: #b50064;"></i>
                             </button>
                             <div class="vr"></div>
                             <button type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element)">
@@ -150,16 +158,17 @@
                     </div>
                 </td>
             </ng-container>
-            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr> -->
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumns;" >
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"  class="example-detail-row"></tr>
+                        <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr> -->
             <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
             <!-- <tr mat-row *matRowDef="let element; columns: displayedColumns;" [class.example-element-row]="element.innerData?.data.length"
             [class.example-expanded-row]="expandedElement === element" (click)="toggleRow(element)">
            </tr>
             <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr> -->
-            <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
-            <tr mat-row *matRowDef="let element; columns: displayedColumns;" >
-            </tr>
-            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"  class="example-detail-row"></tr>
 
         </table>
         <div *ngIf="isLoading" class="loader p-4">

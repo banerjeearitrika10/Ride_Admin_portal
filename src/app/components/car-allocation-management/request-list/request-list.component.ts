@@ -1,26 +1,43 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import { CarAllotmentDialogComponent } from '../car-allotment-dialog/car-allotment-dialog.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-request-list',
   templateUrl: './request-list.component.html',
-  styleUrl: './request-list.component.scss'
+  styleUrl: './request-list.component.scss',
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class RequestListComponent {
+  @ViewChild('outerSort', { static: true }) sort!: MatSort;
+  @ViewChildren('innerTables') innerTables!: QueryList<MatTable<any>>;
+  @ViewChildren('innerSort') innerSort!: QueryList<MatSort>;
   showMessageIfTableIsBlank = false;
   isLoading = false;
   private destroyed$ = new Subject<void>();
+  expandedElement: any | null;
   displayedColumns: string[] = [
     'name',
     'reportingDate',
     'destination',
+    'bookingPreference',
     'noOfPerson',
+    'details',
     'allotCar',
   ];
+  innerDisplayedColumns: string[] = ['innerColumn1', 'action'];
   dataSource!: MatTableDataSource<any>;
   totalItems!: number;
   pageSize = 5;
@@ -29,10 +46,11 @@ export class RequestListComponent {
   filterData = {};
   isOpen: boolean = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
   requestData: any;
+  usersData:any=[];
  requestList = [
   {
+    bookingId:1,
     carType: "Ertiga (5 + 1 persons) ",
     costCenter: "",
     costOfCar: 900,
@@ -51,6 +69,10 @@ export class RequestListComponent {
     userName: "Aritrika",
     userNumber: 9878676788,
     empCode:"EMP002255",
+    innerData: [
+      { date: 'Inner Row A' },
+      { date: 'Inner Row B' }
+    ],
     carDetails:[
       {
         addRelease: "Kolkata",
@@ -69,6 +91,7 @@ export class RequestListComponent {
     ]
   },
   {
+    bookingId:2,
     carType: "Ertiga (5 + 1 persons) ",
     costCenter: "",
     costOfCar: 900,
@@ -98,7 +121,7 @@ export class RequestListComponent {
     ]
   }
  ];
- constructor(public router:Router){}
+ constructor(public router:Router,private dialog: MatDialog){}
  ngOnInit(): void {
   this.getBookingRequests({ size: this.pageSize, page: this.pageIndex });
 
@@ -111,7 +134,20 @@ export class RequestListComponent {
   console.log(data.content);
   
   this.showMessageIfTableIsBlank = data.content.length ? false : true;
-  this.dataSource = new MatTableDataSource(data.content);
+  // this.dataSource = new MatTableDataSource(data.content);
+  data.content.forEach(user => {
+    if (user.innerData && Array.isArray(user.innerData) && user.innerData.length) {
+      this.usersData = [...this.usersData, {...user,innerData: new MatTableDataSource(user.innerData),expanded:false}];
+      console.log(this.usersData);
+      
+    } else {
+      this.usersData = [...this.usersData, user];
+    }
+  });
+  console.log(this.usersData);
+  
+  this.dataSource = new MatTableDataSource(this.usersData);
+  this.dataSource.sort = this.sort;
   this.totalItems = data.totalElements;
   this.isLoading = false;
 }
@@ -154,12 +190,16 @@ convertToReadableDate(isoString: string) {
   return date.toLocaleDateString('en-US', options);
 }
 viewDetails(element:any){
+  console.log(element);
+  
   this.requestData=element;
-  this.router.navigate(['/car-allocation-management/details'],{ state: { data: this.requestData }});
+  let data = this.requestList.filter(data=>data.bookingId==element.bookingId)[0];
+  this.router.navigate(['/car-allocation-management/details'],{ state: { data: data}});
 }
 allocateCar(element:any){
   this.requestData=element
- this.onOpenDrawer();
+  this.onOpenDrawer();
+
 }
 onOpenDrawer() {
   this.isOpen = true;
@@ -168,5 +208,24 @@ onOpenDrawer() {
 onCloseDrawer(ev: any) {
   this.isOpen = false;
 }
+hasInnerData(element: any): boolean {
+  return element?.innerData?.data?.length > 0;
+}
+// updateDisplayedColumns(): void {
+//   // Access the raw data using the `data` property
+//   const hasInnerData = this.dataSource.data.some((element: any) => this.hasInnerData(element));
+//   if (hasInnerData) {
+//       this.displayedColumns = this.displayedColumns.filter(column => column !== 'actions');
+//   } else if (!this.displayedColumns.includes('allotCar')) {
+//       this.displayedColumns.push('allotCar');
+//   }
+// }
 
+toggleRow(element: any) {
+  if(element.innerData && (element.innerData as MatTableDataSource<any>).data.length ){
+    element.expanded = !element.expanded;
+  }
+  element.innerData && (element.innerData as MatTableDataSource<any>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+  this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<any>).sort = this.innerSort.toArray()[index]);
+}
 }
