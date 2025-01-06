@@ -156,12 +156,27 @@ export class BookingListComponent {
       }
     });
   }
-  getBookingDetails(payload:any){
+  getBookingDetails(payLoad:any){
     this.showMessageIfTableIsBlank = false;
     this.isLoading = true;
     let data:any = {};
     data.content = this.bookingDetails;
-    console.log(data.content);
+    console.log("Hiii");
+    
+    this.bookingService.getAllBooking({ ...payLoad }).subscribe({
+      next: (data) => {
+        console.log("HIII");
+        
+        this.showMessageIfTableIsBlank = data.content.length ? false : true;
+        this.dataSource = new MatTableDataSource(data.content);
+        this.totalItems = data.totalElements;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showMessageIfTableIsBlank = true;
+      },
+    });
     
     this.showMessageIfTableIsBlank = data.content.length ? false : true;
     data.content.forEach(user => {

@@ -13,6 +13,7 @@ import {
 import { ROUTES } from './sidebar-items';
 // import { AuthService } from 'src/app/auth/auth.service';
 import { RouteInfo } from './sidebar.metadata';
+import { AuthService } from '../../services/auth.service';
 
 const userRole = "Admin";
 
@@ -37,7 +38,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public elementRef: ElementRef,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.elementRef.nativeElement.closest('body');
     this.routerObj = this.router.events.subscribe((event) => {
@@ -146,6 +148,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
   logout() {
-    // this.authService.logout();
+    this.authService.logout();
   }
 }

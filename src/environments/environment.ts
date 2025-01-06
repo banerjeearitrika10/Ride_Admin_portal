@@ -19,12 +19,16 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+// export const environment = {
+//   production: false,
+//   url: 'https://identity.carpool.letscover360.com',
+//   realm: 'carpool',
+//   clientId: 'web-client',
+// };
 import { DefaultEnvironmentConfig } from "./default.env";
 
 class DevelopmentEnvironmentConfig extends DefaultEnvironmentConfig {
   override production= false;
-  apiUrl = 'http://localhost:4200';
-  apiEndpoint='';
 }
 
 export const environment = new DevelopmentEnvironmentConfig();

@@ -12,6 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { InConfiguration } from '../../core/models/config.interface';
 import { UnsubscribeOnDestroyAdapter } from '../../shared/UnsubscribeOnDestroyAdapter';
+import { AuthService } from '../../services/auth.service';
 // import { LanguageService } from 'src/app/core/service/language.service';
 // import { InConfiguration } from 'src/app/core/models/config.interface';
 
@@ -49,7 +50,7 @@ export class HeaderComponent
     private renderer: Renderer2,
     public elementRef: ElementRef,
     private configService: ConfigService,
-    // private authService: AuthService,
+    private authService: AuthService,
     private router: Router,
     // public languageService: LanguageService
   ) {
@@ -209,6 +210,6 @@ export class HeaderComponent
     }
   }
   logout() {
-    // this.authService.logout();
+    this.authService.logout();
   }
 }

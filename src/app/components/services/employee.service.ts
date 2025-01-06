@@ -21,13 +21,5 @@ export class EmployeeService {
   emitSearchDataForFilter(filterData: any) {
     this.employeeSearchDataFromFilterDialog$.next(filterData);
 }
-empBulUpload(formData: any){
-  // return this.http.post<any>(`${environment.studentService}/v1/b2bStudent-bulk-upload`,formData)
-}
-getTemplateRequests(id: string) {
-  // return this.http.get<any>(`${environment.studentService}/v1/b2bStudent-bulk-upload/${id}`);
-}
-downloadSample(){
-  // return this.http.get<Blob>(`${environment.studentService}/v1/b2bStudent-bulk-upload/studentTemplate`, { observe: 'response', responseType: 'blob' as 'json' });
-}
+
 }
