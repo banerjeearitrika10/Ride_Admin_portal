@@ -44,6 +44,7 @@ export class HeaderComponent
   docElement: HTMLElement | undefined;
   isFullScreen = false;
   userFullName: string = "Aritrika";
+  employeeDetails: any;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -110,7 +111,9 @@ export class HeaderComponent
   ]; */
   ngOnInit() {
     this.config = this.configService.configData;
-
+    let detail:any = localStorage.getItem('empDetails');
+    this.employeeDetails = JSON.parse(detail); 
+    this.userFullName = `${this.employeeDetails.firstName} ${this.employeeDetails.lastName}`
     // const userRole = this.authService.currentUserValue.role;
     // this.userImg = this.authService.currentUserValue.img;
 

@@ -39,8 +39,8 @@ export class FilterDialogComponent implements OnInit, OnDestroy  {
   ngOnInit() {
 
     this.filterForm = new FormGroup({
-      fromDate: new FormControl(''),
-      toDate: new FormControl(''),
+      fromDate: new FormControl(new Date()),
+      toDate: new FormControl(new Date()),
       status: new FormControl(''),
     });
 
@@ -53,10 +53,26 @@ export class FilterDialogComponent implements OnInit, OnDestroy  {
   }
 
   applyFilter() {
+    this.filterForm.controls['fromDate'].patchValue(this.convertDateToExactISOString(this.filterForm.controls['fromDate'].value));
+    this.filterForm.controls['toDate'].patchValue(this.convertDateToExactISOString(this.filterForm.controls['toDate'].value));
     this.dialogRef.close(this.filterForm.value);
     this.filterForm.reset();
   }
-
+  convertDateToExactISOString(date:string): string {
+    // Input date string
+     const inputDate = new Date(date);
+    
+    // Get the components of the date
+    const year = inputDate.getFullYear();
+    const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const day = String(inputDate.getDate()).padStart(2, '0');
+    const hours = String(inputDate.getHours()).padStart(2, '0');
+    const minutes = String(inputDate.getMinutes()).padStart(2, '0');
+    const seconds = String(inputDate.getSeconds()).padStart(2, '0');
+    
+    // Construct the ISO string without converting to UTC
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+  }
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

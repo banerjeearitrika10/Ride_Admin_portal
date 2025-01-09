@@ -12,29 +12,30 @@
             <div formGroupName="raisedBy" class="col-lg-4 col-md-6 col-sm-12 " >
                 <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>Name of User</mat-label>
-                    <input class="form-control" matInput type="text" placeholder="Enter Name" formControlName="employee_name" [readonly]="true">
+                    <input matInput class="form-control" type="text" placeholder="Enter Name" formControlName="employeeName" [readonly]="true">
                 </mat-form-field>
             </div>
             <div formGroupName="raisedBy" class="col-lg-4 col-md-6 col-sm-12 " >
               <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Contact Number of the User</mat-label>
-                <input matInput type="number" placeholder="Enter Contact number" formControlName="employee_contactNo">
+                <input matInput type="number" placeholder="Enter Contact number" formControlName="employeeContactNo" [readonly]="true">
             </mat-form-field>
           </div>
           <div formGroupName="raisedBy" class="col-lg-4 col-md-6 col-sm-12 " >
             <mat-form-field class="example-full-width" appearance="outline">
-              <mat-label>Select Department</mat-label>
-              <mat-select formControlName="employee_dept">
+              <mat-label>Department</mat-label>
+              <input matInput type="text" placeholder="Enter Department" formControlName="employeeDept" [readonly]="true">
+              <!-- <mat-select formControlName="employee_dept">
                   <mat-option *ngFor="let dept of department" [value]="dept.value">
                       {{dept.label}}
                   </mat-option>
-              </mat-select>
+              </mat-select> -->
           </mat-form-field>
         </div>
         </div>
         </div>
-        <label class="label_info"><h4>Traveller Information</h4></label>
-        <div class="row pt-4">
+        <label class="label_info" *ngIf="isOnbehalf"><h4>Traveller Information</h4></label>
+        <div class="row pt-4" *ngIf="isOnbehalf">
             <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor">
                 <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>Booking For</mat-label>
@@ -49,16 +50,16 @@
           <div class="col-lg-4 col-md-6 col-sm-12 "  formGroupName="raisedFor" *ngIf="isEmployee">
             <mat-form-field class="example-full-width" appearance="outline">
               <mat-label>Select Department</mat-label>
-              <mat-select formControlName="onbehalfDepartment">
-                  <mat-option *ngFor="let dept of department" [value]="dept.value">
-                      {{dept.label}}
+              <mat-select formControlName="onbehalfDepartmentCode" (selectionChange)="onSelectDepartment()">
+                  <mat-option *ngFor="let dept of departmentList" [value]="dept.departmentCode">
+                      {{dept.departmentDescription}}
                   </mat-option>
               </mat-select>
             </mat-form-field>
         </div>
         <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor" *ngIf="isEmployee">
           <mat-form-field appearance="outline" class="example-full-width">
-            <mat-label>Name of Employee</mat-label>
+            <mat-label>Name of Traveller</mat-label>
             <!-- <input matInput [(ngModel)]="searchTerm" 
             
              (focus)="filteredItems.length > 0 ? showDropdown = true : showDropdown = false" 
@@ -68,25 +69,31 @@
              [ngModelOptions]="{standalone: true}"> -->
 
               <!-- Filtered List -->
-              <input class="form-control" matInput type="text" placeholder="Enter Name" formControlName="onbehalfName">
-     
+              <!-- <input class="form-control" matInput type="text" placeholder="Enter Name" formControlName="onbehalfName"> -->
+              <div >
+                <input matInput type="text" placeholder="Enter Name" formControlName="onbehalfName">
+              </div>
+              <button mat-icon-button matSuffix aria-label="Search" (click)="searchEmployee()">
+                <mat-icon>search</mat-icon>
+              </button>
         </mat-form-field>
-        <div class="d-flex justify-content-center" *ngIf="filteredItems.length > 0 && showDropdown">
+       
+        <div class="d-flex justify-content-center dropdown-container" *ngIf="filteredItems.length > 0 ">
           <ul class="list-group">
             <li *ngFor="let item of filteredItems" (click)="selectItem(item)" class="list-group-item">
-              {{ item }}
+              {{ item.firstName }} {{item.lastName}} - {{item.emailId}}
             </li>
           </ul>
          </div>
       
         <!-- No Results Message -->
-        <div *ngIf="filteredItems.length === 0 && searchTerm.length > 0 && showDropdown">
+        <!-- <div *ngIf="filteredItems.length === 0">
           <p>No matching items found</p>
-        </div>
+        </div> -->
       </div>
       <div class="col-lg-4 col-md-6 col-sm-12 " formGroupName="raisedFor" *ngIf="!isEmployee">
         <mat-form-field appearance="outline" class="example-full-width">
-            <mat-label>Name of Guest</mat-label>
+            <mat-label>Name of Traveller</mat-label>
             <input matInput type="text" placeholder="Enter Name" formControlName="onbehalfName">
         </mat-form-field>
     </div>
@@ -122,13 +129,13 @@
             <mat-form-field class="example-full-width" appearance="outline">
               <mat-label>Car Reporting Date-Time</mat-label>
               <input matInput [matDatetimepicker]="reportingDatePicker" placeholder="Reporting Date"
-                  [formControl]="bookingForm.controls['carReportingDatetime']" readonly
+                  [formControl]="this.bookingForm.get('bookingReportDto.carReportingDatetime')" readonly
                   (click)="reportingDatePicker.open()" [min]="selectedDate" />
               
               <mat-datetimepicker-toggle matSuffix [for]="reportingDatePicker"></mat-datetimepicker-toggle>
               <mat-datetimepicker #reportingDatePicker type="datetime"></mat-datetimepicker>
               
-              <mat-hint *ngIf="bookingForm.controls['carReportingDatetime'].hasError('required') && bookingForm.controls['carReportingDatetime'].touched"
+              <mat-hint *ngIf="this.bookingForm.get('bookingReportDto.carReportingDatetime')?.hasError('required') && this.bookingForm.get('bookingReportDto.carReportingDatetime')?.touched"
                   class="text-danger font-14">You must include Reporting Date.</mat-hint>
             </mat-form-field>
             
@@ -202,7 +209,7 @@
               (selectionChange)="onSelectCar()">
               <mat-option value="" disabled>Select</mat-option>
                   <mat-option *ngFor="let car of carType" [value]="car.id">
-                      {{car.name}}
+                      {{car.carType}}
                   </mat-option>
               </mat-select>
             </mat-form-field>
@@ -213,6 +220,7 @@
                 <input class="form-control" matInput type="text"
                 placeholder="Enter Cost of Car"
                 value="{{ costOfCar }}"
+                [disabled]="mode == 'view'"
                 [readonly]="true">
             </mat-form-field>
           </div>
@@ -253,10 +261,12 @@
               <mat-select 
               placeholder="Select"
               name="costCenter"
-              formControlName="costCenterCode">
+              formControlName="costCenterCode" (selectionChange)="onSelectCoseCenter()">
               <mat-option value="" disabled>Select</mat-option>
-                  <mat-option 
+                  <mat-option *ngFor="let cc of costCenterList"
+                  [value]="cc.costCenterCode"
                   >
+                  {{cc.costCenterDescription}}
                   </mat-option>
               </mat-select>
             </mat-form-field>
@@ -267,10 +277,10 @@
               <mat-select 
               placeholder="Select"
               name="eventCode"
-              formControlName="eventCode">
+              formControlName="eventCode" (selectionChange)="onSelectEvent()">
               <mat-option value="" disabled>Select</mat-option>
-                  <mat-option 
-                  >
+                  <mat-option *ngFor="let ec of eventList" [value]="ec.eventCode"
+                  >{{ec.eventDescription}}
                   </mat-option>
               </mat-select>
             </mat-form-field>
@@ -287,7 +297,7 @@
             <div  style="display: flex;justify-content:flex-start;">
               <span class="lebel-style align-items-center" style="margin-right: 10px;"
               >Destination : </span>
-              <button type="button" title="Add" class="counter-button mb-2"
+              <button type="button" title="Add" class="counter-button mb-2" [disabled]="mode == 'view'"
                   (click)="addDestination()">
                   + Add Destination
               </button>
@@ -368,7 +378,7 @@
               <div class="col-lg-4 col-md-6 col-sm-12 " >
                 <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>Address of Reporting</mat-label>
-                    <input #autocomplete id="autocomplete" class="form-control" matInput type="text"  
+                    <input #autocomplete id="autocomplete-{{ carDetailsIndex }}" class="form-control" matInput type="text"  
                     placeholder="Enter Address of Reporting"
                     formControlName="reportingAddress">
                 </mat-form-field>

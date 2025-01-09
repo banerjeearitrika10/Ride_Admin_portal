@@ -33,6 +33,11 @@ export class AppComponent {
       else{
         this.authService.getToken().then((token) => {
           console.log('Extracted Token:', token);
+
+            if(this.authService.getParseToken().userType != 'ADMIN'){
+              this.authService.logout();
+            }
+
           localStorage.setItem('currentUserToken', token);
           this.getEmployeeDetails();
         });
@@ -49,11 +54,15 @@ export class AppComponent {
    
   }
   getEmployeeDetails() {
+    console.log(this.authService.getParseToken()?.email);
+    
     let params={query:"byEmail",emailId:this.authService.getParseToken()?.email}
     this.bookingService.getEmpDetails(params).subscribe({
       next: (data)=>{
         this.empDetails = data;
-        localStorage.setItem('empDetails',this.empDetails);
+        console.log(data);
+        
+        localStorage.setItem('empDetails',JSON.stringify(this.empDetails));
       }
     })
   }

@@ -1,7 +1,7 @@
 export interface IBookingResponse {
   id: number;
   bookingCode: string;
-  raisedby: RaisedByWrapper;
+  raisedBy: RaisedByWrapper;
   bookingReportDto: BookingReportDto;
   numPersonsTravelling: number;
   locationType: string;
@@ -20,10 +20,10 @@ export interface IBookingResponse {
 }
 
 export interface RaisedByWrapper {
-  employee_dept: string;
-  employee_name: string;
-  employee_emailId: string;
-  employee_contactNo: string;
+  employeeDept: string;
+  employeeName: string;
+  employeeEmailId: string;
+  employeeContactNo: string;
 }
 
 export interface BookingReportDto {
@@ -37,10 +37,10 @@ export interface BookingReportDto {
 
 export interface RaisedForWrapper {
   behalfBookingType:string;
-  onBehalf_dept: string | null;
-  onBehalf_name: string | null;
-  onBehalf_emailId: string| null;
-  onBehalf_contactNo: string| null;
+  onbehalfDepartment: string | null;
+  onbehalfName: string | null;
+  onbehalfEmployeeEmailId: string| null;
+  onbehalfContactNo: string| null;
 }
 
 export interface IFilter {

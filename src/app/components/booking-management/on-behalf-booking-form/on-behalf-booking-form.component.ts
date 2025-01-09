@@ -1,6 +1,9 @@
 import { Component, ElementRef, Input, NgZone, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, forkJoin, takeUntil } from 'rxjs';
+import { BookingService } from '../../services/booking.service';
+import { MasterService } from '../../services/master.service';
+import { ICarType, IDepartment, IEvent } from '../../services/models/master-data';
 
 @Component({
   selector: 'app-on-behalf-booking-form',
@@ -12,8 +15,10 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     @Input() mode!:any;
     @Input() userDetails!:any;
     @Input() isApprove:boolean = false;
-    @ViewChild('autocomplete') autocompleteInput!: ElementRef<HTMLInputElement>;
-    private autocomplete!: google.maps.places.Autocomplete;
+    // @ViewChild('autocomplete') autocompleteReportingInput!: ElementRef<HTMLInputElement>;
+    // private autocompleteReporting!: google.maps.places.Autocomplete;
+    @ViewChildren('autocomplete') autocompleteReportingInput!: QueryList<ElementRef>;
+    private autocompleteReporting: Map<number, google.maps.places.Autocomplete> = new Map();
     // @ViewChildren('googleAutocomplete') googleAutocompleteInputs!: QueryList<ElementRef<HTMLInputElement>>;
     @ViewChildren('googleAutocomplete') autocompleteInputs!: QueryList<ElementRef>;
     private autocompleteInstances: Map<number, google.maps.places.Autocomplete> = new Map();
@@ -34,10 +39,10 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       { label: 'Internal Employee', value: 'INTERNAL_EMPLOYEE' },
       { label: 'External Guests', value: 'EXTERNAL' },
     ];
-    department:any=[
-      { label: 'Marketing', value: 'MARKETING' },
-      { label: 'Sales', value: 'SALES' },
-    ];
+    // department:any=[
+    //   { label: 'Marketing', value: 'MARKETING' },
+    //   { label: 'Sales', value: 'SALES' },
+    // ];
     employeeList:any=[
       {
         id:6787,
@@ -48,53 +53,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
         name:"Kalyan Roy"
       }
     ]
-    carType: any = [
-      {
-        id:"Dz",
-        name: 'Dzire (4 + 1 persons)',
-        cost: 120,
-      },
-      {
-        id:"Al",
-        name: 'Altis (4 + 1 persons) ',
-        cost: 300,
-      },
-      {
-        id:"In",
-        name: 'Innova Crysta (5 +1  persons) ',
-        cost: 250,
-      },
-      {
-        id:"Fo",
-        name: 'Fortuner (5 +1  persons) ',
-        cost: 600,
-      },
-      {
-        id:"Ho",
-        name: 'Honda City (4 +1  persons)',
-        cost: 170,
-      },
-      {
-        id:"Me",
-        name: 'Mercedes (4 +1  persons)',
-        cost: 1000,
-      },
-      {
-        id:"Er",
-        name: 'Ertiga (5 + 1 persons) ',
-        cost: 900,
-      },
-      {
-        id:"wi",
-        name: 'Winger (13 + 1 seater) ',
-        cost: 500,
-      },
-      {
-        id:"Tr",
-        name: 'Traveler (25 + 1 seater) ',
-        cost: 2000,
-      },
-    ];
+    carType!: ICarType[];
     travelLocation: any = [
       { label: 'Local ', value: 'LOCAL' },
       { label: 'Outstation', value: 'OUTSTATION' },
@@ -104,53 +63,49 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     items: string[] = ['John', 'Jane', 'Mike', 'Emily', 'Sophia', 'Michael'];
     showDropdown: boolean = false;
   isEmployee: boolean = true;
-    constructor(public fb: FormBuilder,private ngZone: NgZone) { }
+  employeeDetails!: any;
+  costCenterList:any = [];
+  departmentList!:IDepartment[];
+  eventList!:IEvent[];
+  isOnbehalf: boolean = true;
+    constructor(public fb: FormBuilder,
+      private ngZone: NgZone,
+      public bookingService:BookingService,
+      public masterService:MasterService) { }
   
     ngOnInit(): void {
       console.log(this.bookingFormValue);
+      let detail:any = localStorage.getItem('empDetails');
+      this.employeeDetails = JSON.parse(detail); 
+      console.log(this.employeeDetails);
       
-      this.initiateForm();
+      // this.costCenterList = this.employeeDetails?.costCenter;
+      
+      if(this.bookingFormValue){
+        this.initiateForm();
+        this.loadDataAndInitializeForm();
+      }
+      else{
+        this.getAllDepartment();
+        this.getAllCarType();
+        this.initiateForm();
+      }
       this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.valueChanges.subscribe((selectedDate: Date) => {
         this.onRepeateDateSelected();
       });
-      this.bookingForm.controls['carReportingDatetime'].valueChanges.subscribe((selectedDate: Date) => {
+      this.bookingForm.get('bookingReportDto.carReportingDatetime')?.valueChanges.subscribe((selectedDate: Date) => {
         this.onReportingDateSelected();
       });
-     if(this.mode == 'view'){
-      this.bookingForm.get('raisedBy.employee_name')?.disable();
-      this.bookingForm.get('raisedBy.employee_contactNo')?.disable();
-      this.bookingForm.get('raisedBy.employee_dept')?.disable();
-     }
+    //  if(this.mode == 'view'){
+    //   this.bookingForm.get('raisedBy.employee_name')?.disable();
+    //   this.bookingForm.get('raisedBy.employee_contactNo')?.disable();
+    //   this.bookingForm.get('raisedBy.employee_dept')?.disable();
+    //  }
 
       // this.selectedDate = this.parseDateString(this.selectedDate);
       this.minDate = this.selectedDate;
       this.maxDate = this.addDaysToDate(this.minDate);
-      // this.loginService
-      //   .getUserDetails()
-      //   .pipe(takeUntil(this.destroyed$))
-      //   .subscribe((result) => {
-      //     this.userDetail = result;
-      //     console.log(this.userDetail);
-      //   });
-        if(this.bookingFormValue){
-          console.log(new Date(this.bookingFormValue.repeatDate));//Important
-          
-          this.bookingFormValue.bookingLocationMap.forEach(element => {
-            if(this.bookingFormValue.bookingLocationMap.length>this.bookingLocationMap.length){
-              this.bookingForm.controls['numCarsRequired'].patchValue(this.bookingForm.controls['numCarsRequired'].value + 1)
-              this.addCarDetails();
-            }
-          });
-          this.bookingForm.patchValue(this.bookingFormValue);
-          this.onChangeBookingPreference();
-          this.onSelectCar();
-          this.minDate = this.bookingForm.controls['carReportingDatetime'].value;
-          this.maxDate = this.addDaysToDate(this.minDate);
-          this.searchTerm=this.bookingFormValue?.riderName;
-          if(this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value){
-            this.onRepeateDateSelected();
-          }
-        }
+       
         console.log(this.mode);
         
         if(this.mode == 'view'){
@@ -161,34 +116,104 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       this.destroyed$.next();
       this.destroyed$.complete();
     }
+
     ngAfterViewInit(): void {
-      const input = this.autocompleteInput.nativeElement;
-  
-      if (!input) {
-        console.error('Autocomplete input element not found');
-        return;
-      }
-  
-      this.autocomplete = new google.maps.places.Autocomplete(input, {
-        types: ['geocode'],
-        componentRestrictions: {country: "IN"} 
-      });
-      this.autocomplete.addListener('place_changed', () => {
-        this.ngZone.run(() => {
-          const place: google.maps.places.PlaceResult = this.autocomplete.getPlace();
-  
-          if (place.geometry) {
-            console.log('Selected Place Details:', place);
-          } else {
-            console.warn('No details available for input:', place.name);
-          }
-        });
-      });
+
       this.initAutocomplete();
+      this.initAutocompleteReporting();
+    }
+    loadDataAndInitializeForm() {
+      forkJoin({
+        departments: this.masterService.getAllDepartment(),
+        carTypes: this.masterService.getAllCarType()
+      }).subscribe({
+        next: ({ departments, carTypes }) => {
+          this.departmentList = departments;
+          this.carType = carTypes;
+          this.getBookingDetail();
+
+        },
+        error: (error) => {
+          console.error('Error loading data:', error);
+        }
+      });
+    }
+    getBookingDetail(){
+    
+          if(this.bookingFormValue){
+          
+            this.bookingFormValue.bookingLocationMap.forEach(element => {
+              if(this.bookingFormValue.bookingLocationMap.length>this.bookingLocationMap.length){
+                this.addCarDetails();
+              }
+            });
+            this.bookingFormValue.destination.forEach(ele=>{
+              if(this.bookingFormValue.destination.length>this.destination.length){
+                this.addDestination();
+              }
+            })
+            this.bookingForm.patchValue(this.bookingFormValue);
+            if(this.bookingForm.controls['bookingType'].value =='ON_BEHALF'){
+              this.isOnbehalf = true;
+              if(this.departmentList){
+               this.onSelectDepartment();
+              }
+             }
+             else{
+              this.isOnbehalf = false;
+              this.bookingForm.controls['bookingType'].patchValue('SELF');
+             }
+            this.onSelectCoseCenter();
+            if(this.bookingFormValue.bookingLocationMap.length>1){
+              this.bookingForm.controls['reportingLocation'].patchValue('different')
+            }
+            this.bookingFormValue.bookingLocationMap.forEach(element => {
+              if(this.bookingFormValue.bookingLocationMap.length>this.bookingLocationMap.length){
+                this.bookingForm.controls['numCarsRequired'].patchValue(this.bookingForm.controls['numCarsRequired'].value + 1)
+              }
+            });
+            if(this.bookingFormValue.bookingReportDto.bookingPreference != 'ONCE'){
+              this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.patchValue(this.convertISOStringToFixedLocalDateTime((this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value)))
+              this.onRepeateDateSelected();
+            }
+            else{
+              this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.patchValue(this.convertISOStringToFixedLocalDateTime((this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value)))
+            }
+            this.onChangeBookingPreference();
+            this.onSelectCar();
+            this.bookingForm.get('bookingReportDto.carReportingDatetime')?.patchValue(this.convertISOStringToFixedLocalDateTime((this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value)[0]))
+            this.minDate = new Date((this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value)[0]);
+            this.maxDate = this.addDaysToDate(this.minDate);
+            // this.searchTerm=this.bookingFormValue?.riderName;
+            // if(this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value){
+            //   this.onRepeateDateSelected();
+            // }
+          }
+        
+
+    }
+    getAllDepartment(){
+      this.masterService.getAllDepartment().subscribe({
+        next:(data:IDepartment[])=>{
+          this.departmentList = data;
+        }
+      })
+    }
+    getAllCostCenter(){
+      this.masterService.getAllCostCenterByDepartmentCode(this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value).subscribe({
+        next:(data)=>{
+          this.costCenterList = data;
+        }
+      })
+    }
+    getAllCarType(){
+      this.masterService.getAllCarType().subscribe({
+        next:(data:ICarType[])=>{
+          this.carType = data;
+        }
+      })
     }
     initAutocomplete(): void {
-
-        
       this.autocompleteInputs.forEach((inputRef, index) => {
         if (this.autocompleteInstances.has(index)) return; // Skip already initialized inputs
   
@@ -219,35 +244,77 @@ export class OnBehalfBookingFormComponent  implements OnInit {
         this.autocompleteInstances.set(index, autocomplete);
       });
       }
-      realignAutocompleteInstances(): void {
-        const updatedInstances = new Map<number, google.maps.places.Autocomplete>();
-        Array.from(this.autocompleteInstances.entries()).forEach(([oldIndex, instance], newIndex) => {
-          updatedInstances.set(newIndex, instance);
+    initAutocompleteReporting(): void {
+      this.autocompleteReportingInput.forEach((inputRef, index) => {
+        if (this.autocompleteReporting.has(index)) return; // Skip already initialized inputs
+  
+        const input = inputRef.nativeElement;
+        const options = {
+          types: ['geocode'],
+          componentRestrictions: { country: 'IN' }, // Customize as needed
+        };
+  
+        const autocomplete = new google.maps.places.Autocomplete(input, options);
+  
+        // Add event listener for place_changed
+        autocomplete.addListener('place_changed', () => {
+          this.ngZone.run(() => {
+            const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+  
+            if (place.geometry) {
+              const bookingLocationGroup = this.bookingLocationMap.at(index) as FormGroup;
+              bookingLocationGroup.get('reportingAddress')?.setValue(place.formatted_address || '');
+            } else {
+              console.warn(`No details available for input: ${input.value}`);
+            }
+          });
         });
-        this.autocompleteInstances = updatedInstances;
+  
+        // Store the Autocomplete instance
+        this.autocompleteReporting.set(index, autocomplete);
+      });
       }
+    realignAutocompleteInstances(): void {
+      const updatedInstances = new Map<number, google.maps.places.Autocomplete>();
+      Array.from(this.autocompleteInstances.entries()).forEach(([oldIndex, instance], newIndex) => {
+        updatedInstances.set(newIndex, instance);
+      });
+      this.autocompleteInstances = updatedInstances;
+    }
+    realignAutocompleteInstancesReporting(): void {
+      const updatedInstances = new Map<number, google.maps.places.Autocomplete>();
+      Array.from(this.autocompleteReporting.entries()).forEach(([oldIndex, instance], newIndex) => {
+        updatedInstances.set(newIndex, instance);
+      });
+      this.autocompleteReporting = updatedInstances;
+    }
     initiateForm() {
       this.bookingForm = this.fb.group({
         raisedBy: this.fb.group({
-          employee_name:[null],
-          employee_contactNo:[null],
-          employee_emailId:[null],
-          employee_dept:[null]
+          employeeName:[`${this.employeeDetails?.firstName} ${this.employeeDetails?.lastName}`],
+          employeeContactNo:[this.employeeDetails?.contactNo],
+          employeeEmailId:[this.employeeDetails?.emailId],
+          employeeDept:[this.employeeDetails?.departmentDescription],
+          employeeDeptCode:[this.employeeDetails?.departmentCode],
+          employeeId:[this.employeeDetails?.id]
         }),
         raisedFor: this.fb.group({
           onbehalfType:['INTERNAL_EMPLOYEE'],
           onbehalfContactNo:[null],
           onbehalfName:[null],
-          onbehalfDepartment:[null]
+          onbehalfDepartment:[null],
+          onbehalfDepartmentCode:[null],
+          onbehalfEmployeeEmailId:[null],
+          onbehalfEmployeeId:[null]
         }),
         carTypeId: ['',Validators.required],
         numPersonsTravelling: [1],
         numCarsRequired:[1],
+        originatedFrom: ["APP"],
         destination: this.fb.array([this.fb.control('', Validators.required)]),
         // bookingPreference: ['once'],
         locationType: ['LOCAL'],
         reportingLocation: ['same'],
-        carReportingDatetime: [this.selectedDate,[Validators.required]],
         // carRequiredTillDatetime: [this.selectedDate],
         costCenterCode: [''],
         eventCode: [''],
@@ -258,13 +325,11 @@ export class OnBehalfBookingFormComponent  implements OnInit {
           bookingPreference: ['ONCE'],
           excludeSunday: [true],
           excludeSaturday: [true],
+          carReportingDatetime: [this.selectedDate,[Validators.required]],
           carRequiredTillDatetime: [this.selectedDate],
           carRepeatTillDate: [this.selectedDate],
           selectedDaysInaWeek: [],
-        }),
-        onbehalfEmployeeEmailId:[null],
-        name:[null],
-        contactNo:[null]
+        })
       });
     }
   
@@ -273,9 +338,16 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     }
     addCarDetails() {
       this.bookingLocationMap.push(this.newCarDetails());
+      setTimeout(()=>{
+        this.initAutocompleteReporting();
+      },0)
     }
     removeCarDetails(index: number) {
       this.bookingLocationMap.removeAt(index);
+      if (this.autocompleteReporting.has(index)) {
+        this.autocompleteReporting.delete(index);
+      }
+      this.realignAutocompleteInstances();
     }
     get destination() {
       return (this.bookingForm.get('destination') as FormArray);
@@ -301,9 +373,9 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       return this.fb.group({
         contactName: [''],
         contactNumber: [''],
-        carReleaseDatetime: [this.selectedDate],
+        // carReleaseDatetime: [this.selectedDate],
         reportingAddress: [''],
-        releaseAddress: [''],
+        // releaseAddress: [''],
       });
     }
     reinitializeFormArray() {
@@ -347,11 +419,11 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       
         if(this.bookingForm.get('bookingReportDto.bookingPreference')?.value == 'DAILY'){
           this.ifhasSaturday = this.hasSaturday(
-            this.bookingForm.controls['carReportingDatetime'].value,
+            this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value,
             this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value
           );
           this.ifhasSunday = this.hasSunday(
-            this.bookingForm.controls['carReportingDatetime'].value,
+            this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value,
             this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value
           );
         }
@@ -359,12 +431,15 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     }
   
     onReportingDateSelected() {
-      console.log(this.bookingForm.controls['carReportingDatetime'].value);
+      console.log(this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value);
+      console.log(this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value);
       
-      (this.minDate =  this.bookingForm.controls['carReportingDatetime'].value),
+      (this.minDate =  this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value),
       this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value;
+      this.minDate =  this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value
     this.maxDate = this.addDaysToDate(this.minDate);
-    this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.patchValue(this.minDate);
+    // this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.patchValue(this.minDate);
+    // this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.patchValue(this.minDate);
 
     }
     async dismiss() {
@@ -435,9 +510,11 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       // )[0].cost;
       // this.bookingForm.controls['costOfCar'].patchValue(this.costOfCar);
       //console.log(this.carType.filter((value:any)=>value.name==event.detail.value));
+      console.log(this.carType);
+      
       this.costOfCar = this.carType.filter(
         (value: any) => value.id == this.bookingForm.controls['carTypeId'].value
-      )[0].cost;
+      )[0].ratePerHour;
     }
     increment() {
         if (this.bookingForm.controls['numCarsRequired'].value < this.bookingForm.controls['numPersonsTravelling'].value) {
@@ -518,10 +595,12 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     }
    
     onSelectBookingPerson(){
+      this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(null);
+      this.bookingForm.get('raisedFor.onbehalfContactNo')?.patchValue(null);
+      this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(null);
       console.log(this.bookingForm.get('raisedFor.onbehalfType')?.value );
       
       if(this.bookingForm.get('raisedFor.onbehalfType')?.value == "INTERNAL"){
-
         this.isEmployee = true;
       }
       else{
@@ -549,8 +628,14 @@ export class OnBehalfBookingFormComponent  implements OnInit {
   }
 
   // Select an item from the dropdown
-  selectItem(item: string) {
-    this.searchTerm = item; // Set the selected item as the input value
+  selectItem(item: any) {
+    this.searchTerm = item;
+    let name = `${item.firstName} ${item.lastName}`;
+    this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(name);
+    this.bookingForm.get('raisedFor.onbehalfEmployeeEmailId')?.patchValue(item.emailId);
+    this.bookingForm.get('raisedFor.onbehalfEmployeeId')?.patchValue(item.id);
+    // this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(item.contactNo);
+    // this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(item.departmentCode);
     this.filteredItems = []; // Clear the dropdown
     this.showDropdown = false; // Hide the dropdown after selection
   }
@@ -559,5 +644,59 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       this.showDropdown = false;
     }, 150); // Add a small delay to allow item click before hiding the dropdown
   }
+  onSelectCoseCenter(){
+    this.masterService.getEventByCostCode(this.bookingForm.controls['costCenterCode'].value).subscribe({
+      next:(data:IEvent[])=>{
+        this.eventList=data;
+      }
+    })
+  }
+  onSelectEvent(){
+    console.log(this.bookingForm.controls['eventCode'].value);
+    
+    
+  }
+  searchEmployee(){
+    console.log(this.bookingForm.get('raisedFor.onbehalfName')?.value);
+    let params = {
+      searchText:this.bookingForm.get('raisedFor.onbehalfName')?.value,
+      departmentId:this.bookingForm.get('raisedFor.onbehalfDepartment')?.value,
+      query:"searchByName" 
+    }
+    this.bookingService.searchEmployeeByName(params).subscribe({
+      next:(data)=>{
+        this.filteredItems=data;
+      }
+    })
+    
+  }
+  onSelectDepartment(){
+    this.getAllCostCenter();
+    this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(
+      this.departmentList.filter((data:any)=>data.departmentCode == this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value)[0].departmentDescription
+    );
+  }
+  convertISOStringToFixedLocalDateTime(isoString:string) {
+    // Input ISO date string
+    // Split the ISO string into date and time components
+    const [datePart, timePart] = isoString.split("T");
+    const [year, month, day] = datePart.split("-");
+    const [hour, minute, second] = timePart.replace("Z", "").split(":");
+  
+    // Create a new Date object in local time with the same date and time
+    const date = new Date(
+      Number(year),
+      Number(month) - 1, // JavaScript months are zero-indexed
+      Number(day),
+      Number(hour),
+      Number(minute),
+      Number(second)
+    );
+    console.log(date);
+    
+    // Return the date as a string without altering the time
+    return date; // Example: "Thu Jan 30 2025 08:00:00 GMT+0530 (India Standard Time)"
+  }
+  
 }
 

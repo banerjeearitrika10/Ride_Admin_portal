@@ -34,6 +34,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   headerHeight = 60;
   currentRoute?: string;
   routerObj;
+  employeeDetails: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
@@ -81,29 +82,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.sidebarItems = ROUTES.filter(
       (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf('All') !== -1
     );
-
-    /* if (this.authService.currentUserValue) {
-      const userRole = this.authService.currentUserValue.role;
-      this.userFullName =
-        this.authService.currentUserValue.firstName +
-        ' ' +
-        this.authService.currentUserValue.lastName;
-      this.userImg = this.authService.currentUserValue.img;
-
-      this.sidebarItems = ROUTES.filter(
-        (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf('All') !== -1
-      );
-      if (userRole === Role.Admin) {
-        this.userType = Role.Admin;
-      } else if (userRole === Role.Teacher) {
-        this.userType = Role.Teacher;
-      } else if (userRole === Role.Student) {
-        this.userType = Role.Student;
-      } else {
-        this.userType = Role.Admin;
-      }
-    } */
-
+    let detail:any = localStorage.getItem('empDetails');
+    this.employeeDetails = JSON.parse(detail); 
+    this.userFullName = `${this.employeeDetails.firstName} ${this.employeeDetails.lastName}`;
     this.initLeftSidebar();
     this.bodyTag = this.document.body;
   }

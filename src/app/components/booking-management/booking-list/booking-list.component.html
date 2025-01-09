@@ -2,28 +2,29 @@
     <div class="example-container mat-elevation-z8" tabindex="0">
         <table mat-table [dataSource]="dataSource" #outerSort="matSort"  multiTemplateDataRows class="mat-elevation-z8 detailTable" matSort>
 
-            <!-- Code Column -->
-            <ng-container matColumnDef="onBehalfOf">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by onBehalfOf">
-                    Booking For
-                </th>
-                <td mat-cell *matCellDef="let element" width="10%"> {{element.riderName}} </td>
-            </ng-container>
+        
 
             <!-- Name Column -->
             <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date">
                     Reporting Date
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.reportingDate)}} </td>
+                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.carReportingDatetime)}} </td>
             </ng-container>
+                <!-- Code Column -->
+                <ng-container matColumnDef="reportingAddress">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by reportingAddress">
+                        Pickup Location
+                    </th>
+                    <td mat-cell *matCellDef="let element" width="20%"> {{element.pickUpLocation[0].reportingAddress}} </td>
+                </ng-container>
 
             <!-- Type Column -->
             <ng-container matColumnDef="destination">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by destination">
                     Destination
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{element.destination}} </td>
+                <td mat-cell *matCellDef="let element" width="20%"> {{element.destination[element.destination.length-1]}} </td>
             </ng-container>
 
                <!-- Booking Preference -->
@@ -31,8 +32,8 @@
                 <th mat-header-cell *matHeaderCellDef>
                     Booking Preference
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%">
-                    {{element.bookingPreference ? element.bookingPreference : "---"}}
+                <td mat-cell *matCellDef="let element" width="10%">
+                    {{element.preference ? element.preference : "---"}}
                 </td>
             </ng-container>
 
@@ -42,7 +43,7 @@
                     Status
                 </th>
                 <td mat-cell *matCellDef="let element" width="10%">
-                    {{element.status ? element.status : "---"}}
+                    {{element.bookingStatus ? element.bookingStatus : "---"}}
                 </td>
             </ng-container>
 
@@ -100,22 +101,22 @@
                     Actions
                 </th>
                 <td mat-cell *matCellDef="let element;" width="20%">
-                    <button type="button" mat-icon-button class="table-action-button" matTooltip="View Details" (click)="editAndView(element, 'view')">
+                    <button   type="button" mat-icon-button class="table-action-button" matTooltip="View Details" (click)="editAndView(element, 'view')">
                         <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
-                    <button type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
+                    <button *ngIf="employeeDetails.emailId == element.raisedBy.employeeEmailId" type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
                     
-                    <ng-container *ngIf="!(element?.innerData?.data?.length);">
+                    <ng-container *ngIf="element.preference == 'ONCE' && element.bookingStatus == 'APPROVED';">
                         <button type="button" mat-icon-button class="table-action-button" matTooltip="Car Details" (click)="onClickCarDetails(element)">
                             <i class="fas fa-car" style="font-size: 22px; color: #b50064;"></i>
                         </button>
                     </ng-container>
                     <div class="vr"></div>
-                    <button type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element)">
+                    <button *ngIf="element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCEL'" type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element)">
                         <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
                     </button>
                     
@@ -123,9 +124,9 @@
             </ng-container>
             <ng-container matColumnDef="expandedDetail">
                 <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
-                    <div class="example-element-detail" *ngIf="element.innerData?.data.length"  [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <div class="example-element-detail" *ngIf="this.chaildDetails?.data.length"  [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                         <div class="inner-table mat-elevation-z8" *ngIf="expandedElement">
-                  <table #innerTables mat-table #innerSort="matSort" [dataSource]="element.innerData" matSort>
+                  <table #innerTables mat-table #innerSort="matSort" [dataSource]="this.chaildDetails" matSort>
                     <!-- <ng-container matColumnDef="{{innerColumn}}" *ngFor="let innerColumn of innerDisplayedColumns">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header> {{innerColumn}}</th>
 

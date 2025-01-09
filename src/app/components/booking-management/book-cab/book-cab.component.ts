@@ -1,46 +1,117 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 import { OnBehalfBookingFormComponent } from '../on-behalf-booking-form/on-behalf-booking-form.component';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-book-cab',
   templateUrl: './book-cab.component.html',
   styleUrl: './book-cab.component.scss'
 })
-export class BookCabComponent {
+export class BookCabComponent implements OnDestroy {
   private destroyed$ = new Subject<void>();
   @Input() isOpen: boolean = false;
   @Output() onCloseDrawer = new EventEmitter();
   @ViewChild(OnBehalfBookingFormComponent) OnBehalfBookingFormComponent!: OnBehalfBookingFormComponent;
+  constructor(public bookingService : BookingService) {
+ }
+ ngOnInit():void{
+   
+ }
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
  }
 
-  doCloseDrawer(state: string = '') {
+  doCloseDrawer() {
       this.isOpen = false;
-      this.onRequestRide()
-      this.onCloseDrawer.emit(state);
+      this.onCloseDrawer.emit();
   }
-  onRequestRide() {
+  onRequestRide(){
     console.log(this.OnBehalfBookingFormComponent.bookingForm.value);
+    let payload = this.OnBehalfBookingFormComponent.bookingForm.value;
+    
     if(this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.bookingPreference == "WEEKLY"){
-      let startdate = this.OnBehalfBookingFormComponent.bookingForm.value.carReportingDatetime;
+      let startdate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carReportingDatetime;
       let enddate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carRepeatTillDate;
       let weekDays = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.selectedDaysInaWeek;
       let dateRange = this.getDatesInRangeForDays(startdate,enddate,weekDays);
       console.log(dateRange);
+      payload.bookingReportDto.carRequiredTillDatetime = (payload.bookingReportDto.carRepeatTillDate).toISOString();
+      payload.bookingReportDto.carReportingDatetime = dateRange;
     }
     else if(this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.bookingPreference == "DAILY"){
-      let startdate = this.OnBehalfBookingFormComponent.bookingForm.value.carReportingDatetime;
+      let startdate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carReportingDatetime;
       let enddate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carRepeatTillDate;
       let excludeSaturday = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.excludeSaturday;
       let excludeSunday = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.excludeSunday;
       let dateRange = this.getDatesInRangeWithExclusions(startdate,enddate,excludeSaturday,excludeSunday);
       console.log(dateRange);
+      payload.bookingReportDto.carRequiredTillDatetime = (payload.bookingReportDto.carRepeatTillDate).toISOString();
+      payload.bookingReportDto.carReportingDatetime = dateRange
     }
-    console.log(new Date(this.OnBehalfBookingFormComponent.bookingForm.value.carReportingDatetime).toISOString());
+    else{
+      console.log(payload.bookingReportDto.carReportingDatetime);
+      
+      const reportingDate = payload.bookingReportDto.carReportingDatetime;
+      if (typeof reportingDate === 'string' && reportingDate.endsWith('Z')) {
+        payload.bookingReportDto.carReportingDatetime = [reportingDate]; // Already in UTC format
+      } else {
+        payload.bookingReportDto.carReportingDatetime = [this.convertDateToExactISOString(reportingDate)];
+      }
+      payload.bookingReportDto.carRequiredTillDatetime =this.convertDateToExactISOString( payload.bookingReportDto.carRequiredTillDatetime);
+    }
+    delete payload.bookingReportDto.carRepeatTillDate;
+    delete payload.reportingLocation;
+    // this.presentAlert("Booking should be done before 7pm");
+    console.log(payload);
     
+    this.bookingService.createBooking(payload).subscribe({
+      next: (data:any)=>{
+        console.log("responseData",data);
+        
+        this.doCloseDrawer();
+        window.location.reload()
+      },
+      error: (err:any)=>{
+        
+      }
+    })
+  }
+  convertDateToExactISOString(date:string): string {
+    // Input date string
+     const inputDate = new Date(date);
+    
+    // Get the components of the date
+    const year = inputDate.getFullYear();
+    const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const day = String(inputDate.getDate()).padStart(2, '0');
+    const hours = String(inputDate.getHours()).padStart(2, '0');
+    const minutes = String(inputDate.getMinutes()).padStart(2, '0');
+    const seconds = String(inputDate.getSeconds()).padStart(2, '0');
+    
+    // Construct the ISO string without converting to UTC
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+  }
+  convertISOStringToFixedLocalDateTime(isoString:string): string {
+    // Input ISO date string
+    // Split the ISO string into date and time components
+    const [datePart, timePart] = isoString.split("T");
+    const [year, month, day] = datePart.split("-");
+    const [hour, minute, second] = timePart.replace("Z", "").split(":");
+  
+    // Create a new Date object in local time with the same date and time
+    const date = new Date(
+      Number(year),
+      Number(month) - 1, // JavaScript months are zero-indexed
+      Number(day),
+      Number(hour),
+      Number(minute),
+      Number(second)
+    );
+  
+    // Return the date as a string without altering the time
+    return date.toString(); // Example: "Thu Jan 30 2025 08:00:00 GMT+0530 (India Standard Time)"
   }
   getDatesInRangeForDays(
     startDate: string, 

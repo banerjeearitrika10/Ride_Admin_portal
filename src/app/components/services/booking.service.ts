@@ -36,4 +36,29 @@ getBookingDetailsId(bookingId : string): Observable<IBookingResponse> {
   return this.http.get<IBookingResponse>(
       `${environment.bookingService}/v1/bookings/${bookingId}`);
 }
+getChildBooking(parentId:any,preference:any):Observable<any>{
+  return this.http.get<any>(
+    `${environment.bookingService}/v1/bookings/${parentId}`,
+    {
+      params:{
+        preference:preference,
+        query:"childBookingRequestByPreference"
+      }
+    }
+  );
+}
+createBooking(payload:any){
+  return this.http.post(`${environment.bookingService}/v1/bookings`, payload)
+}
+updateBooking(payload:any){
+  return this.http.put(`${environment.bookingService}/v1/bookings`, payload)
+}
+searchEmployeeByName(params:any):Observable<any>{
+  return this.http.get<any>(
+    `${environment.bookingService}/v1/employee`,{
+      params:{
+        ...params
+      }
+    });
+}
 }
