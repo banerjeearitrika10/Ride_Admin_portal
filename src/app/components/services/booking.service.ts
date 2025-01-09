@@ -61,4 +61,7 @@ searchEmployeeByName(params:any):Observable<any>{
       }
     });
 }
+cancleBooking(payload:any){
+  return this.http.patch(`${environment.bookingService}/v1/bookings?action=cancel`, payload);
+}
 }

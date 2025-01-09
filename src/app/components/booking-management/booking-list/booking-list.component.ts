@@ -132,7 +132,7 @@ export class BookingListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataFromDialog!: any;
   employeeDetails!: any;
-  chaildDetails: any;
+  chaildDetails: any=[];
 
   constructor(public bookingService:BookingService,public router: Router, private dialog: MatDialog,){}
   ngOnInit(): void {
@@ -170,13 +170,19 @@ export class BookingListComponent {
     console.log("Hiii");
     
     this.bookingService.getAllBooking({ ...payLoad }).subscribe({
-      next: (data) => {
+      next: (data:any) => {
         console.log("HIII");
+        console.log(data);
         
         this.showMessageIfTableIsBlank = data.content.length ? false : true;
-        this.dataSource = new MatTableDataSource(data.content);
+        this.bookingDetails = data.content.map(user => ({
+          ...user,
+          expanded: false, // Add an expanded property to manage toggle state
+          innerData: null, // Initialize as null to fetch data later
+        }));
+        this.dataSource = new MatTableDataSource(this.bookingDetails);
         this.bookingDetails = data.content;
-        this.totalItems = data.totalElements;
+        this.totalItems = data.page.totalElements;
         this.isLoading = false;
       },
       error: (err) => {
@@ -186,22 +192,22 @@ export class BookingListComponent {
     });
     
     this.showMessageIfTableIsBlank = data.content.length ? false : true;
-    data.content.forEach(user => {
-      if (user.innerData && Array.isArray(user.innerData) && user.innerData.length) {
-        this.usersData = [...this.usersData, {...user,innerData: new MatTableDataSource(user.innerData),expanded:false}];
-        console.log(this.usersData);
+    // data.content.forEach(user => {
+    //   if (user.innerData && Array.isArray(user.innerData) && user.innerData.length) {
+    //     this.usersData = [...this.usersData, {...user,innerData: new MatTableDataSource(user.innerData),expanded:false}];
+    //     console.log(this.usersData);
         
-      } else {
-        this.usersData = [...this.usersData, user];
-      }
-    });
-    console.log(this.usersData);
+    //   } else {
+    //     this.usersData = [...this.usersData, user];
+    //   }
+    // });
+    // console.log(this.usersData);
     
-    this.dataSource = new MatTableDataSource(this.usersData);
-    this.dataSource.sort = this.sort;
+    // this.dataSource = new MatTableDataSource(this.usersData);
+    // this.dataSource.sort = this.sort;
     // this.dataSource = new MatTableDataSource(data.content);
     // this.dataSource.sort = this.sort;
-    this.totalItems = data.totalElements;
+    // this.totalItems = data.totalElements;
     this.isLoading = false;
   }
   onPageChange(event: any) {
@@ -249,7 +255,7 @@ export class BookingListComponent {
     let data = this.bookingDetails.filter(data=>data.bookingId==element.bookingId)[0];
     this.router.navigate(['/booking-management/details'],{ state: { data: data,mode: mode }});
   }
-  cancleBooking(index: number) {
+  cancleBooking(id: number) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         maxWidth: '30vw',
         width: '100%',
@@ -261,26 +267,70 @@ export class BookingListComponent {
         .subscribe(result => {
             console.log(result);
             if (result) {
-               
+              this.bookingService.cancleBooking({parentBookingId:id}).subscribe({
+                next:(res:any)=>{
+                  this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W" });
+
+                },
+                error:(err:any)=>{
+                }
+              })
             }
         });
+}
+cancleChildBooking(element:any){
+  let cancleBookingDetails = element;
+  console.log();
+  
+  const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    maxWidth: '30vw',
+    width: '100%',
+    panelClass: 'qa-confirm-dialog'
+});
+
+dialogRef.afterClosed()
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe(result => {
+        console.log(result);
+        if (result) {
+          this.bookingService.cancleBooking({parentBookingId:cancleBookingDetails.parentBookingId,childDailyBookingId:cancleBookingDetails.id}).subscribe({
+            next:(res:any)=>{
+              this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W" });
+
+            },
+            error:(err:any)=>{
+            }
+          })
+        }
+    });
 }
 // isMainRow = (index: number, row: any) => !row.expanded;
 // isExpandedRow = (index: number, row: any) => row.expanded;
 toggleRow(element: any) {
-  if(element.preference != 'ONCE' ){
-    if(element.expanded == false){
-        this.bookingService.getChildBooking(element.bookingId,element.preference).subscribe({
-          next:(data)=>{
-            this.chaildDetails = data;
-            element.expanded = !element.expanded;
-          }
-        })
-      }
-    
+  // console.log(element.expanded);
+  
+  if (!element.expanded && element.preference != 'ONCE') {
+    // Fetch data only if the row is not expanded
+    this.bookingService.getChildBooking(element.bookingId, element.preference).subscribe({
+      next: (childData) => {
+        element.innerData = new MatTableDataSource(childData); // Assign fetched data
+        element.expanded = true; // Expand the row
+        this.expandedElement = element; // Track the expanded element
+        console.log(element);
+        
+        // element.innerData && (element.innerData as MatTableDataSource<any>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+        // this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<any>).sort = this.innerSort.toArray()[index]);
+      },
+      error: () => {
+        console.error("Error fetching child data");
+      },
+    });
+  } else {
+    // Collapse the row
+    element.expanded = false;
+    this.expandedElement = null;
   }
-  this.chaildDetails && (this.chaildDetails as MatTableDataSource<any>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
-  this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<any>).sort = this.innerSort.toArray()[index]);
+
 }
 onClickCarDetails(element:any){
   const dialogRef = this.dialog.open(CarDetailDialogComponent, {
