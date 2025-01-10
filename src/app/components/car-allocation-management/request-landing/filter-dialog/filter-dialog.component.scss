@@ -1,0 +1,16 @@
+.mat-dialog-header {
+    color: #9a3131;
+}
+
+.raised-button {
+    background-color: #dd0000;
+    color: white;
+}
+.stroke-button {
+    border: 1px solid #dd0000;
+    color: #dd0000;
+}
+.raised-button:disabled {
+    background-color: #c6ced8;
+    color: #aeb7c2
+}

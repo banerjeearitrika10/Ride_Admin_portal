@@ -1,0 +1,76 @@
+<ng-container>
+    <mat-card>
+        <div class="d-flex text-center justify-content-between p-3 mat-dialog-header align-items-center">
+            <div>
+                <h4>Filters</h4>
+            </div>
+            <!-- <div mat-dialog-close><mat-icon>close</mat-icon></div> -->
+            <button mat-icon-button mat-dialog-close type="button">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+    </mat-card>
+    <div mat-dialog-content class="p-3">
+        <form [formGroup]="filterForm">
+            <!-- <div class="d-flex flex-column">
+                <mat-form-field appearance="outline" class="example-full-width">
+                    <mat-label>Organization Code</mat-label>
+                    <input matInput placeholder="Organization Code" [formControl]="filterForm.controls['orgCode']">
+                    <mat-icon matSuffix>info</mat-icon>
+                </mat-form-field>
+        
+            </div> -->
+            <div class="d-flex flex-column">
+                <span class="fw-normal text-dark"> From Date</span>
+                <mat-form-field class="w-100 mt-2 " appearance="outline">
+                    <input matInput [matDatepicker]="fromDatePicker" placeholder="From Date"
+                        [formControl]="filterForm.controls['fromDate']" readonly
+                        (click)="fromDatePicker.open()"  />
+                    
+                    <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fromDatePicker type="datetime"></mat-datepicker>
+
+                  </mat-form-field>
+            </div>
+            <div class="d-flex flex-column">
+                <span class="fw-normal text-dark"> To Date</span>
+                <mat-form-field class="w-100 mt-2 " appearance="outline">
+                    <input matInput [matDatepicker]="toDatePicker" placeholder="To Date"
+                        [formControl]="filterForm.controls['toDate']" readonly
+                        (click)="toDatePicker.open()"  />
+                    
+                    <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #toDatePicker type="datetime"></mat-datepicker>
+
+                  </mat-form-field>
+            </div>
+            <div class="d-flex flex-column">
+                <!-- <span class="fw-normal text-dark">Status</span>
+                <mat-form-field class="w-100 mt-2 " appearance="outline">
+                    <mat-label>Select</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let status of productStatus" value="{{status.value}}">
+                            {{status.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+                <!-- <span class="fw-normal text-dark">Status</span>
+                <mat-form-field class="w-100 mt-2 " appearance="outline">
+                    <mat-label>Select</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let status of status" value="{{status.code}}">
+                            {{status.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+            </div>
+        </form>
+    </div>
+
+    <div class="p-3 d-flex flex-row">
+        <button mat-stroked-button mat-dialog-close class="stroke-button w-50" (click)="refreshTable()">Cancel</button>
+        <button mat-raised-button class="raised-button w-50 ms-2"
+            (click)="applyFilter()">Apply</button>
+    </div>
+</ng-container>

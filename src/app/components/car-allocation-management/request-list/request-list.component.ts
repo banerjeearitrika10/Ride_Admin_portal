@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { CarAllotmentDialogComponent } from '../car-allotment-dialog/car-allotment-dialog.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-request-list',
@@ -28,12 +29,13 @@ export class RequestListComponent {
   isLoading = false;
   private destroyed$ = new Subject<void>();
   expandedElement: any | null;
+
   displayedColumns: string[] = [
-    'name',
-    'reportingDate',
+    'date',
+    'reportingAddress',
     'destination',
     'bookingPreference',
-    'noOfPerson',
+    'status',
     'details',
     'allotCar',
   ];
@@ -48,153 +50,136 @@ export class RequestListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   requestData: any;
   usersData:any=[];
- requestList = [
-  {
-    bookingId:1,
-    carType: "Ertiga (5 + 1 persons) ",
-    costCenter: "",
-    costOfCar: 900,
-    department: "Marketing",
-    destination: "Asansol",
-    eventCode: "",
-    locationType: "LOCAL",
-    noOfPerson: 2,
-    noOfCar:2,
-    purpose: "Document submission",
-    bookingPreference:"daily",
-    repeatDate: "2024-10-18T08:52:00.553Z",
-    reportingDate: "2024-10-18T08:52:00.553Z",
-    reportingLocation: "different",
-    requiredDate: "2024-10-31T08:52:00",
-    userName: "Aritrika",
-    userNumber: 9878676788,
-    empCode:"EMP002255",
-    innerData: [
-      { date: 'Inner Row A' },
-      { date: 'Inner Row B' }
-    ],
-    carDetails:[
-      {
-        addRelease: "Kolkata",
-        addReporting: "Durgapur",
-        contactName: "Sruti",
-        contactNumber: 9898876565,
-        releasedatetime: "2024-10-18T09:09:22.291Z"
-      },
-      {
-        addRelease: "Kolkata",
-        addReporting: "Asansol",
-        contactName: "Sumana",
-        contactNumber: 8888877777,
-        releasedatetime: "2024-10-18T09:09:22.291Z"
-      }
-    ]
-  },
-  {
-    bookingId:2,
-    carType: "Ertiga (5 + 1 persons) ",
-    costCenter: "",
-    costOfCar: 900,
-    department: "Sales",
-    destination: "Kolkata",
-    eventCode: "",
-    locationType: "LOCAL",
-    noOfPerson: 1,
-    noOfCar:1,
-    purpose: "Document submission",
-    bookingPreference:"once",
-    repeatDate: "2024-10-18T08:52:00.553Z",
-    reportingDate: "2024-10-18T08:52:00.553Z",
-    reportingLocation: "different",
-    requiredDate: "2024-10-31T08:52:00",
-    userName: "Richa",
-    userNumber: 9878676788,
-    empCode:"EMP002678",
-    carDetails:[
-      {
-        addRelease: "Kolkata",
-        addReporting: "Durgapur",
-        contactName: "Sruti",
-        contactNumber: 9898876565,
-        releasedatetime: "2024-10-18T09:09:22.291Z"
-      }
-    ]
-  }
- ];
- constructor(public router:Router,private dialog: MatDialog){}
+  bookingDetails:any=[];
+ requestList :any=[]
+  employeeDetails: any;
+ constructor(public bookingService:BookingService,public router: Router, private dialog: MatDialog,){}
+ 
  ngOnInit(): void {
-  this.getBookingRequests({ size: this.pageSize, page: this.pageIndex });
+   let detail:any = localStorage.getItem('empDetails');
+   this.employeeDetails = JSON.parse(detail); 
+   this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W",status:'APPROVED'});
+   this.bookingService.allocationSearchDataFromFilter$
+   .pipe(takeUntil(this.destroyed$))
+   .subscribe((resp) => {
+     if (Object.keys(resp).length) {
+       this.searchKey = '';
+       this.filterData = {fromDate: resp?.fromDate , toDate: resp?.toDate };
+       this.dataSource = new MatTableDataSource();
+       const obj = {
+         size: this.pageSize,
+         page: this.pageIndex,
+         clientType:"W",
+         status:'APPROVED',
+         ...this.filterData,
+       };
+       this.getBookingDetails(obj);
+     } else {
+       this.filterData = {};
+       this.dataSource = new MatTableDataSource();
+       this.pageSize = 5;
+       this.pageIndex = 0;
+       this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W",status:'APPROVED'});
+     }
+   });
+ }
+ getBookingDetails(payLoad:any){
+   this.showMessageIfTableIsBlank = false;
+   this.isLoading = true;
+   let data:any = {};
+   data.content = this.bookingDetails;
+   console.log("Hiii");
+   
+   this.bookingService.getAllBooking({ ...payLoad }).subscribe({
+     next: (data:any) => {
+       console.log("HIII");
+       console.log(data);
+       
+       this.showMessageIfTableIsBlank = data.content.length ? false : true;
+       this.bookingDetails = data.content.map(user => ({
+         ...user,
+         expanded: false, // Add an expanded property to manage toggle state
+         innerData: null, // Initialize as null to fetch data later
+       }));
+       this.dataSource = new MatTableDataSource(this.bookingDetails);
+       this.bookingDetails = data.content;
+       this.totalItems = data.page.totalElements;
+       this.isLoading = false;
+     },
+     error: (err) => {
+       this.isLoading = false;
+       this.showMessageIfTableIsBlank = true;
+     },
+   });
+   
+   this.showMessageIfTableIsBlank = data.content.length ? false : true;
+   // data.content.forEach(user => {
+   //   if (user.innerData && Array.isArray(user.innerData) && user.innerData.length) {
+   //     this.usersData = [...this.usersData, {...user,innerData: new MatTableDataSource(user.innerData),expanded:false}];
+   //     console.log(this.usersData);
+       
+   //   } else {
+   //     this.usersData = [...this.usersData, user];
+   //   }
+   // });
+   // console.log(this.usersData);
+   
+   // this.dataSource = new MatTableDataSource(this.usersData);
+   // this.dataSource.sort = this.sort;
+   // this.dataSource = new MatTableDataSource(data.content);
+   // this.dataSource.sort = this.sort;
+   // this.totalItems = data.totalElements;
+   this.isLoading = false;
+ }
+ onPageChange(event: any) {
+   this.dataSource = new MatTableDataSource();
+   this.pageIndex = event.pageIndex;
+   this.pageSize = event.pageSize;
+   if (this.searchKey.length) {
+     this.getBookingDetails({
+       size: this.pageSize,
+       page: this.pageIndex,
+       clientType:"W",
+       searchKey: this.searchKey,
+     });
+   } else if (Object.keys(this.filterData).length) {
+     this.getBookingDetails({
+       size: this.pageSize,
+       page: this.pageIndex,
+       clientType:"W",
+       searchKey: this.searchKey,
+       ...this.filterData,
+     });
+   } else {
+     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W" });
+   }
+ }
 
-}
- getBookingRequests(payload:any){
-  this.showMessageIfTableIsBlank = false;
-  this.isLoading = true;
-  let data:any = {};
-  data.content = this.requestList;
-  console.log(data.content);
+ ngOnDestroy(): void {
+   this.destroyed$.next();
+   this.destroyed$.complete();
+ }
+ convertToReadableDate(isoString: string) {
+   const date = new Date(isoString);
+   const options: Intl.DateTimeFormatOptions = {
+     day: 'numeric',
+     month: 'short', // Short month name, like "Aug"
+     year: 'numeric',
+     hour: 'numeric',
+     minute: 'numeric',
+     hour12: true, // Use 12-hour format with AM/PM
+   };
+   return date.toLocaleDateString('en-US', options);
+ }
+viewDetails(parentId:any,childId:any){
+  console.log(parentId);
+  console.log(childId);
   
-  this.showMessageIfTableIsBlank = data.content.length ? false : true;
-  // this.dataSource = new MatTableDataSource(data.content);
-  data.content.forEach(user => {
-    if (user.innerData && Array.isArray(user.innerData) && user.innerData.length) {
-      this.usersData = [...this.usersData, {...user,innerData: new MatTableDataSource(user.innerData),expanded:false}];
-      console.log(this.usersData);
-      
-    } else {
-      this.usersData = [...this.usersData, user];
-    }
-  });
-  console.log(this.usersData);
   
-  this.dataSource = new MatTableDataSource(this.usersData);
-  this.dataSource.sort = this.sort;
-  this.totalItems = data.totalElements;
-  this.isLoading = false;
-}
-onPageChange(event: any) {
-  this.dataSource = new MatTableDataSource();
-  this.pageIndex = event.pageIndex;
-  this.pageSize = event.pageSize;
-  if (this.searchKey.length) {
-    this.getBookingRequests({
-      size: this.pageSize,
-      page: this.pageIndex,
-      searchKey: this.searchKey,
-    });
-  } else if (Object.keys(this.filterData).length) {
-    this.getBookingRequests({
-      size: this.pageSize,
-      page: this.pageIndex,
-      searchKey: this.searchKey,
-      ...this.filterData,
-    });
-  } else {
-    this.getBookingRequests({ size: this.pageSize, page: this.pageIndex });
-  }
-}
+  // this.requestData=parentId;
 
-ngOnDestroy(): void {
-  this.destroyed$.next();
-  this.destroyed$.complete();
-}
-convertToReadableDate(isoString: string) {
-  const date = new Date(isoString);
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short', // Short month name, like "Aug"
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true, // Use 12-hour format with AM/PM
-  };
-  return date.toLocaleDateString('en-US', options);
-}
-viewDetails(element:any){
-  console.log(element);
-  
-  this.requestData=element;
-  let data = this.requestList.filter(data=>data.bookingId==element.bookingId)[0];
-  this.router.navigate(['/car-allocation-management/details'],{ state: { data: data}});
+  // let data = this.bookingDetails.filter(data=>data.bookingId==parentId)[0];
+  this.router.navigate(['/car-allocation-management/details'],{ state: { parentId: parentId,childId:childId}});
 }
 allocateCar(element:any){
   this.requestData=element
@@ -222,10 +207,29 @@ hasInnerData(element: any): boolean {
 // }
 
 toggleRow(element: any) {
-  if(element.innerData && (element.innerData as MatTableDataSource<any>).data.length ){
-    element.expanded = !element.expanded;
+  // console.log(element.expanded);
+  
+  if (!element.expanded && element.preference != 'ONCE') {
+    // Fetch data only if the row is not expanded
+    this.bookingService.getChildBooking(element.bookingId, element.preference).subscribe({
+      next: (childData) => {
+        element.innerData = new MatTableDataSource(childData); // Assign fetched data
+        element.expanded = true; // Expand the row
+        this.expandedElement = element; // Track the expanded element
+        console.log(element);
+        
+        // element.innerData && (element.innerData as MatTableDataSource<any>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
+        // this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<any>).sort = this.innerSort.toArray()[index]);
+      },
+      error: () => {
+        console.error("Error fetching child data");
+      },
+    });
+  } else {
+    // Collapse the row
+    element.expanded = false;
+    this.expandedElement = null;
   }
-  element.innerData && (element.innerData as MatTableDataSource<any>).data.length ? (this.expandedElement = this.expandedElement === element ? null : element) : null;
-  this.innerTables.forEach((table, index) => (table.dataSource as MatTableDataSource<any>).sort = this.innerSort.toArray()[index]);
+
 }
 }

@@ -3,6 +3,8 @@ import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { AllocationFilterDialogComponent } from './filter-dialog/filter-dialog.component';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-request-landing',
@@ -25,7 +27,7 @@ export class RequestLandingComponent {
   inputFieldForSearch = new FormControl('');
   hiddenFilterButton=false;
   isOpen: boolean = false;
-  constructor(private activeRoute: ActivatedRoute,public dialog: MatDialog){}
+  constructor(private activeRoute: ActivatedRoute,public dialog: MatDialog,public bookingService:BookingService){}
   ngOnInit():void{
     this.activeRoute.queryParams.subscribe(p => this.defaultView = p['mode'] || "list");
     
@@ -35,26 +37,26 @@ export class RequestLandingComponent {
     this.destroyed$.complete();
   }
   openFilterDialog(){
-    // const dialogRef = this.dialog.open(FilterDialogComponent, {
-    //   width: '20%',
-    //   disableClose: true,
-    //   autoFocus: false,
-    //   data: this.dataFromFilterDialog ? this.dataFromFilterDialog : {}
-    // });
-    // dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
-    //   if (response) {
-    //     this.dataFromFilterDialog = response;
-    //     this.hiddenFilterButton=true;
-    //     this.empService.emitSearchDataForFilter(response);
-    //   } 
+    const dialogRef = this.dialog.open(AllocationFilterDialogComponent, {
+      width: '20%',
+      disableClose: true,
+      autoFocus: false,
+      data: this.dataFromFilterDialog ? this.dataFromFilterDialog : {}
+    });
+    dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
+      if (response) {
+        this.dataFromFilterDialog = response;
+        this.hiddenFilterButton=true;
+        this.bookingService.emitAllocationSearchDataForFilter(response);
+      } 
       
-    // });
+    });
 
   }
   refreshTable(){
     this.hiddenFilterButton=false;
     this.dataFromFilterDialog = {};
-    // this.empService.emitSearchDataForFilter({})
+    this.bookingService.emitSearchDataForFilter({})
   }
   onOpenDrawer() {
     this.isOpen = true;

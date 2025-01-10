@@ -11,11 +11,16 @@ import { IAllBookingResponse, IBookingResponse } from './models/booking';
 export class BookingService {
   private bookingSearchDataFromFilterDialog$ = new Subject<any>();
   bookingSearchDataFromFilter$ = this.bookingSearchDataFromFilterDialog$.asObservable();
+  private allocationSearchDataFromFilterDialog$ = new Subject<any>();
+  allocationSearchDataFromFilter$ = this.allocationSearchDataFromFilterDialog$.asObservable();
 
   constructor(private http: HttpClient) { }
 
   emitSearchDataForFilter(filterData: any) {
     this.bookingSearchDataFromFilterDialog$.next(filterData);
+}
+emitAllocationSearchDataForFilter(filterData: any){
+  this.allocationSearchDataFromFilterDialog$.next(filterData);
 }
 getEmpDetails(params:any):Observable<any>{
   return this.http.get<any>(
@@ -63,5 +68,14 @@ searchEmployeeByName(params:any):Observable<any>{
 }
 cancleBooking(payload:any){
   return this.http.patch(`${environment.bookingService}/v1/bookings?action=cancel`, payload);
+}
+assignCarDetails(payload:any):Observable<any>{
+  return this.http.patch(`${environment.bookingService}/v1/car-allocation?action=assigncar`, payload);
+}
+getCarDetails(id:any,bookingLocationMapId:any):Observable<any>{
+  return this.http.get<any>(`${environment.bookingService}/v1/car-allocation?bookingId=${id}&bookingPreference=DAILY&bookingLocationMapId=${bookingLocationMapId}`,);
+}
+getAllCarDetails(id:any):Observable<any>{
+  return this.http.get<any>(`${environment.bookingService}/v1/car-allocation?bookingId=${id}&bookingPreference=DAILY`,);
 }
 }

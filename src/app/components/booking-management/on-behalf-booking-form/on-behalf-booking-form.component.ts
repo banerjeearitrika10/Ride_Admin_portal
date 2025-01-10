@@ -598,6 +598,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(null);
       this.bookingForm.get('raisedFor.onbehalfContactNo')?.patchValue(null);
       this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(null);
+
       console.log(this.bookingForm.get('raisedFor.onbehalfType')?.value );
       
       if(this.bookingForm.get('raisedFor.onbehalfType')?.value == "INTERNAL"){
@@ -660,7 +661,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     console.log(this.bookingForm.get('raisedFor.onbehalfName')?.value);
     let params = {
       searchText:this.bookingForm.get('raisedFor.onbehalfName')?.value,
-      departmentId:this.bookingForm.get('raisedFor.onbehalfDepartment')?.value,
+      departmentId:this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value,
       query:"searchByName" 
     }
     this.bookingService.searchEmployeeByName(params).subscribe({

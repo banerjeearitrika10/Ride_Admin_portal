@@ -15,6 +15,7 @@ import { MaterialModule } from '../shared/material-module';
 import { SharedModule } from '../shared/shared.module';
 import { RequestDetailsComponent } from './request-details/request-details.component';
 import { CarAllotmentDialogComponent } from './car-allotment-dialog/car-allotment-dialog.component';
+import { AllocationFilterDialogComponent } from './request-landing/filter-dialog/filter-dialog.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { CarAllotmentDialogComponent } from './car-allotment-dialog/car-allotmen
     RequestListComponent,
     CarAllocationComponent,
     RequestDetailsComponent,
-    CarAllotmentDialogComponent
+    CarAllotmentDialogComponent,
+    AllocationFilterDialogComponent
   ],
   imports: [
     CommonModule,

@@ -108,13 +108,13 @@
                     <button *ngIf="employeeDetails.emailId == element.raisedBy.employeeEmailId" type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
                     </button>
-                    <div class="vr"></div>
+                    <!-- <div class="vr"></div>
                     
                     <ng-container *ngIf="element.preference == 'ONCE' && element.bookingStatus == 'APPROVED';">
                         <button type="button" mat-icon-button class="table-action-button" matTooltip="Car Details" (click)="onClickCarDetails(element)">
                             <i class="fas fa-car" style="font-size: 22px; color: #b50064;"></i>
                         </button>
-                    </ng-container>
+                    </ng-container> -->
                     <div class="vr"></div>
                     <button *ngIf="element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCEL'" type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element.bookingId)">
                         <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>

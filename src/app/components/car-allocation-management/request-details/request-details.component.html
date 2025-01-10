@@ -1,4 +1,4 @@
-<section class="content">
+<section class="content" *ngIf="bookingDetails">
     <div class="content-block">
         <div class="row pt-3">
             <div class="col-lg-12 col-md-12 col-sm-12 pb-3">
@@ -10,32 +10,32 @@
                         <label class="card_label">Name:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{details.userName?details.userName:'--'}}</b></span>
+                        <span class="card_span"><b>{{bookingDetails.raisedBy.employeeName}}</b></span>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                         <label class="card_label">Contact Number:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{details.userNumber?details.userNumber:'--'}}</b></span>
+                        <span class="card_span"><b>{{bookingDetails.raisedBy.employeeContactNo}}</b></span>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                       <label class="card_label">Department:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.department?details.department:'--'}}</b></span>
+                      <span class="card_span"><b>{{bookingDetails.raisedBy.employeeDept}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                       <label class="card_label">Employee ID:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.empCode?details.empCode:'--'}}</b></span>
+                      <span class="card_span"><b>{{bookingDetails.raisedBy.employeeEmailId}}</b></span>
                   </div>
                   </div>
                 </div>
                
               </div>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 pb-3" *ngIf="details.isOnBehalf">
+            <div class="col-lg-12 col-md-12 col-sm-12 pb-3" *ngIf="bookingDetails?.bookingType == 'ON_BEHALF'">
               <h3>Traveller Details</h3>
               <div class="card card-statistic-2 mt-2">
                 <div class="clearfix">
@@ -44,19 +44,19 @@
                         <label class="card_label">Name:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{details.riderName?details.riderName:'--'}}</b></span>
+                        <span class="card_span"><b>{{bookingDetails.raisedFor.onbehalfName}}</b></span>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                         <label class="card_label">Contact Number:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{details.riderNumber?details.riderNumber:'--'}}</b></span>
+                        <span class="card_span"><b>{{bookingDetails.raisedFor.onbehalfContactNo}}</b></span>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="bookingDetails?.raisedFor?.onbehalfType == 'INTERNAL_EMPLOYEE'">
                       <label class="card_label">Department:</label>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.riderDepaetment?details.riderDepaetment:'--'}}</b></span>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="bookingDetails?.raisedFor?.onbehalfType == 'INTERNAL_EMPLOYEE'">
+                      <span class="card_span"><b>{{bookingDetails.raisedFor.onbehalfDepartment}}</b></span>
                   </div>
                   </div>
                 </div>
@@ -72,85 +72,93 @@
                         <label class="card_label">Location Typ:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{details.locationType?details.locationType:'--'}}</b></span>
+                        <span class="card_span"><b>{{bookingDetails.locationType}}</b></span>
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                    <!-- <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                         <label class="card_label">Destination</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{details.destination?details.destination:'--'}}</b></span>
-                    </div>
+                        <span class="card_span"><b>{{bookingDetails.destination?bookingDetails.destination:'--'}}</b></span>
+                    </div> -->
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                       <label class="card_label">Persons Travelling:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.noOfPerson?details.noOfPerson:'--'}}</b></span>
+                      <span class="card_span"><b>{{bookingDetails.numPersonsTravelling?bookingDetails.numPersonsTravelling:'--'}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                       <label class="card_label">No. of Car:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.noOfCar?details.noOfCar:'--'}}</b></span>
+                      <span class="card_span"><b>{{bookingDetails.numCarsRequired?bookingDetails.numCarsRequired:'--'}}</b></span>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                  <!-- <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                     <label class="card_label">Reporting Location:</label>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                    <span class="card_span"><b>{{details.reportingLocation?details.reportingLocation:'--'}}</b></span>
-                </div>
+                    <span class="card_span"><b>{{bookingDetails.reportingLocation?bookingDetails.reportingLocation:'--'}}</b></span>
+                </div> -->
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                      <label class="card_label">Car Type:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.carType?details.carType:'--'}}</b></span>
+                      <span class="card_span"><b>{{getCarName(bookingDetails.carTypeId)}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                     <label class="card_label">Cost of the Car:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.costOfCar?details.costOfCar:'--'}}</b></span>
+                      <span class="card_span"><b>{{getCarCost(bookingDetails.carTypeId)}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                     <label class="card_label">Booking Preference:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{details.bookingPreference?details.bookingPreference:'--'}}</b></span>
+                      <span class="card_span"><b>{{bookingDetails.bookingReportDto.bookingPreference?bookingDetails.bookingReportDto.bookingPreference:'--'}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                     <label class="card_label">Reporting Date:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{convertToReadableDate(details.reportingDate)}}</b></span>
+                      <span class="card_span"><b>{{convertToReadableDate(bookingDetails.bookingReportDto.carReportingDatetime[0])}}</b></span>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="details.bookingPreference == 'once'">
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="bookingDetails?.bookingReportDto?.bookingPreference == 'ONCE'">
                     <label class="card_label">Required Till Date:</label>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="details.bookingPreference == 'once'">
-                      <span class="card_span"><b>{{convertToReadableDate(details.reportingDate)}}</b></span>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="bookingDetails?.bookingReportDto?.bookingPreference == 'ONCE'">
+                      <span class="card_span"><b>{{convertToReadableDate(bookingDetails.bookingReportDto.carRequiredTillDatetime)}}</b></span>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="details.bookingPreference == 'daily'">
+                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3" *ngIf="bookingDetails?.bookingReportDto?.bookingPreference != 'ONCE'">
                     <label class="card_label">Repeat Till Date:</label>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="details.bookingPreference == 'daily'">
-                      <span class="card_span"><b>{{convertToReadableDate(details.repeatDate)}}</b></span>
+                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="bookingDetails?.bookingReportDto?.bookingPreference != 'ONCE'">
+                      <span class="card_span"><b>>{{convertToReadableDate(bookingDetails.bookingReportDto.carRequiredTillDatetime)}}</b></span>
+                  </div>
+                  <div class="row" *ngFor="let des of bookingDetails?.destination;let i = index">
+                    <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
+                        <label class="card_label">Destination - {{i + 1}}</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
+                        <span class="card_span"><b>{{des}}</b></span>
+                    </div>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                     <label class="card_label">Cost Center:</label>
                  </div>
                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                     <span class="card_span"><b>{{details.costCenter?details.costCenter:'--'}}</b></span>
+                     <span class="card_span"><b>{{bookingDetails.costCenterCode?getCostCenterName(bookingDetails.costCenterCode):"---"}}</b></span>
                  </div>
                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                    <label class="card_label">Event Code:</label>
                  </div>
                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                     <span class="card_span"><b>{{details.eventCode?details.eventCode:'--'}}</b></span>
+                     <span class="card_span"><b>{{bookingDetails.eventCode?getEventName(bookingDetails.eventCode):"---"}}</b></span>
                  </div>
                  <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                    <label class="card_label">Purpose:</label>
                  </div>
                  <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                     <span class="card_span"><b>{{details.purpose?details.purpose:'--'}}</b></span>
+                     <span class="card_span"><b>{{bookingDetails.purpose?bookingDetails.purpose:'--'}}</b></span>
                  </div>
                   </div>
                 </div>
@@ -158,16 +166,16 @@
               </div>
             </div>  
             <div class="col-lg-12 col-md-12 col-sm-12 pb-3" >
-              <!-- <h3>Car {{i+1}} Details</h3> -->
-              <h3>Car Details</h3>
-              <div class="card card-statistic-2 mt-2" *ngFor="let cd of details.carDetails;let i=index">
+              <!-- <h3>Car {{i+1}} bookingDetails</h3> -->
+              <h3>Car Reporting Details</h3>
+              <div class="card card-statistic-2 mt-2" *ngFor="let bd of bookingDetails?.bookingLocationMap">
                 <div class="clearfix">
                   <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                         <label class="card_label">Address of Reporting:</label>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                        <span class="card_span"><b>{{cd.addReporting?cd.addReporting:'--'}}</b></span>
+                        <span class="card_span"><b>{{bd.reportingAddress?bd.reportingAddress:'--'}}</b></span>
                     </div>
                     <!-- <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                         <label class="card_label">Address of Release:</label>
@@ -179,18 +187,18 @@
                       <label class="card_label">Contact Name:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{cd.contactName?cd.contactName:'--'}}</b></span>
+                      <span class="card_span"><b>{{bd.contactName?bd.contactName:'--'}}</b></span>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
                       <label class="card_label">Contact Number:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3">
-                      <span class="card_span"><b>{{cd.contactNumber?cd.contactNumber:'--'}}</b></span>
+                      <span class="card_span"><b>{{bd.contactNumber?bd.contactNumber:'--'}}</b></span>
                   </div>
                   </div>
                   <div class="d-flex justify-content-end ">
                     <button mat-raised-button class="raised-button text-white fw-bold"   [routerLink]="['./']"
-                      (click)="onOpenAllotCar(cd)">
+                      (click)="onOpenAllotCar(bd)">
                           <mat-icon>add</mat-icon>Allot Car
                     </button>
                   </div>
@@ -203,4 +211,4 @@
           
     </div>
 </section>
-<app-car-allocation [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)" [data]="details"></app-car-allocation>
+<app-car-allocation [isOpen]="isOpen" (onCloseDrawer)="onCloseDrawer($event)" [data]="bookingDetails"></app-car-allocation>

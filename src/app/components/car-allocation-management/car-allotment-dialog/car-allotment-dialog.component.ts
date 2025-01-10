@@ -56,7 +56,12 @@ export class CarAllotmentDialogComponent {
   ) { }
   
   ngOnInit(): void {
+    console.log(this.data);
     this.initiateForm();
+    if(this.data[0].carNo){
+      this.carAllotmentForm.patchValue(this.data[0])
+    }
+    
   }
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -64,11 +69,9 @@ export class CarAllotmentDialogComponent {
   }
   initiateForm() {
     this.carAllotmentForm = this.fb.group({
-      carType: [''],
-      costOfCar: [0],
-      carNumber: [''],
+      carNo: [''],
       driverName: [''],
-      driverContactNumber: [''],
+      driverContactNo: [''],
     });
   }
   onSelectCar(event: any) {
