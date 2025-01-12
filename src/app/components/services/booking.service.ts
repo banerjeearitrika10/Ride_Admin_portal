@@ -70,12 +70,12 @@ cancleBooking(payload:any){
   return this.http.patch(`${environment.bookingService}/v1/bookings?action=cancel`, payload);
 }
 assignCarDetails(payload:any):Observable<any>{
-  return this.http.patch(`${environment.bookingService}/v1/car-allocation?action=assigncar`, payload);
+  return this.http.post(`${environment.bookingService}/v1/car-allocation?action=assigncar`, payload);
 }
-getCarDetails(id:any,bookingLocationMapId:any):Observable<any>{
-  return this.http.get<any>(`${environment.bookingService}/v1/car-allocation?bookingId=${id}&bookingPreference=DAILY&bookingLocationMapId=${bookingLocationMapId}`,);
+getCarDetails(id:any,bookingLocationMapId:any,preference:any):Observable<any>{
+  return this.http.get<any>(`${environment.bookingService}/v1/car-allocation?bookingId=${id}&bookingPreference=${preference}&bookingLocationMapId=${bookingLocationMapId}`,);
 }
-getAllCarDetails(id:any):Observable<any>{
-  return this.http.get<any>(`${environment.bookingService}/v1/car-allocation?bookingId=${id}&bookingPreference=DAILY`,);
+getAllCarDetails(id:any,preference:any):Observable<any>{
+  return this.http.get<any>(`${environment.bookingService}/v1/car-allocation?bookingId=${id}&bookingPreference=${preference}`,);
 }
 }

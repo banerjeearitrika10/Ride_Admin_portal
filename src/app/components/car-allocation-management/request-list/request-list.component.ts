@@ -140,6 +140,7 @@ export class RequestListComponent {
        size: this.pageSize,
        page: this.pageIndex,
        clientType:"W",
+       status:'APPROVED',
        searchKey: this.searchKey,
      });
    } else if (Object.keys(this.filterData).length) {
@@ -147,11 +148,12 @@ export class RequestListComponent {
        size: this.pageSize,
        page: this.pageIndex,
        clientType:"W",
+       status:'APPROVED',
        searchKey: this.searchKey,
        ...this.filterData,
      });
    } else {
-     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W" });
+     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W",status:'APPROVED', });
    }
  }
 

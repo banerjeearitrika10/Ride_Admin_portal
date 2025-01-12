@@ -81,7 +81,7 @@ export class RequestDetailsComponent {
     console.log(detail);
     if(this.bookingDetails.bookingReportDto.bookingPreference == 'ONCE')
    {
-    this.bookingService.getCarDetails(this.details.parentId,detail.id).subscribe({
+    this.bookingService.getCarDetails(this.details.parentId,detail.id,this.bookingDetails.bookingReportDto.bookingPreference).subscribe({
       next:(data)=>{
         this.carDetails = data;
         const dialogRef = this.dialog.open(CarAllotmentDialogComponent, {
@@ -106,11 +106,38 @@ export class RequestDetailsComponent {
           
         });
         // this.patchReleaseDetails(data);
+      },
+      error:(err)=>{
+        console.log(err);
+        
+        if(err == 'CAR ALLOCATION NOT FOUND FOR ONCE BOOKING TYPE'){
+          const dialogRef = this.dialog.open(CarAllotmentDialogComponent, {
+            maxWidth: '30vw',
+            width: '100%',
+            panelClass: 'qa-confirm-dialog',
+            data: this.carDetails ? this.carDetails : {}
+          });
+          dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
+            if (response) {
+              // this.detail = response;
+              console.log(response);
+              
+              let payload = {...response,...data};
+              this.bookingService.assignCarDetails(payload).subscribe({
+                next:(data:any)=>{
+                  console.log(data);
+                  
+                }
+              })
+            } 
+            
+          });
+        }
       }
     })
    }
     else{
-      this.bookingService.getCarDetails(this.details.childId,detail.id).subscribe({
+      this.bookingService.getCarDetails(this.details.childId,detail.id,this.bookingDetails.bookingReportDto.bookingPreference).subscribe({
         next:(data)=>{
           this.carDetails = data;
           console.log(data);
@@ -136,6 +163,33 @@ export class RequestDetailsComponent {
             
           });
           // this.patchReleaseDetails(data);
+        },
+        error:(err)=>{
+          console.log(err);
+          
+         if(err == 'CAR ALLOCATION NOT FOUND FOR ONCE BOOKING TYPE'){
+          const dialogRef = this.dialog.open(CarAllotmentDialogComponent, {
+            maxWidth: '30vw',
+            width: '100%',
+            panelClass: 'qa-confirm-dialog',
+            data: this.carDetails ? this.carDetails : {}
+          });
+          dialogRef.afterClosed().pipe(takeUntil(this.destroyed$)).subscribe(response => {
+            if (response) {
+              // this.detail = response;
+              console.log(response);
+              
+              let payload = {...response,...data};
+              this.bookingService.assignCarDetails(payload).subscribe({
+                next:(data:any)=>{
+                  console.log(data);
+                  
+                }
+              })
+            } 
+            
+          });
+         }
         }
       })
     }
