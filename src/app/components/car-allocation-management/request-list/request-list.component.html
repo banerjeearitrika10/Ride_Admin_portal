@@ -4,9 +4,9 @@
 
             <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date">
-                    Reporting Date
+                    Booking Date
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.carReportingDatetime)}} </td>
+                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.bookingTime)}} </td>
             </ng-container>
                 <!-- Code Column -->
                 <ng-container matColumnDef="reportingAddress">
@@ -68,7 +68,7 @@
                 </td>
             </ng-container>
             <ng-container matColumnDef="details">
-                <th mat-header-cell *matHeaderCellDef>Details</th>
+                <th mat-header-cell *matHeaderCellDef>Child Details</th>
                 <td mat-cell *matCellDef="let element">
                     <button mat-button (click)="toggleRow(element)">
                         {{ element.expanded ? 'Hide' : 'View' }}
@@ -111,15 +111,21 @@
 
                             <table #innerTables mat-table [dataSource]="element.innerData">
                                 <ng-container matColumnDef="innerColumn1">
-                                    <th mat-header-cell *matHeaderCellDef> Date </th>
+                                    <th mat-header-cell *matHeaderCellDef>Reporting Date </th>
                                     <td mat-cell *matCellDef="let inner"> {{convertToReadableDate(inner.carReportingDatetime)}} </td>
                                 </ng-container>
                                 <ng-container matColumnDef="action">
                                     <th mat-header-cell *matHeaderCellDef> Actions </th>
                                     <td mat-cell *matCellDef="let inner" width="50%">
-                                        <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element.bookingId,inner.id)">
-                                            <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
-                                        </button>
+                                       
+                                        <ng-container *ngIf="(inner.bookingStatus != 'CANCELLED'); else innerActionUnavailable">
+                                            <button type="button" mat-icon-button class="table-action-button" (click)="viewDetails(element.bookingId,inner.id)">
+                                                <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
+                                            </button>
+                                        </ng-container>
+                                        <ng-template #innerActionUnavailable>
+                                            <span>---</span>
+                                        </ng-template>
                                     </td>
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>

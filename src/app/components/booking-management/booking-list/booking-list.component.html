@@ -7,9 +7,9 @@
             <!-- Name Column -->
             <ng-container matColumnDef="date">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by date">
-                    Reporting Date
+                    Booking Date
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.carReportingDatetime)}} </td>
+                <td mat-cell *matCellDef="let element" width="20%"> {{convertToReadableDate(element.bookingTime)}} </td>
             </ng-container>
                 <!-- Code Column -->
                 <ng-container matColumnDef="reportingAddress">
@@ -49,7 +49,7 @@
 
             <!-- Inner Table -->
             <ng-container matColumnDef="details">
-                <th mat-header-cell *matHeaderCellDef>Details</th>
+                <th mat-header-cell *matHeaderCellDef>Child Details</th>
                 <td mat-cell *matCellDef="let element">
                     <button mat-button (click)="toggleRow(element)">
                         {{ element.expanded ? 'Hide' : 'View' }}
@@ -105,7 +105,7 @@
                         <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
-                    <button *ngIf="employeeDetails.emailId == element.raisedBy.employeeEmailId" type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
+                    <button *ngIf="(employeeDetails.emailId == element.raisedBy.employeeEmailId) && (element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCELLED')" type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
                     </button>
                     <!-- <div class="vr"></div>
@@ -116,7 +116,7 @@
                         </button>
                     </ng-container> -->
                     <div class="vr"></div>
-                    <button *ngIf="element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCEL'" type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element.bookingId)">
+                    <button *ngIf="element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCELLED'" type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleBooking(element.bookingId)">
                         <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
                     </button>
                     
@@ -128,8 +128,9 @@
 
                                 <table #innerTables mat-table [dataSource]="element.innerData">
                                     <ng-container matColumnDef="innerColumn1">
-                                        <th mat-header-cell *matHeaderCellDef> Date </th>
+                                        <th mat-header-cell *matHeaderCellDef>Reporting Date </th>
                                         <td mat-cell *matCellDef="let inner"> {{convertToReadableDate(inner.carReportingDatetime)}} </td>
+
                                     </ng-container>
                                     <ng-container matColumnDef="action">
                                         <th mat-header-cell *matHeaderCellDef> Actions </th>
@@ -138,9 +139,15 @@
                                                 <i class="fas fa-car" style="font-size: 22px; color: #b50064;"></i>
                                             </button>
                                             <div class="vr"></div> -->
-                                            <button type="button" mat-icon-button class="table-action-button" matTooltip="Cancel Booking"  (click)="cancleChildBooking(element)">
-                                                <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
-                                            </button>
+                                           
+                                            <ng-container *ngIf="(element.bookingStatus != 'CANCELLED' && element.bookingStatus != 'REJECTED'); else innerActionUnavailable">
+                                                <button type="button" mat-icon-button class="table-action-button" (click)="cancleChildBooking(element)">
+                                                    <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
+                                                </button>
+                                            </ng-container>
+                                            <ng-template #innerActionUnavailable>
+                                                <span>---</span>
+                                            </ng-template>
                                         </td>
                                     </ng-container>
                                     <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>

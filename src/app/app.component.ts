@@ -61,7 +61,7 @@ export class AppComponent {
       next: (data)=>{
         this.empDetails = data;
         console.log(data);
-        
+        this.bookingService.setEmpDetails(this.empDetails);
         localStorage.setItem('empDetails',JSON.stringify(this.empDetails));
       }
     })

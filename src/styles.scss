@@ -44,3 +44,6 @@
 .overflow-wrap-content {
     overflow-wrap: anywhere;
 }
+.form-control:focus{
+    box-shadow: none!important;
+}

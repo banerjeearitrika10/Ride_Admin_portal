@@ -45,5 +45,14 @@ export class MasterService {
         }
       })
   }
+  getAllCostCenter():Observable<ICostCenter[]>{
+    return this.http.get<ICostCenter[]>(
+      `${environment.bookingService}/v1/master-data`,{
+        params:{
+          departmentCode:'',
+          query:"getcostcenters"
+        }
+      })
+  }
 }
 

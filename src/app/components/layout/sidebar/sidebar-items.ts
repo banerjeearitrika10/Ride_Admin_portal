@@ -15,18 +15,18 @@ export const ROUTES: RouteInfo[] = [
 
   // Admin Modules
 
-  {
-    path: '/admin/dashboard/main',
-    title: 'Dashboard',
-    iconType: '',
-    icon: '../../../../assets/images/banner/dashboard.png',
-    class: '',
-    groupTitle: false,
-    badge: '',
-    badgeClass: '',
-    role: ['Admin'],
-    submenu: [],
-  },
+  // {
+  //   path: '/admin/dashboard/main',
+  //   title: 'Dashboard',
+  //   iconType: '',
+  //   icon: '../../../../assets/images/banner/dashboard.png',
+  //   class: '',
+  //   groupTitle: false,
+  //   badge: '',
+  //   badgeClass: '',
+  //   role: ['Admin'],
+  //   submenu: [],
+  // },
   
   // master-data-management
   {

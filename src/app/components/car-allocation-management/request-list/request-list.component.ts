@@ -57,8 +57,10 @@ export class RequestListComponent {
  
  ngOnInit(): void {
    let detail:any = localStorage.getItem('empDetails');
-   this.employeeDetails = JSON.parse(detail); 
-   this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W",status:'APPROVED'});
+   this.getEmployeeDetails();
+   if(this.employeeDetails){
+   this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W",bookingStatus:'APPROVED'});
+   }
    this.bookingService.allocationSearchDataFromFilter$
    .pipe(takeUntil(this.destroyed$))
    .subscribe((resp) => {
@@ -70,7 +72,7 @@ export class RequestListComponent {
          size: this.pageSize,
          page: this.pageIndex,
          clientType:"W",
-         status:'APPROVED',
+         bookingStatus:'APPROVED',
          ...this.filterData,
        };
        this.getBookingDetails(obj);
@@ -79,10 +81,15 @@ export class RequestListComponent {
        this.dataSource = new MatTableDataSource();
        this.pageSize = 5;
        this.pageIndex = 0;
-       this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W",status:'APPROVED'});
+       this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W",bookingStatus:'APPROVED'});
      }
    });
  }
+ getEmployeeDetails(){
+  this.bookingService.getEmpAllDetails().subscribe((data:any)=>{
+    this.employeeDetails = data;
+  })
+}
  getBookingDetails(payLoad:any){
    this.showMessageIfTableIsBlank = false;
    this.isLoading = true;
@@ -140,7 +147,7 @@ export class RequestListComponent {
        size: this.pageSize,
        page: this.pageIndex,
        clientType:"W",
-       status:'APPROVED',
+       bookingStatus:'APPROVED',
        searchKey: this.searchKey,
      });
    } else if (Object.keys(this.filterData).length) {
@@ -148,12 +155,12 @@ export class RequestListComponent {
        size: this.pageSize,
        page: this.pageIndex,
        clientType:"W",
-       status:'APPROVED',
+       bookingStatus:'APPROVED',
        searchKey: this.searchKey,
        ...this.filterData,
      });
    } else {
-     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W",status:'APPROVED', });
+     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex,clientType:"W",bookingStatus:'APPROVED', });
    }
  }
 
@@ -162,17 +169,26 @@ export class RequestListComponent {
    this.destroyed$.complete();
  }
  convertToReadableDate(isoString: string) {
-   const date = new Date(isoString);
-   const options: Intl.DateTimeFormatOptions = {
-     day: 'numeric',
-     month: 'short', // Short month name, like "Aug"
-     year: 'numeric',
-     hour: 'numeric',
-     minute: 'numeric',
-     hour12: true, // Use 12-hour format with AM/PM
-   };
-   return date.toLocaleDateString('en-US', options);
- }
+  const options:any = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  };
+  
+  // Convert the UTC date to a Date object
+  const utcDate = new Date(isoString);
+  
+  // Convert UTC to local date and time (IST: UTC+05:30)
+  const localDate = new Date(utcDate.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000);
+  
+  // Format local date to the desired output
+  const formattedLocalDate = localDate.toLocaleDateString('en-US', options);
+  
+  return formattedLocalDate;
+}
 viewDetails(parentId:any,childId:any){
   console.log(parentId);
   console.log(childId);

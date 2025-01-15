@@ -37,22 +37,8 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     bookingPerson:any=[
       { label: 'Internal Employee', value: 'INTERNAL_EMPLOYEE' },
-      { label: 'External Guests', value: 'EXTERNAL' },
+      { label: 'External Guests', value: 'EXTERNAL_GUEST' },
     ];
-    // department:any=[
-    //   { label: 'Marketing', value: 'MARKETING' },
-    //   { label: 'Sales', value: 'SALES' },
-    // ];
-    employeeList:any=[
-      {
-        id:6787,
-        name:"Sipra Roy"
-      },
-      {
-        id:67909,
-        name:"Kalyan Roy"
-      }
-    ]
     carType!: ICarType[];
     travelLocation: any = [
       { label: 'Local ', value: 'LOCAL' },
@@ -76,8 +62,9 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     ngOnInit(): void {
       console.log(this.bookingFormValue);
       let detail:any = localStorage.getItem('empDetails');
-      this.employeeDetails = JSON.parse(detail); 
-      console.log(this.employeeDetails);
+      // this.employeeDetails = JSON.parse(detail); 
+      // console.log(this.employeeDetails);
+      this.getEmployeeDetails();
       
       // this.costCenterList = this.employeeDetails?.costCenter;
       
@@ -108,9 +95,12 @@ export class OnBehalfBookingFormComponent  implements OnInit {
        
         console.log(this.mode);
         
-        if(this.mode == 'view'){
-          this.bookingForm.disable();
-        }
+        
+    }
+    getEmployeeDetails(){
+      this.bookingService.getEmpAllDetails().subscribe((data:any)=>{
+        this.employeeDetails = data;
+      })
     }
     ngOnDestroy(): void {
       this.destroyed$.next();
@@ -153,17 +143,44 @@ export class OnBehalfBookingFormComponent  implements OnInit {
               }
             })
             this.bookingForm.patchValue(this.bookingFormValue);
+            if(this.mode == 'view'){
+              this.bookingForm.disable();
+              const destinationArray = this.bookingForm.get('destination') as FormArray;
+              destinationArray.controls.forEach((control) => {
+                  control.disable();
+                
+              });
+            }
+            console.log(this.bookingForm.value);
+            this.onSelectCar();
+            
             if(this.bookingForm.controls['bookingType'].value =='ON_BEHALF'){
+              this.bookingForm.get('raisedFor.onbehalfType')?.disable();
+              this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.disable();
               this.isOnbehalf = true;
-              if(this.departmentList){
-               this.onSelectDepartment();
+              if(this.bookingForm.get('raisedFor.onbehalfType')?.value == "INTERNAL_EMPLOYEE"){
+                this.isEmployee = true;
+                if(this.departmentList){
+                  this.getCostCenterByDepartment(this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value);
+                }
               }
+              else{
+                this.getAllCostCenter();
+                this.isEmployee = false;
+              }
+              
              }
              else{
               this.isOnbehalf = false;
               this.bookingForm.controls['bookingType'].patchValue('SELF');
+              this.getCostCenterByDepartment(this.bookingForm.get('raisedBy.employeeDeptCode')?.value)
              }
-            this.onSelectCoseCenter();
+             this.eventList = [];
+            this.masterService.getEventByCostCode(this.bookingForm.controls['costCenterCode'].value).subscribe({
+              next:(data:IEvent[])=>{
+                this.eventList=data;
+              }
+            });
             if(this.bookingFormValue.bookingLocationMap.length>1){
               this.bookingForm.controls['reportingLocation'].patchValue('different')
             }
@@ -172,22 +189,26 @@ export class OnBehalfBookingFormComponent  implements OnInit {
                 this.bookingForm.controls['numCarsRequired'].patchValue(this.bookingForm.controls['numCarsRequired'].value + 1)
               }
             });
+            this.bookingForm.get('bookingReportDto.carReportingDatetime')?.patchValue(this.parsedUTC(this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value[0]));
+            this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.patchValue(this.parsedUTC(this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value));
+            this.onChangeBookingPreference();
             if(this.bookingFormValue.bookingReportDto.bookingPreference != 'ONCE'){
-              this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.patchValue(this.convertISOStringToFixedLocalDateTime((this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value)))
+              this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.patchValue(((this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value)))
               this.onRepeateDateSelected();
             }
             else{
-              this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.patchValue(this.convertISOStringToFixedLocalDateTime((this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value)))
+              this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.patchValue(((this.bookingForm.get('bookingReportDto.carRequiredTillDatetime')?.value)))
             }
-            this.onChangeBookingPreference();
-            this.onSelectCar();
-            this.bookingForm.get('bookingReportDto.carReportingDatetime')?.patchValue(this.convertISOStringToFixedLocalDateTime((this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value)[0]))
+            
+            
+            this.bookingForm.get('bookingReportDto.carReportingDatetime')?.patchValue(((this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value)))
             this.minDate = new Date((this.bookingForm.get('bookingReportDto.carReportingDatetime')?.value)[0]);
             this.maxDate = this.addDaysToDate(this.minDate);
             // this.searchTerm=this.bookingFormValue?.riderName;
             // if(this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value){
             //   this.onRepeateDateSelected();
             // }
+          
           }
         
 
@@ -200,7 +221,14 @@ export class OnBehalfBookingFormComponent  implements OnInit {
       })
     }
     getAllCostCenter(){
-      this.masterService.getAllCostCenterByDepartmentCode(this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value).subscribe({
+      this.masterService.getAllCostCenter().subscribe({
+        next:(data)=>{
+          this.costCenterList = data;
+        }
+      })
+    }
+    getCostCenterByDepartment(deptCode:any){
+      this.masterService.getAllCostCenterByDepartmentCode(deptCode).subscribe({
         next:(data)=>{
           this.costCenterList = data;
         }
@@ -300,7 +328,7 @@ export class OnBehalfBookingFormComponent  implements OnInit {
         }),
         raisedFor: this.fb.group({
           onbehalfType:['INTERNAL_EMPLOYEE'],
-          onbehalfContactNo:[null],
+          onbehalfContactNo:[null,[Validators.pattern('[1-9]{1}[0-9]{9}')]],
           onbehalfName:[null],
           onbehalfDepartment:[null],
           onbehalfDepartmentCode:[null],
@@ -308,24 +336,24 @@ export class OnBehalfBookingFormComponent  implements OnInit {
           onbehalfEmployeeId:[null]
         }),
         carTypeId: ['',Validators.required],
-        numPersonsTravelling: [1],
-        numCarsRequired:[1],
-        originatedFrom: ["APP"],
+        numPersonsTravelling: [1,Validators.required],
+        numCarsRequired:[1,Validators.required],
+        originatedFrom: ["PORTAL"],
         destination: this.fb.array([this.fb.control('', Validators.required)]),
         // bookingPreference: ['once'],
-        locationType: ['LOCAL'],
-        reportingLocation: ['same'],
+        locationType: ['LOCAL',Validators.required],
+        reportingLocation: ['same',Validators.required],
         // carRequiredTillDatetime: [this.selectedDate],
-        costCenterCode: [''],
+        costCenterCode: ['',Validators.required],
         eventCode: [''],
         purpose: [null,Validators.required],
-        bookingType:['SELF'],
+        bookingType:['ON_BEHALF',Validators.required],
         bookingLocationMap: this.fb.array([this.newCarDetails()]),
         bookingReportDto: this.fb.group({
           bookingPreference: ['ONCE'],
           excludeSunday: [true],
           excludeSaturday: [true],
-          carReportingDatetime: [this.selectedDate,[Validators.required]],
+          carReportingDatetime: [this.selectedDate],
           carRequiredTillDatetime: [this.selectedDate],
           carRepeatTillDate: [this.selectedDate],
           selectedDaysInaWeek: [],
@@ -371,10 +399,10 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     }
     newCarDetails() {
       return this.fb.group({
-        contactName: [''],
-        contactNumber: [''],
+        contactName: ['',[Validators.required, Validators.pattern('^[a-zA-Z ]*$')]],
+        contactNumber: ['',[Validators.required, Validators.pattern('[1-9]{1}[0-9]{9}')]],
         // carReleaseDatetime: [this.selectedDate],
-        reportingAddress: [''],
+        reportingAddress: ['',Validators.required],
         // releaseAddress: [''],
       });
     }
@@ -413,6 +441,13 @@ export class OnBehalfBookingFormComponent  implements OnInit {
   
       // Format it as an ISO string without timezone
       return `${year}-${month}-${day}T${hour}:${minute}`;
+    }
+    parsedUTC(dateString:any){
+      let now = new Date(dateString);
+      now = new Date(now.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000);
+      console.log(now);
+      
+      return now;
     }
     onRepeateDateSelected() {
       console.log(this.bookingForm.get('bookingReportDto.carRepeatTillDate')?.value);
@@ -596,15 +631,18 @@ export class OnBehalfBookingFormComponent  implements OnInit {
    
     onSelectBookingPerson(){
       this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(null);
-      this.bookingForm.get('raisedFor.onbehalfContactNo')?.patchValue(null);
       this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(null);
-
+      this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.patchValue(null);
+      this.bookingForm.get('raisedFor.onbehalfEmployeeEmailId')?.patchValue(null);
+      this.bookingForm.get('raisedFor.onbehalfEmployeeId')?.patchValue(null);
+      this.bookingForm.get('raisedFor.onbehalfContactNo')?.patchValue(null);
       console.log(this.bookingForm.get('raisedFor.onbehalfType')?.value );
       
-      if(this.bookingForm.get('raisedFor.onbehalfType')?.value == "INTERNAL"){
+      if(this.bookingForm.get('raisedFor.onbehalfType')?.value == "INTERNAL_EMPLOYEE"){
         this.isEmployee = true;
       }
       else{
+        this.getAllCostCenter();
         this.isEmployee = false;
       }
 
@@ -631,14 +669,13 @@ export class OnBehalfBookingFormComponent  implements OnInit {
   // Select an item from the dropdown
   selectItem(item: any) {
     this.searchTerm = item;
+    this.showDropdown = false; // Hide the dropdown after selection
     let name = `${item.firstName} ${item.lastName}`;
     this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(name);
     this.bookingForm.get('raisedFor.onbehalfEmployeeEmailId')?.patchValue(item.emailId);
     this.bookingForm.get('raisedFor.onbehalfEmployeeId')?.patchValue(item.id);
-    // this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(item.contactNo);
-    // this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(item.departmentCode);
-    this.filteredItems = []; // Clear the dropdown
-    this.showDropdown = false; // Hide the dropdown after selection
+    this.bookingForm.get('raisedFor.onbehalfContactNo')?.patchValue(item.contactNo);
+    this.filteredItems = []; 
   }
   hideDropdown() {
     setTimeout(() => {
@@ -646,6 +683,8 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     }, 150); // Add a small delay to allow item click before hiding the dropdown
   }
   onSelectCoseCenter(){
+    this.bookingForm.get('eventCode')?.patchValue(null);
+    this.eventList = [];
     this.masterService.getEventByCostCode(this.bookingForm.controls['costCenterCode'].value).subscribe({
       next:(data:IEvent[])=>{
         this.eventList=data;
@@ -672,14 +711,23 @@ export class OnBehalfBookingFormComponent  implements OnInit {
     
   }
   onSelectDepartment(){
-    this.getAllCostCenter();
+    this.bookingForm.get('raisedFor.onbehalfName')?.patchValue(null);
+    this.bookingForm.get('raisedFor.onbehalfEmployeeEmailId')?.patchValue(null);
+    this.bookingForm.get('raisedFor.onbehalfEmployeeId')?.patchValue(null);
+    this.bookingForm.get('raisedFor.onbehalfContactNo')?.patchValue(null);
+    this.getCostCenterByDepartment(this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value);
     this.bookingForm.get('raisedFor.onbehalfDepartment')?.patchValue(
       this.departmentList.filter((data:any)=>data.departmentCode == this.bookingForm.get('raisedFor.onbehalfDepartmentCode')?.value)[0].departmentDescription
     );
   }
   convertISOStringToFixedLocalDateTime(isoString:string) {
+    console.log(isoString);
+    
     // Input ISO date string
     // Split the ISO string into date and time components
+    // let now = new Date(isoString);
+    // now = new Date(now.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000)
+
     const [datePart, timePart] = isoString.split("T");
     const [year, month, day] = datePart.split("-");
     const [hour, minute, second] = timePart.replace("Z", "").split(":");

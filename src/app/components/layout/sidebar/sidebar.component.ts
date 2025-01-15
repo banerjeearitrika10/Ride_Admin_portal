@@ -14,6 +14,7 @@ import { ROUTES } from './sidebar-items';
 // import { AuthService } from 'src/app/auth/auth.service';
 import { RouteInfo } from './sidebar.metadata';
 import { AuthService } from '../../services/auth.service';
+import { BookingService } from '../../services/booking.service';
 
 const userRole = "Admin";
 
@@ -40,7 +41,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     public elementRef: ElementRef,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    public bookingService:BookingService
   ) {
     this.elementRef.nativeElement.closest('body');
     this.routerObj = this.router.events.subscribe((event) => {
@@ -82,14 +84,23 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.sidebarItems = ROUTES.filter(
       (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf('All') !== -1
     );
+    this.getEmployeeDetails();
     let detail:any = localStorage.getItem('empDetails');
-    this.employeeDetails = JSON.parse(detail); 
-    this.userFullName = `${this.employeeDetails.firstName} ${this.employeeDetails.lastName}`;
+// if(detail){
+//   this.employeeDetails = JSON.parse(detail); 
+//   this.userFullName = `${this.employeeDetails?.firstName} ${this.employeeDetails?.lastName}`;
+// }
     this.initLeftSidebar();
     this.bodyTag = this.document.body;
   }
   ngOnDestroy() {
     this.routerObj.unsubscribe();
+  }
+  getEmployeeDetails(){
+    this.bookingService.getEmpAllDetails().subscribe((data:any)=>{
+      this.employeeDetails = data;
+      this.userFullName = `${this.employeeDetails?.firstName} ${this.employeeDetails?.lastName}`;
+    })
   }
   initLeftSidebar() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -129,6 +140,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
   logout() {
+    
     this.authService.logout();
   }
 }

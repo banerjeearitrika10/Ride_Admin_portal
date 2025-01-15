@@ -29,9 +29,10 @@ export class RequestDetailsComponent {
   }
   ngOnInit():void{
     let detail:any = localStorage.getItem('empDetails');
-      this.employeeDetails = JSON.parse(detail); 
-    this.costCenterList = this.employeeDetails?.costCenter;
-    console.log( this.costCenterList);
+      // this.employeeDetails = JSON.parse(detail); 
+      this.getEmployeeDetails();
+    // this.costCenterList = this.employeeDetails?.costCenter;
+    // console.log( this.costCenterList);
     // console.log(this.det);
 
       this.getBookingById(this.details.parentId);
@@ -39,6 +40,12 @@ export class RequestDetailsComponent {
 
     this.getAllCarType();
     // this.details = this.details.data;
+  }
+  getEmployeeDetails(){
+    this.bookingService.getEmpAllDetails().subscribe((data:any)=>{
+      this.employeeDetails = data;
+      this.costCenterList = this.employeeDetails?.costCenter;
+    })
   }
   getBookingById(id:any){
     this.bookingService.getBookingDetailsId(id).subscribe({
@@ -59,16 +66,25 @@ export class RequestDetailsComponent {
     })
   }
   convertToReadableDate(isoString: string) {
-    const date = new Date(isoString);
-    const options: Intl.DateTimeFormatOptions = {
+    const options:any = {
       day: 'numeric',
-      month: 'short', // Short month name, like "Aug"
+      month: 'short',
       year: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      hour12: true, // Use 12-hour format with AM/PM
+      hour12: true,
     };
-    return date.toLocaleDateString('en-US', options);
+    
+    // Convert the UTC date to a Date object
+    const utcDate = new Date(isoString);
+    
+    // Convert UTC to local date and time (IST: UTC+05:30)
+    const localDate = new Date(utcDate.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000);
+    
+    // Format local date to the desired output
+    const formattedLocalDate = localDate.toLocaleDateString('en-US', options);
+    
+    return formattedLocalDate;
   }
   onOpenDrawer() {
     this.isOpen = true;

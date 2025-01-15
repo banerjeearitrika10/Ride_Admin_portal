@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Page } from '../core/models/page';
 import { IAllBookingResponse, IBookingResponse } from './models/booking';
@@ -13,9 +13,15 @@ export class BookingService {
   bookingSearchDataFromFilter$ = this.bookingSearchDataFromFilterDialog$.asObservable();
   private allocationSearchDataFromFilterDialog$ = new Subject<any>();
   allocationSearchDataFromFilter$ = this.allocationSearchDataFromFilterDialog$.asObservable();
-
+  private employeeDetails = new BehaviorSubject({});
   constructor(private http: HttpClient) { }
 
+  setEmpDetails(details: any) {
+    this.employeeDetails.next(details);
+  }
+  getEmpAllDetails() {
+    return this.employeeDetails.asObservable();
+  }
   emitSearchDataForFilter(filterData: any) {
     this.bookingSearchDataFromFilterDialog$.next(filterData);
 }

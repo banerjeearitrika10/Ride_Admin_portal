@@ -30,14 +30,16 @@ export class BookCabComponent implements OnDestroy {
   onRequestRide(){
     console.log(this.OnBehalfBookingFormComponent.bookingForm.value);
     let payload = this.OnBehalfBookingFormComponent.bookingForm.value;
-    
+    payload.bookingReportDto.carReportingDatetime = new Date(payload.bookingReportDto.carReportingDatetime).toISOString();
+    payload.bookingReportDto.carRequiredTillDatetime = new Date(payload.bookingReportDto.carRequiredTillDatetime).toISOString();
+    payload.bookingReportDto.carRepeatTillDate = new Date(payload.bookingReportDto.carRepeatTillDate).toISOString();
     if(this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.bookingPreference == "WEEKLY"){
       let startdate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carReportingDatetime;
       let enddate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carRepeatTillDate;
       let weekDays = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.selectedDaysInaWeek;
       let dateRange = this.getDatesInRangeForDays(startdate,enddate,weekDays);
       console.log(dateRange);
-      payload.bookingReportDto.carRequiredTillDatetime = (payload.bookingReportDto.carRepeatTillDate).toISOString();
+      payload.bookingReportDto.carRequiredTillDatetime = (payload.bookingReportDto.carRepeatTillDate)
       payload.bookingReportDto.carReportingDatetime = dateRange;
     }
     else if(this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.bookingPreference == "DAILY"){
@@ -47,20 +49,24 @@ export class BookCabComponent implements OnDestroy {
       let excludeSunday = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.excludeSunday;
       let dateRange = this.getDatesInRangeWithExclusions(startdate,enddate,excludeSaturday,excludeSunday);
       console.log(dateRange);
-      payload.bookingReportDto.carRequiredTillDatetime = (payload.bookingReportDto.carRepeatTillDate).toISOString();
+      payload.bookingReportDto.carRequiredTillDatetime = (payload.bookingReportDto.carRepeatTillDate)
       payload.bookingReportDto.carReportingDatetime = dateRange
     }
     else{
-      console.log(payload.bookingReportDto.carReportingDatetime);
-      
-      const reportingDate = payload.bookingReportDto.carReportingDatetime;
-      if (typeof reportingDate === 'string' && reportingDate.endsWith('Z')) {
-        payload.bookingReportDto.carReportingDatetime = [reportingDate]; // Already in UTC format
-      } else {
-        payload.bookingReportDto.carReportingDatetime = [this.convertDateToExactISOString(reportingDate)];
-      }
-      payload.bookingReportDto.carRequiredTillDatetime =this.convertDateToExactISOString( payload.bookingReportDto.carRequiredTillDatetime);
+      payload.bookingReportDto.carReportingDatetime = [payload.bookingReportDto.carReportingDatetime];
     }
+
+    // else{
+    //   console.log(payload.bookingReportDto.carReportingDatetime);
+      
+    //   const reportingDate = payload.bookingReportDto.carReportingDatetime;
+    //   if (typeof reportingDate === 'string' && reportingDate.endsWith('Z')) {
+    //     payload.bookingReportDto.carReportingDatetime = [reportingDate]; // Already in UTC format
+    //   } else {
+    //     payload.bookingReportDto.carReportingDatetime = [this.convertDateToExactISOString(reportingDate)];
+    //   }
+    //   payload.bookingReportDto.carRequiredTillDatetime =this.convertDateToExactISOString( payload.bookingReportDto.carRequiredTillDatetime);
+    // }
     delete payload.bookingReportDto.carRepeatTillDate;
     delete payload.reportingLocation;
     // this.presentAlert("Booking should be done before 7pm");

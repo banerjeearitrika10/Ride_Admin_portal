@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { InConfiguration } from '../../core/models/config.interface';
 import { UnsubscribeOnDestroyAdapter } from '../../shared/UnsubscribeOnDestroyAdapter';
 import { AuthService } from '../../services/auth.service';
+import { BookingService } from '../../services/booking.service';
 // import { LanguageService } from 'src/app/core/service/language.service';
 // import { InConfiguration } from 'src/app/core/models/config.interface';
 
@@ -52,6 +53,7 @@ export class HeaderComponent
     public elementRef: ElementRef,
     private configService: ConfigService,
     private authService: AuthService,
+    public bookingService:BookingService,
     private router: Router,
     // public languageService: LanguageService
   ) {
@@ -112,8 +114,11 @@ export class HeaderComponent
   ngOnInit() {
     this.config = this.configService.configData;
     let detail:any = localStorage.getItem('empDetails');
-    this.employeeDetails = JSON.parse(detail); 
-    this.userFullName = `${this.employeeDetails.firstName} ${this.employeeDetails.lastName}`
+    this.getEmployeeDetails();
+// if(detail){
+//   this.employeeDetails = JSON.parse(detail); 
+//   this.userFullName = `${this.employeeDetails?.firstName} ${this.employeeDetails?.lastName}`
+// }
     // const userRole = this.authService.currentUserValue.role;
     // this.userImg = this.authService.currentUserValue.img;
 
@@ -125,6 +130,12 @@ export class HeaderComponent
 
     this.langStoreValue = localStorage.getItem('lang') as string;
 
+  }
+  getEmployeeDetails(){
+    this.bookingService.getEmpAllDetails().subscribe((data:any)=>{
+      this.employeeDetails = data;
+      this.userFullName = `${this.employeeDetails?.firstName} ${this.employeeDetails?.lastName}`;
+    })
   }
   ngAfterViewInit() {
     // set theme on startup

@@ -8,7 +8,7 @@ const routes: Routes = [
     component: MainLayoutComponent,
     // canActivate: [CarpoolAuthGuard],
     children: [
-      { path: '', redirectTo: '/admin/dashboard/main', pathMatch: 'full' },
+      { path: '', redirectTo: '/booking-management', pathMatch: 'full' },
       {
         path: 'admin',
         // canActivate: [CarpoolAuthGuard],

@@ -137,14 +137,16 @@ export class BookingListComponent {
   constructor(public bookingService:BookingService,public router: Router, private dialog: MatDialog,){}
   ngOnInit(): void {
     let detail:any = localStorage.getItem('empDetails');
-    this.employeeDetails = JSON.parse(detail); 
+    this.getEmployeeDetails();
+   if(this.employeeDetails){
     this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W"});
+   }
     this.bookingService.bookingSearchDataFromFilter$
     .pipe(takeUntil(this.destroyed$))
     .subscribe((resp) => {
       if (Object.keys(resp).length) {
         this.searchKey = '';
-        this.filterData = { status: resp?.status, fromDate: resp?.fromDate , toDate: resp?.toDate };
+        this.filterData = { bookingStatus: resp?.status, fromDate: resp?.fromDate , toDate: resp?.toDate };
         this.dataSource = new MatTableDataSource();
         const obj = {
           size: this.pageSize,
@@ -161,6 +163,11 @@ export class BookingListComponent {
         this.getBookingDetails({ size: this.pageSize, page: this.pageIndex ,clientType:"W"});
       }
     });
+  }
+  getEmployeeDetails(){
+    this.bookingService.getEmpAllDetails().subscribe((data:any)=>{
+      this.employeeDetails = data;
+    })
   }
   getBookingDetails(payLoad:any){
     this.showMessageIfTableIsBlank = false;
@@ -239,16 +246,25 @@ export class BookingListComponent {
     this.destroyed$.complete();
   }
   convertToReadableDate(isoString: string) {
-    const date = new Date(isoString);
-    const options: Intl.DateTimeFormatOptions = {
+    const options:any = {
       day: 'numeric',
-      month: 'short', // Short month name, like "Aug"
+      month: 'short',
       year: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      hour12: true, // Use 12-hour format with AM/PM
+      hour12: true,
     };
-    return date.toLocaleDateString('en-US', options);
+    
+    // Convert the UTC date to a Date object
+    const utcDate = new Date(isoString);
+    
+    // Convert UTC to local date and time (IST: UTC+05:30)
+    const localDate = new Date(utcDate.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000);
+    
+    // Format local date to the desired output
+    const formattedLocalDate = localDate.toLocaleDateString('en-US', options);
+    
+    return formattedLocalDate;
   }
   editAndView(element:any,mode:string){
     console.log(element);

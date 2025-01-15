@@ -38,7 +38,9 @@ export class BookingDetailsComponent {
   }
   onRequestRide(){
     let payload = this.OnBehalfBookingFormComponent.bookingForm.value;
-    
+    payload.bookingReportDto.carReportingDatetime = new Date(payload.bookingReportDto.carReportingDatetime).toISOString();
+    payload.bookingReportDto.carRequiredTillDatetime = new Date(payload.bookingReportDto.carRequiredTillDatetime).toISOString();
+    payload.bookingReportDto.carRepeatTillDate = new Date(payload.bookingReportDto.carRepeatTillDate).toISOString();
     if(this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.bookingPreference == "WEEKLY"){
       let startdate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carReportingDatetime;
       let enddate = this.OnBehalfBookingFormComponent.bookingForm.value.bookingReportDto.carRepeatTillDate;
@@ -59,16 +61,19 @@ export class BookingDetailsComponent {
       payload.bookingReportDto.carReportingDatetime = dateRange
     }
     else{
-      console.log(payload.bookingReportDto.carReportingDatetime);
-      
-      const reportingDate = payload.bookingReportDto.carReportingDatetime;
-      if (typeof reportingDate === 'string' && reportingDate.endsWith('Z')) {
-        payload.bookingReportDto.carReportingDatetime = [reportingDate]; // Already in UTC format
-      } else {
-        payload.bookingReportDto.carReportingDatetime = [this.convertDateToExactISOString(reportingDate)];
-      }
-      payload.bookingReportDto.carRequiredTillDatetime =this.convertDateToExactISOString( payload.bookingReportDto.carRequiredTillDatetime);
+      payload.bookingReportDto.carReportingDatetime = [payload.bookingReportDto.carReportingDatetime];
     }
+    // else{
+    //   console.log(payload.bookingReportDto.carReportingDatetime);
+      
+    //   const reportingDate = payload.bookingReportDto.carReportingDatetime;
+    //   if (typeof reportingDate === 'string' && reportingDate.endsWith('Z')) {
+    //     payload.bookingReportDto.carReportingDatetime = [reportingDate]; // Already in UTC format
+    //   } else {
+    //     payload.bookingReportDto.carReportingDatetime = [this.convertDateToExactISOString(reportingDate)];
+    //   }
+    //   payload.bookingReportDto.carRequiredTillDatetime =this.convertDateToExactISOString( payload.bookingReportDto.carRequiredTillDatetime);
+    // }
     delete payload.bookingReportDto.carRepeatTillDate;
     delete payload.reportingLocation;
     // this.presentAlert("Booking should be done before 7pm");

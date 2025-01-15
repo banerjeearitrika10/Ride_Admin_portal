@@ -28,7 +28,9 @@ export class FilterDialogComponent implements OnInit, OnDestroy  {
     {
       code:"REJECTED",
       name:"Rejected"
-    }
+    },
+    { name: 'Inprogress', code: 'INPROGRESS' },
+    { name: 'Cancel', code: 'CANCELLED' },
   ];
 
   constructor(
@@ -55,6 +57,8 @@ export class FilterDialogComponent implements OnInit, OnDestroy  {
   applyFilter() {
     this.filterForm.controls['fromDate'].patchValue(this.convertDateToExactISOString(this.filterForm.controls['fromDate'].value));
     this.filterForm.controls['toDate'].patchValue(this.convertDateToExactISOString(this.filterForm.controls['toDate'].value));
+    this.filterForm.controls['fromDate'].patchValue(this.filterForm.controls['fromDate'].value.split('T')[0]);
+    this.filterForm.controls['toDate'].patchValue(this.filterForm.controls['toDate'].value.split('T')[0]);
     this.dialogRef.close(this.filterForm.value);
     this.filterForm.reset();
   }

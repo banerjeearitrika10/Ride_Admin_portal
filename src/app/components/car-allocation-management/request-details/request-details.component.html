@@ -132,7 +132,7 @@
                     <label class="card_label">Repeat Till Date:</label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pb-3" *ngIf="bookingDetails?.bookingReportDto?.bookingPreference != 'ONCE'">
-                      <span class="card_span"><b>>{{convertToReadableDate(bookingDetails.bookingReportDto.carRequiredTillDatetime)}}</b></span>
+                      <span class="card_span"><b>{{convertToReadableDate(bookingDetails.bookingReportDto.carRequiredTillDatetime)}}</b></span>
                   </div>
                   <div class="row" *ngFor="let des of bookingDetails?.destination;let i = index">
                     <div class="col-lg-3 col-md-3 col-sm-6  col-xs-6 pb-3">
