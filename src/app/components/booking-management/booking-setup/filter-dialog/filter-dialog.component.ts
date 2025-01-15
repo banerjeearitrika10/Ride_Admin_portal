@@ -43,7 +43,7 @@ export class FilterDialogComponent implements OnInit, OnDestroy  {
     this.filterForm = new FormGroup({
       fromDate: new FormControl(new Date()),
       toDate: new FormControl(new Date()),
-      status: new FormControl(''),
+      status: new FormControl([]),
     });
 
     if (this.data) {

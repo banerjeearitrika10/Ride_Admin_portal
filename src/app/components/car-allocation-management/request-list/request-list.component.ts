@@ -67,7 +67,7 @@ export class RequestListComponent {
    .subscribe((resp) => {
      if (Object.keys(resp).length) {
        this.searchKey = '';
-       this.filterData = {fromDate: resp?.fromDate , toDate: resp?.toDate };
+       this.filterData = {startingDate: resp?.fromDate , endingDate: resp?.toDate };
        this.dataSource = new MatTableDataSource();
        const obj = {
          size: this.pageSize,

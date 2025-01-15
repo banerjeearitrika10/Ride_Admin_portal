@@ -146,7 +146,7 @@ export class BookingListComponent {
     .subscribe((resp) => {
       if (Object.keys(resp).length) {
         this.searchKey = '';
-        this.filterData = { bookingStatus: resp?.status, fromDate: resp?.fromDate , toDate: resp?.toDate };
+        this.filterData = { bookingStatus: resp?.status, startingDate: resp?.fromDate , endingDate: resp?.toDate };
         this.dataSource = new MatTableDataSource();
         const obj = {
           size: this.pageSize,
