@@ -6,9 +6,10 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from './material-module';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 import { FeatherIconsModule } from './components/feather-icons/feather-icons.module';
+import { TruncatePipe } from './truncate.pipe';
 
 @NgModule({
-  declarations: [],
+  declarations: [TruncatePipe],
   imports: [
     CommonModule,
     FormsModule,
@@ -25,6 +26,7 @@ import { FeatherIconsModule } from './components/feather-icons/feather-icons.mod
     MaterialModule,
     FeatherIconsModule,
     NgxMatTimepickerModule,
+    TruncatePipe
   ],
 })
 export class SharedModule { }

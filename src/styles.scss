@@ -47,3 +47,21 @@
 .form-control:focus{
     box-shadow: none!important;
 }
+.address-container {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .address-container:hover::after {
+    content: attr(title);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    white-space: normal;
+    z-index: 10;
+  }
+  

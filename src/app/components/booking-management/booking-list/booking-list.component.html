@@ -16,7 +16,7 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by reportingAddress">
                         Pickup Location
                     </th>
-                    <td mat-cell *matCellDef="let element" width="20%"> {{element.pickUpLocation[0].reportingAddress}} </td>
+                    <td mat-cell *matCellDef="let element" width="20%" class="address-container" [title]="element.pickUpLocation[0].reportingAddress"> {{element.pickUpLocation[0].reportingAddress | truncate:5}} </td>
                 </ng-container>
 
             <!-- Type Column -->
@@ -24,7 +24,7 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by destination">
                     Destination
                 </th>
-                <td mat-cell *matCellDef="let element" width="20%"> {{element.destination[element.destination.length-1]}} </td>
+                <td mat-cell *matCellDef="let element" width="20%" class="address-container" [title]="element.destination[element.destination.length-1]"> {{element.destination[element.destination.length-1] | truncate:5}} </td>
             </ng-container>
 
                <!-- Booking Preference -->
@@ -49,11 +49,14 @@
 
             <!-- Inner Table -->
             <ng-container matColumnDef="details">
-                <th mat-header-cell *matHeaderCellDef>Child Details</th>
-                <td mat-cell *matCellDef="let element">
-                    <button mat-button (click)="toggleRow(element)">
-                        {{ element.expanded ? 'Hide' : 'View' }}
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element" >
+                    <button *ngIf="element.preference != 'ONCE'" mat-button (click)="toggleRow(element)">
+                        <!-- {{ element.expanded ?  : 'View' }} -->
+                        <app-feather-icons *ngIf="element.expanded" icon="chevron-up" [class]="'tbl-fav-upDown'"></app-feather-icons>
+                        <app-feather-icons *ngIf="!element.expanded" icon="chevron-down" [class]="'tbl-fav-upDown'"></app-feather-icons>
                     </button>
+                    <span *ngIf="element.preference == 'ONCE'" style="padding-left: 20px;">---</span>
                 
                 </td>
             </ng-container>
@@ -105,7 +108,7 @@
                         <app-feather-icons icon="eye" [class]="'tbl-fav-eye'"></app-feather-icons>
                     </button>
                     <div class="vr"></div>
-                    <button *ngIf="(employeeDetails.emailId == element.raisedBy.employeeEmailId) && (element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCELLED')" type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
+                    <button *ngIf="(employeeDetails.emailId == element.raisedBy.employeeEmailId) && (element.originatedFrom == 'PORTAL') && (element.bookingStatus != 'REJECTED' && element.bookingStatus != 'CANCELLED')" type="button" mat-icon-button class="table-action-button" matTooltip="Edit Details"  (click)="editAndView(element, 'edit')">
                         <app-feather-icons icon="edit" [class]="'tbl-fav-edit'"></app-feather-icons>
                     </button>
                     <!-- <div class="vr"></div>
@@ -142,11 +145,11 @@
                                            
                                             <ng-container *ngIf="(element.bookingStatus != 'CANCELLED' && element.bookingStatus != 'REJECTED'); else innerActionUnavailable">
                                                 <button type="button" mat-icon-button class="table-action-button" (click)="cancleChildBooking(element)">
-                                                    <app-feather-icons icon="plus-square" [class]="'tbl-fav-eye'"></app-feather-icons>
+                                                    <app-feather-icons icon="x-circle" [class]="'tbl-fav-delete'"></app-feather-icons>
                                                 </button>
                                             </ng-container>
                                             <ng-template #innerActionUnavailable>
-                                                <span>---</span>
+                                                <span style="padding-left: 12px;">---</span>
                                             </ng-template>
                                         </td>
                                     </ng-container>

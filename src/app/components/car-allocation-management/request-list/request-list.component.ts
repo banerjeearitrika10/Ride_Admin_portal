@@ -36,8 +36,9 @@ export class RequestListComponent {
     'destination',
     'bookingPreference',
     'status',
-    'details',
     'allotCar',
+    'details',
+
   ];
   innerDisplayedColumns: string[] = ['innerColumn1', 'action'];
   dataSource!: MatTableDataSource<any>;
